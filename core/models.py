@@ -15,7 +15,7 @@ class AdditionalUserData(models.Model):
     def __str__(self):
         username = self.user.username if hasattr(self, 'user') and self.user else "No User"
         return (
-            f"Username: {username}, "
+            f"Username: {username}"
         )
 
 class User(AbstractUser):
@@ -29,8 +29,7 @@ class User(AbstractUser):
 
     def __str__(self):
         return (
-            f"Email: {self.email}, "
-            f"Name: {self.username}, "
+            f"{self.username}"
         )
 
 
