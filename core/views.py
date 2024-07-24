@@ -5,7 +5,7 @@ from django.urls import reverse
 from decouple import config
 from .validator import addtionalUserData_validator
 from .decorators import *
-from urllib.parse import urlencode
+from sportshunt.utils import *
 
 # Create your views here.
 def index(req):
@@ -42,15 +42,10 @@ def profile_view(req):
     
     if not req.user.additional_data:
         messages.info(req, "Please fill in your additional userdata")
-        base_url = reverse('additional_userdata')
-        query_string = urlencode({'next': req.path})
-        url = f'{base_url}?{query_string}'
-        print(url)
+        url = construct_next_url(reverse('additional_userdata'), req.path)
         return redirect(url)
     
     auth0_user = req.user.social_auth.get(provider="auth0")
-    
-
     return render(req, 'core/profile.html', {
         "auth0_user": auth0_user,
     })

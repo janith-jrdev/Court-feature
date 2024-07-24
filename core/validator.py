@@ -45,7 +45,6 @@ class addtionalUserData_validator:
         self.clean_validate_save()
         
     def validate_dob(self, dob):
-        print(f'validate_dob: {dob}')
         try:
             dob = datetime.strptime(dob, '%Y-%m-%d')
         except ValueError:
@@ -59,7 +58,6 @@ class addtionalUserData_validator:
         return True
     
     def validate_gender(self, gender):
-        print(f'validate {gender}')
         if gender not in ['M', 'F', 'O', 'U']:
             self.errors['gender'] = "invalid gender data"
             return False
@@ -78,7 +76,6 @@ class addtionalUserData_validator:
                 gender=data['gender'],
             )
             User.objects.filter(username=self.user).update(additional_data=add_userdata)
-            print(f'add_userdata: {add_userdata}')
         except Exception as e:
             self.errors['save'] = str(e)
             print(f'error: {e}')

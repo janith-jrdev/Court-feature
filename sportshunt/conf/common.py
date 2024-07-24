@@ -32,6 +32,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "sportshunt.SportsHuntMiddleware.NextParameterMiddleware"
 ]
 
 ROOT_URLCONF = "sportshunt.urls"
@@ -82,9 +83,6 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 SOCIAL_AUTH_TRAILING_SLASH = False
-SOCIAL_AUTH_AUTH0_DOMAIN = config('AUTH0_DOMAIN')
-SOCIAL_AUTH_AUTH0_KEY = config('AUTH0_CLIENT_ID')
-SOCIAL_AUTH_AUTH0_SECRET = config('AUTH0_CLIENT_SECRET')
 
 SOCIAL_AUTH_AUTH0_SCOPE = [
     'openid',
@@ -100,5 +98,5 @@ AUTHENTICATION_BACKENDS = {
 SOCIAL_AUTH_USER_MODEL = 'core.User'
 
 LOGIN_URL = '/login/auth0'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/' 
 LOGOUT_REDIRECT_URL = '/'
