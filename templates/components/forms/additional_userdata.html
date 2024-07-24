@@ -1,0 +1,31 @@
+<form method="POST">
+    {% csrf_token %}
+    
+    <label for="is_organiser">Organizer Status:</label>
+    <input type="checkbox" id="is_organiser" name="is_organiser">
+    <br>
+
+    <label for="gender">Gender:</label>
+    <select id="gender" name="gender" required>
+        <option value="M">Male</option>
+        <option value="F">Female</option>
+        <option value="O">Other</option>
+        <option value="U" selected>Prefer not to say</option>
+    </select>
+    <br>
+
+    <label for="dob">Date of Birth:</label>
+    <input type="date" id="dob" name="dob" required>
+    <br>
+
+    <button type="submit">Submit</button>
+</form>
+<script>
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+
+    today = yyyy + '-' + mm + '-' + dd;
+    document.getElementById("date_of_birth").setAttribute("max", today);
+</script>
