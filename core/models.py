@@ -8,7 +8,7 @@ class AdditionalUserData(models.Model):
         ('O', 'Other'),
         ('U', 'Prefer not to say'),
     ]
-    is_organiser = models.BooleanField('organizer status', default=False)
+    is_organizer = models.BooleanField('organizer status', default=False)
     gender = models.CharField(max_length=2, choices=GENDER_CHOICES, default='U')
     date_of_birth = models.DateField()  
 

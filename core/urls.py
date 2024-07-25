@@ -8,3 +8,5 @@ urlpatterns = [
     path("userdata/", additionalUserdata_view, name="additional_userdata"),
     path("profile/", profile_view, name="profile"),
 ]
+
+app_name = "core"

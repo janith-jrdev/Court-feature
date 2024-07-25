@@ -6,7 +6,7 @@ def clean_querydict(querydict):
     return {k: v[-1] for k, v in querydict.lists()}
 
 class addtionalUserData_validator:
-    def __init__(self, data, user):
+    def __init__(self, data, req):
         """_summary_
         validate additional user data
         
@@ -39,7 +39,8 @@ class addtionalUserData_validator:
                 returns False
         
         """
-        self.user = user
+        self.user = req.user
+        self.req = req
         self.data = clean_querydict(data)
         self.errors = {}
         self.clean_validate_save()
@@ -66,13 +67,13 @@ class addtionalUserData_validator:
     def save(self):
         data = self.data
         is_org = False
-        if data.get('is_organiser', None):
+        if data.get('is_organizer', None):
             is_org = True
 
         try:
             add_userdata = AdditionalUserData.objects.create(
                 date_of_birth=data['dob'],
-                is_organiser= is_org,
+                is_organizer= is_org,
                 gender=data['gender'],
             )
             User.objects.filter(username=self.user).update(additional_data=add_userdata)
@@ -82,7 +83,7 @@ class addtionalUserData_validator:
             
         if self.errors:
             for key, value in self.errors.items():
-                messages.error(self.request, f"{key}: {value}")
+                messages.error(self.req, f"{key}: {value}")
             return False
         return True
     
