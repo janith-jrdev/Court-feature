@@ -2,11 +2,11 @@ from django.db import models
 from core.models import User
 # Create your models here.
 class Organization(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     ph_number = models.CharField(max_length=10)
     mail = models.EmailField(max_length=255)
     admin = models.ForeignKey(User, on_delete=models.CASCADE)
-    
+    # details = models.TextField() ??
     def __str__(self):
         return self.name
 
@@ -18,7 +18,8 @@ class Tournament(models.Model):
     end_date = models.DateField()
     venue_address = models.CharField(max_length=1024)
     venue_link = models.URLField(max_length=512)
-    categories = models.ManyToManyField('Category', blank=True)
+    categories = models.ForeignKey('Category', blank=True,null=True, on_delete=models.CASCADE, related_name="tournament_category")
+    ph_number = models.CharField(max_length=10, default="")
     
     # things to be added
         # poster
@@ -26,16 +27,16 @@ class Tournament(models.Model):
         
     def __str__(self):
         return f"{self.name} - {self.organization.name}"
-    
+
 class Category(models.Model):
     name = models.CharField(max_length=255)
     details = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name="category_tournament")
     registration_status = models.BooleanField(default=True)
     
     # things to be added
         # winner
         # teams
         # fixture type
-        
+    

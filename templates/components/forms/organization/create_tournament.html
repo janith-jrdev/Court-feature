@@ -1,0 +1,24 @@
+<form action="" method="post">
+    {% csrf_token %}
+    <label for="name">Tournament Name:</label><br>
+    <input type="text" id="name" name="name" maxlength="255" required><br><br>
+
+    <label for="details">Details:</label><br>
+    <textarea id="details" name="details" required></textarea><br><br>
+    <label for="start_date">Start Date:</label><br>
+    <input type="date" id="start_date" name="start_date" required><br><br>
+
+    <label for="end_date">End Date:</label><br>
+    <input type="date" id="end_date" name="end_date" required><br><br>
+
+    <label for="venue_address">Venue Address:</label><br>
+    <input type="text" id="venue_address" name="venue_address" maxlength="1024" required><br><br>
+
+    <label for="venue_link">Venue Link:</label><br>
+    <input type="url" id="venue_link" name="venue_link" maxlength="512"><br><br>
+
+    <label for="ph_number">Phone Number:</label><br>
+    <input type="text" id="ph_number" name="ph_number" maxlength="10" required><br><br>
+
+    <button type="submit">Submit</button>
+</form>

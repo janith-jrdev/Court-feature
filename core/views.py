@@ -17,6 +17,7 @@ def login_view(req):
     return HttpResponseRedirect(reverse('social:begin', args=['auth0']))
 
 def logout_view(req):
+    req.session.flush()
     logout(req)
     
     domain = config('AUTH0_DOMAIN')

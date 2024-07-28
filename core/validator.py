@@ -1,9 +1,8 @@
 from django.contrib import messages
 from datetime import datetime
 from .models import *
+from sportshunt.utils import *
 
-def clean_querydict(querydict):
-    return {k: v[-1] for k, v in querydict.lists()}
 
 class addtionalUserData_validator:
     def __init__(self, data, req):
