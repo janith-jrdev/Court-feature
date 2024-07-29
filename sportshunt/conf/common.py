@@ -20,6 +20,7 @@ THIRD_PARTY_APPS = [
 APPS = [
     'core',
     'organization',
+    'api',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + APPS

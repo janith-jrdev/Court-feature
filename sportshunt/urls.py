@@ -20,7 +20,8 @@ from django.urls import path, include
 
 urlpatterns = [
     path("", include("core.urls", namespace="core")),
-    path('', include('social_django.urls', namespace='social')),
+    path('', include('social_django.urls', namespace='social')),# later add prefix like auth/ and change in auth0
     path("organization/", include("organization.urls", namespace="org")),
+    path("api/", include("api.urls", namespace="api")),
     path("admin/", admin.site.urls),
 ]

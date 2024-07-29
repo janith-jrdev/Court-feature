@@ -48,12 +48,9 @@ def select_orgs(req):
 
 
 def category_form(req, tournament_id):
-    print(tournament_id)
     if req.method == "POST":
         print(tournament_id)
         if CategoryValidator(req.POST, req, tournament_id).validatation:
             messages.success(req, "Category created successfully")
             return redirect("org:index")
     return render(req, "organization/create_category.html", {"tournament_id": tournament_id})
-
- 
