@@ -8,7 +8,7 @@ from .models import *
 def index(req):
     return render(req, "organization/index.html")
 
-@host_required
+@organizer_required
 def organization_form(req):
     # needs a decorator to check if the user is an organizer
     if req.method == "POST":
