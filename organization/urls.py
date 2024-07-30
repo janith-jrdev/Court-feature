@@ -6,6 +6,8 @@ urlpatterns = [
     path("orgs/", select_orgs, name="orgs"),
     path("new_tournament/", tournament_form, name="tournament_form"),
     path("tournaments/<int:tournament_id>/new_category/", category_form, name="category_form"),
+    path("tournaments/<int:tournament_id>/", tournament_view, name="tournament_view"),
+    path("tournaments/<int:tournament_id>/<int:category_id>/", category_view, name="categories"),
     
 ]
 

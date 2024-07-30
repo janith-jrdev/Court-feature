@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+    <h1>{{ tournament.name }}</h1>
+    <h2>Categories</h2>
+    <ul>
+        {% for category in tournament.categories %}
+            <li>{{ category.name }}</li>
+        {% endfor %}
+    </ul>
+
+
+{% endblock body %}
