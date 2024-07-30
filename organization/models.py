@@ -21,7 +21,7 @@ class Tournament(models.Model):
     end_date = models.DateField()
     venue_address = models.CharField(max_length=1024)
     venue_link = models.URLField(max_length=512)
-    categories = models.ForeignKey('Category', blank=True,null=True, on_delete=models.CASCADE, related_name="tournament_category")
+    categories = models.ForeignKey('Category', blank=True,null=True, on_delete=models.CASCADE, related_name="tournament_category") #remove this
     ph_number = models.CharField(max_length=10, default="")
     #poster = models.ImageField(upload_to='posters/')
     # things to be added
@@ -35,7 +35,7 @@ class Category(models.Model):
     name = models.CharField(max_length=255)
     details = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    teams = models.ManyToManyField('Team', related_name='category_team', blank= True)# can be removed
+    teams = models.ManyToManyField('Team', related_name='category_team', blank= True)# to be removed
     fixture = models.ForeignKey('Fixture', on_delete=models.CASCADE, related_name='category_fixture', blank= True, null= True)
     winner = models.ForeignKey('Team', on_delete=models.SET_NULL, related_name='category_winner', blank= True, null= True)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name="category_tournament")

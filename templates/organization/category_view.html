@@ -1,12 +1,61 @@
 {% extends "base.html" %}
 
 {% block body %}
-    <h1>{{ category.name }}</h1>
-    <h2>Teams</h2>
-    <ul>
-        {% for team in category.teams %}
-            <li>{{ team.name }}</li>
+<div class="container mt-4">
+    <h1>{{ category_data.name }}</h1>
+    
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Category Details</h5>
+            <p class="card-text">{{ category_data.details }}</p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <h3>General Information</h3>
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Price:</strong> ${{ category_data.price }}</li>
+                <li class="list-group-item">
+                    <strong>Registration Status:</strong>
+                    {% if category_data.registration_status %}
+                        Open
+                    {% else %}
+                        Closed
+                    {% endif %}
+                </li>
+                <li class="list-group-item"><strong>Tournament:</strong> {{ category_data.tournament }}</li>
+                {% if category_data.winner %}
+                    <li class="list-group-item"><strong>Winner:</strong> {{ category_data.winner }}</li>
+                {% endif %}
+            </ul>
+        </div>
+        
+        <div class="col-md-6">
+            <h3>Fixture</h3>
+            {% if category_data.fixture %}
+                <ul class="list-group">
+                    <li class="list-group-item">{{ category_data.fixture }}</li>
+                </ul>
+            {% else %}
+                <p>No fixture available for this category.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <h3 class="mt-4">Teams</h3>
+    <div class="row">
+        {% for team in category_data.teams %}
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ team.name }}</h5>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>No teams registered for this category.</p>
         {% endfor %}
-    </ul>
-
+    </div>
+</div>
 {% endblock body %}

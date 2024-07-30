@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .decorators import *
 from .validators import *
 from .models import *
+from .serializer import *
 # Create your views here.
 
 @host_required
@@ -57,14 +58,13 @@ def category_form(req, tournament_id):
 
 @host_required
 def tournament_view(req, tournament_id):
-    tournament = Tournament.objects.get(id=tournament_id)
-    if tournament.organization.admin != req.user:
+    tournament_instance = Tournament.objects.get(id=tournament_id)
+    if tournament_instance.organization.admin != req.user:
         messages.error(req, "You are not authorized for this Tournament")
         return redirect("org:index")
-    # tournament
-        #name, status, start_date, end_date, location, description, organization
-        #poster, categories, countdown, 
-    return render(req, "organization/tournament_view.html", {"tournament": tournament})
+    data = tournamentSerializer(tournament_instance)
+    print(data)
+    return render(req, "organization/tournament_view.html", {"tournament_data": data})
 
 @host_required
 def category_view(req, tournament_id, category_id):
@@ -73,8 +73,6 @@ def category_view(req, tournament_id, category_id):
     if tournament.organization.admin != req.user:
         messages.error(req, "You are not authorized for this Category")
         return redirect("org:index")
-    
-    # category
-        # name, description, tournament, participants, status, start_date, end_date
-        # category-reg, fixture_type, fixture_data
-    return render(req, "organization/category_view.html", {"category": category, "tournament": tournament})
+    data = categorySerializer(category)
+    print(data)
+    return render(req, "organization/category_view.html", {"category_data": data})

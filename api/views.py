@@ -35,3 +35,17 @@ def off_registration(req, category_id):
         return JsonResponse({"message": "Registration successfully"})
     except json.JSONDecodeError:
         return JsonResponse({"message": "Invalid JSON data"}, status=400)
+
+
+def close_categoryReg(req, category_id):
+    # need to add more validation
+    category_instance = Category.objects.get(id=category_id)
+    org_instance = category_instance.tournament.organization
+
+    if req.user != org_instance.admin:
+        return JsonResponse({"message": "User not authorized"}, status=403)
+    
+    category_instance.registration_status = False
+    category_instance.save()
+    
+    return JsonResponse({"message": "Registration closed successfully"})
