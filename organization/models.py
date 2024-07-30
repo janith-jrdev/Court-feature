@@ -23,9 +23,9 @@ class Tournament(models.Model):
     venue_link = models.URLField(max_length=512)
     categories = models.ForeignKey('Category', blank=True,null=True, on_delete=models.CASCADE, related_name="tournament_category")
     ph_number = models.CharField(max_length=10, default="")
-    
+    #poster = models.ImageField(upload_to='posters/')
     # things to be added
-        # poster
+        
         # courts
         
     def __str__(self):
