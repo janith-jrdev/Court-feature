@@ -57,5 +57,9 @@
             <p>No teams registered for this category.</p>
         {% endfor %}
     </div>
+    {% if category_data.registration_status %}
+        {% include "components\forms\organization\offline_entry.html" %}
+        {% include "components\forms\organization\close_reg.html" %}
+    {% endif %}
 </div>
 {% endblock body %}

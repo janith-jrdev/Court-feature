@@ -1,0 +1,24 @@
+<button onclick="closeReg()">Close Registration</button>
+<script>
+    function closeReg() {
+        fetch("{% url 'api:close_reg' category_data.id %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        }).then(function (response) {
+            return response.json();
+        }).then(function (data) {
+            if (data.message === "Registration closed") {
+                alert('Registration successfully closed');
+            } else {
+                alert('Error closing registration');
+            }
+            console.log(data);
+        }).catch(function (error) {
+            console.error('Error:', error);
+            alert('Error closing registration');
+        });
+    }
+</script>

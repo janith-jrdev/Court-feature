@@ -17,10 +17,9 @@ def tournamentSerializer(tournament):
      }
      
 def categorySerializer(category):
-   # category
-   # name, description, tournament, participants, status, start_date, end_date
-   # category-reg, fixture_type, fixture_data
+
    return {
+         'id': category.id,
          'name': category.name,
          'details': category.details,
          'price': category.price,
