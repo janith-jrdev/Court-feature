@@ -8,7 +8,7 @@ class Organization(models.Model):
     name = models.CharField(max_length=255, unique=True)
     ph_number = models.CharField(max_length=10)
     mail = models.EmailField(max_length=255)
-    admin = models.ForeignKey(User, on_delete=models.CASCADE)
+    admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name="organization")
     # details = models.TextField() ??
     def __str__(self):
         return self.name
@@ -16,12 +16,11 @@ class Organization(models.Model):
 class Tournament(models.Model):
     name = models.CharField(max_length=255)
     details = models.TextField()
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="tournaments")
     start_date = models.DateField()
     end_date = models.DateField()
     venue_address = models.CharField(max_length=1024)
     venue_link = models.URLField(max_length=512)
-    categories = models.ForeignKey('Category', blank=True,null=True, on_delete=models.CASCADE, related_name="tournament_category") #remove this
     ph_number = models.CharField(max_length=10, default="")
     #poster = models.ImageField(upload_to='posters/')
     # things to be added
@@ -35,10 +34,9 @@ class Category(models.Model):
     name = models.CharField(max_length=255)
     details = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    teams = models.ManyToManyField('Team', related_name='category_team', blank= True)# to be removed
-    fixture = models.ForeignKey('Fixture', on_delete=models.CASCADE, related_name='category_fixture', blank= True, null= True)
-    winner = models.ForeignKey('Team', on_delete=models.SET_NULL, related_name='category_winner', blank= True, null= True)
-    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name="category_tournament")
+    winner = models.ForeignKey('Team', on_delete=models.SET_NULL, blank= True, null= True, related_name="won_categories")
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name="categories")
+    fixture = models.ForeignKey('Fixture', on_delete=models.CASCADE, related_name="category_fixture", blank= True, null= True)
     registration_status = models.BooleanField(default=True)
 
     def __str__(self):
@@ -71,9 +69,10 @@ class Fixture(models.Model):
 
 class Knockout(models.Model):
     json = models.JSONField(blank=True, null=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="knockout_category")
-    bracket_teams = models.ManyToManyField('Team', related_name='knockout_bracket', blank=True)
-    winners_bracket = models.ManyToManyField('Team', related_name='knockout_winners', blank=True)
+    fixing_manual = models.BooleanField(default=False)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="category")
+    bracket_teams = models.ManyToManyField('Team', related_name='bracket', blank=True)
+    winners_bracket = models.ManyToManyField('Team', related_name='bracket_winners', blank=True)
     # bracket_matches = models.ManyToManyField('Match', related_name='knockout_match', blank=True)
     def __str__(self):
         return f"Knockout - {self.category.name} - {self.category.tournament.name}"
@@ -90,7 +89,7 @@ class RoundRobinKnockout(models.Model):
 
 class Team(models.Model):
     name = models.CharField(max_length=255)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="team_category")
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="teams")
     # payment_method = models.CharField(max_length=255)
     # payment mode
     

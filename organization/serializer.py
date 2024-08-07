@@ -12,7 +12,7 @@ def tournamentSerializer(tournament):
         'organization': tournament.organization,
         'venue': tournament.venue_address,
         'venue_link': tournament.venue_link,
-        'categories': tournament.category_tournament.all(), 
+        'categories': tournament.categories.all(), 
         'ph_number': tournament.ph_number,
      }
      
@@ -23,7 +23,7 @@ def categorySerializer(category):
          'name': category.name,
          'details': category.details,
          'price': category.price,
-         'teams': category.team_category.all(),
+         'teams': category.teams.all(),
          'fixture': category.fixture,
          'winner': category.winner,
          'tournament': category.tournament,
