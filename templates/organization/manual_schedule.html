@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Match Scheduler</title>
+    <style>
+        .match-card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #logJsonButton {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Schedule a Match</h1>
+    <p>Select Teams (Max 2):</p>
+    <div id="teamSelection"></div>
+    <h2>Scheduled Matches:</h2>
+    <div id="matchList"></div>
+    <button onclick="scheduleMatch()">Schedule Match</button>
+    <button id="logJsonButton" onclick="logMatchesJSON()">Log Matches JSON</button>
+
+    <script>
+        // const teams = [
+        //     { id: 1, name: "Team A" },
+        //     { id: 2, name: "Team B" },
+        //     { id: 3, name: "Team C" },
+        //     { id: 4, name: "Team D" },
+        //     { id: 5, name: "Team E" },
+        //     { id: 6, name: "Team F" },
+        //     { id: 7, name: "Team G" },
+        // ];
+        const teams = {{ teams|safe }};
+        console.log(teams);
+
+        const selectedTeams = [];
+        const matches = [];
+        let availableTeams = [...teams];
+
+        function createCheckbox(team) {
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `team-${team.id}`;
+            checkbox.value = JSON.stringify(team);
+            checkbox.onclick = function () { checkLimit(this); };
+
+            const label = document.createElement('label');
+            label.htmlFor = checkbox.id;
+            label.textContent = team.name === "Bye" ? "BYE" : `${team.name} (ID: ${team.id})`;
+
+            const br = document.createElement('br');
+
+            const teamSelectionDiv = document.getElementById('teamSelection');
+            teamSelectionDiv.appendChild(checkbox);
+            teamSelectionDiv.appendChild(label);
+            teamSelectionDiv.appendChild(br);
+        }
+
+        function loadTeams() {
+            const no_teams = teams.length;
+            const nextPowerOf2 = Math.pow(2, Math.ceil(Math.log2(no_teams)));
+            const byesNeeded = nextPowerOf2 - no_teams;
+
+            if (byesNeeded > 0) {
+                for (let i = 0; i < byesNeeded; i++) {
+                    const byeTeam = { id: null, name: "Bye" };
+                    teams.push(byeTeam);
+                    availableTeams.push(byeTeam);
+                }
+            }
+
+            availableTeams.forEach(team => {
+                createCheckbox(team);
+            });
+        }
+
+        function checkLimit(checkbox) {
+            const team = JSON.parse(checkbox.value);
+            if (checkbox.checked) {
+                selectedTeams.push(team);
+            } else {
+                const index = selectedTeams.findIndex(t => t.id === team.id);
+                if (index !== -1) {
+                    selectedTeams.splice(index, 1);
+                }
+            }
+
+            if (selectedTeams.length > 2) {
+                alert("You can only select up to 2 teams.");
+                checkbox.checked = false;
+                selectedTeams.pop();
+            }
+        }
+
+        function scheduleMatch() {
+            if (selectedTeams.length === 2) {
+                if (selectedTeams[0].name === "Bye" && selectedTeams[1].name === "Bye") {
+                    alert("Cannot schedule a match between two Bye teams.");
+                    return;
+                }
+                matches.push({ team1: selectedTeams[0], team2: selectedTeams[1] });
+                hideSelectedTeams();
+                clearSelection();
+                updateMatchList();
+                checkForRemainingMatches();
+            } else {
+                alert("Please select exactly 2 different teams.");
+            }
+        }
+
+        function updateMatchList() {
+            const matchListElement = document.getElementById('matchList');
+            matchListElement.innerHTML = '';
+
+            for (const match of matches) {
+                const matchCard = document.createElement('div');
+                matchCard.classList.add('match-card');
+
+                const matchText = document.createElement('div');
+                const team1DisplayName = match.team1.name === "Bye" ? "BYE" : `${match.team1.name} (ID: ${match.team1.id})`;
+                const team2DisplayName = match.team2.name === "Bye" ? "BYE" : `${match.team2.name} (ID: ${match.team2.id})`;
+                matchText.textContent = `${team1DisplayName} vs ${team2DisplayName}`;
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.addEventListener('click', () => {
+                    const index = matches.findIndex(m =>
+                        m.team1.id === match.team1.id && m.team2.id === match.team2.id
+                    );
+                    if (index !== -1) {
+                        matches.splice(index, 1);
+                        showDeletedTeams(match.team1, match.team2);
+                        updateMatchList();
+                        checkForRemainingMatches();
+                    }
+                });
+
+                matchCard.appendChild(matchText);
+                matchCard.appendChild(deleteButton);
+                matchListElement.appendChild(matchCard);
+            }
+        }
+
+        function hideSelectedTeams() {
+            selectedTeams.forEach(team => {
+                const checkbox = document.querySelector(`input[id="team-${team.id}"]`);
+                if (checkbox) {
+                    checkbox.style.display = 'none';
+                }
+                availableTeams = availableTeams.filter(t => t.id !== team.id);
+            });
+        }
+
+        function showDeletedTeams(team1, team2) {
+            [team1, team2].forEach(team => {
+                const checkbox = document.querySelector(`input[id="team-${team.id}"]`);
+                if (checkbox) {
+                    checkbox.style.display = 'inline';
+                }
+                if (!availableTeams.some(t => t.id === team.id)) {
+                    availableTeams.push(team);
+                }
+            });
+        }
+
+        function clearSelection() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            selectedTeams.length = 0;
+        }
+
+        function checkForRemainingMatches() {
+            const logJsonButton = document.getElementById('logJsonButton');
+            const nonByeTeams = availableTeams.filter(team => team.name !== "Bye");
+            if (nonByeTeams.length === 0 || (nonByeTeams.length === 1 && availableTeams.length === 1)) {
+                logJsonButton.style.display = 'inline';
+            } else {
+                logJsonButton.style.display = 'none';
+            }
+        }
+
+        function logMatchesJSON() {
+            const matchesWithIdsOnly = matches.map(match => ({
+                team1: match.team1.id,
+                team2: match.team2.id
+            }));
+            console.log(JSON.stringify(matchesWithIdsOnly, null, 2));
+            fetch('{% url "api:schedule_matches" category.id %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify(matchesWithIdsOnly)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        window.onload = loadTeams;
+    </script>
+</body>
+
+</html>

@@ -3,6 +3,7 @@ from .decorators import *
 from .validators import *
 from .models import *
 from .serializer import *
+import json
 # Create your views here.
 
 @host_required
@@ -74,5 +75,27 @@ def category_view(req, tournament_id, category_id):
         messages.error(req, "You are not authorized for this Category")
         return redirect("org:index")
     data = categorySerializer(category)
-    print(data)
     return render(req, "organization/category_view.html", {"category_data": data})
+
+def manual_schedule_matches(req, tournament_id, category_id):
+    
+    tournament = Tournament.objects.get(id=tournament_id)
+    category = Category.objects.get(id=category_id)
+    if tournament.organization.admin != req.user:
+        messages.error(req, "You are not authorized for this Category")
+        return redirect("org:index")
+
+    
+    if category.fixture.fixtureType != "KO":
+        messages.error(req, "Invalid Fixture Type this doesnt have manual scheduling")
+        return redirect("org:index")
+    
+    if not category.fixture.content_object.fixing_manual:
+        messages.error(req, "Its automatic scheduling")
+        return redirect("org:index")
+
+    category_teams = [{"id": team.id, "name":team.name } for team in category.teams.all()]
+    category_teams= json.dumps(category_teams)
+    
+    return render(req, "organization/manual_schedule.html", {"teams": category_teams, "category": category})
+    

@@ -8,6 +8,7 @@ urlpatterns = [
     path("tournaments/<int:tournament_id>/new_category/", category_form, name="category_form"),
     path("tournaments/<int:tournament_id>/", tournament_view, name="tournament_view"),
     path("tournaments/<int:tournament_id>/<int:category_id>/", category_view, name="categories"),
+    path("tournaments/<int:tournament_id>/<int:category_id>/schedule_match/", manual_schedule_matches, name="schedule_match"),
     
 ]
 

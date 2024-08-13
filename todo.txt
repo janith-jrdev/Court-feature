@@ -1,0 +1,3 @@
+there is a issue in models,
+    we have to change the model.CASCADE to set null. 
+    i cant even see in admin panel

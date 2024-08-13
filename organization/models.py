@@ -36,7 +36,7 @@ class Category(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     winner = models.ForeignKey('Team', on_delete=models.SET_NULL, blank= True, null= True, related_name="won_categories")
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name="categories")
-    fixture = models.ForeignKey('Fixture', on_delete=models.CASCADE, related_name="category_fixture", blank= True, null= True)
+    fixture = models.ForeignKey('Fixture', on_delete=models.SET_NULL, related_name="category_fixture", blank= True, null= True)
     registration_status = models.BooleanField(default=True)
 
     def __str__(self):
@@ -48,7 +48,7 @@ class Fixture(models.Model):
         ('RR', 'Round Robin'),
         ('RR_KO', 'Round Robin + Knockout'),
     ]
-    fixtureType = models.CharField(max_length=5, choices=FIXTURE_CHOICES, unique=True)
+    fixtureType = models.CharField(max_length=5, choices=FIXTURE_CHOICES)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="fixture_category", blank= True, null= True)
     fixture_data = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True, blank=True)
@@ -73,7 +73,8 @@ class Knockout(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="category")
     bracket_teams = models.ManyToManyField('Team', related_name='bracket', blank=True)
     winners_bracket = models.ManyToManyField('Team', related_name='bracket_winners', blank=True)
-    # bracket_matches = models.ManyToManyField('Match', related_name='knockout_match', blank=True)
+    bracket_matches = models.ManyToManyField('Match', related_name='bracket_match', blank=True)
+    ko_stage = models.IntegerField(default=-1)
     def __str__(self):
         return f"Knockout - {self.category.name} - {self.category.tournament.name}"
     
@@ -95,10 +96,10 @@ class Team(models.Model):
     
     def __str__(self):
         return f"{self.name} - {self.category.name} - {self.category.tournament.name}"
-    
+
 class Match(models.Model):
-    team1 = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="match_team1")
-    team2 = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="match_team2")
+    team1 = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="match_team1", blank=True, null=True)
+    team2 = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="match_team2", blank=True, null=True)
     winner = models.ForeignKey(Team, on_delete=models.SET_NULL, related_name="match_winner", blank=True, null=True)
     match_state = models.BooleanField(default=False)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="match_category")

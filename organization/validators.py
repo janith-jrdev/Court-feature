@@ -2,7 +2,7 @@ from sportshunt.utils import *
 from django.contrib import messages
 from .models import *
 from datetime import datetime
-import re
+import re, json
 
 # make a AbstractValidator class
 class AbstractValidator:
@@ -216,3 +216,39 @@ class CategoryValidator(AbstractValidator):
             return False
         return True
 
+
+def ScheduleMatchValidator(data, category_instance):
+    data = json.loads(data)
+    if not data:
+        return False, "Invalid JSON data"
+    
+    match_instances = []
+    for match in data:
+        team1, team2 = match.get('team1'), match.get('team2')
+        
+        if not team1 and not team2:
+            return False, "Team name cannot be empty"
+        
+        if team1:
+            team1 = Team.objects.get(id=team1, category=category_instance)
+        
+        if team2:
+            team2 = Team.objects.get(id=team2, category=category_instance)
+        
+        match_instance = Match.objects.create(
+            category=category_instance,
+            team1=team1,
+            team2=team2,
+            no_sets=3
+        )
+        
+        if not team1:
+            match_instance.winner = team2
+        elif not team2:
+            match_instance.winner = team1
+        else:
+            match_instances.append(match_instance)
+        
+        match_instance.save()
+        
+    return True, match_instances

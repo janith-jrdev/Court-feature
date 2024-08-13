@@ -1,0 +1,87 @@
+<button onclick="toggleForm()">Create Fixture</button>
+
+<form id="fixture_form" style="display: none;">
+    <h2>Select Fixture Type</h2>
+    <select name="fixture_type" id="fixture_type" onchange="showFixtureContent()">
+        <option value="">Select a type</option>
+        <option value="KO">Knockout</option>
+        <option value="RR">Round Robin</option>
+        <option value="RRKO">RR+KO</option>
+    </select>
+
+    <div id="KO_content" class="fixture-content">
+        <h3>Knockout Content</h3>
+        <input type="radio" name="fixture_mode" value="manual"> Manual
+        <input type="radio" name="fixture_mode" value="automatic" disabled> Automatic
+        <button type="submit">Create</button>
+    </div>
+
+    <div id="RR_content" class="fixture-content">
+        <h3>Round Robin Content</h3>
+        <p>RR Feature will be added soon.</p>
+    </div>
+
+    <div id="RRKO_content" class="fixture-content">
+        <h3>RR+KO Content</h3>
+        <p>RR + KO Feature will be added soon.</p>
+    </div>
+</form>
+
+<script>
+    var form = document.getElementById("fixture_form");
+    var fixtureTypeSelect = document.getElementById("fixture_type");
+
+    function toggleForm() {
+        form.style.display = form.style.display === "none" ? "block" : "none";
+        if (form.style.display === "block") {
+            showFixtureContent(); // Ensure correct content is shown when form is displayed
+        }
+    }
+
+    function showFixtureContent() {
+        var selectedValue = fixtureTypeSelect.value;
+        var contentDivs = document.getElementsByClassName("fixture-content");
+
+        // Hide all content divs
+        for (var div of contentDivs) {
+            div.style.display = "none";
+        }
+
+        // Show the selected content div
+        if (selectedValue) {
+            var selectedContent = document.getElementById(selectedValue + "_content");
+            if (selectedContent) {
+                selectedContent.style.display = "block";
+            }
+        }
+    }
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        var data = {
+            fixture_type: fixtureTypeSelect.value,
+            fixture_mode: document.querySelector('input[name="fixture_mode"]:checked')?.value,
+        };
+
+        fetch("{% url 'api:create_fixture' category_data.id %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+            alert('Fixture created successfully!');
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('There was an error creating the fixture.');
+        });
+    });
+
+    showFixtureContent();
+</script>

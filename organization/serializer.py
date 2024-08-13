@@ -17,7 +17,7 @@ def tournamentSerializer(tournament):
      }
      
 def categorySerializer(category):
-
+   print(category.fixture.content_object.bracket_matches.all())
    return {
          'id': category.id,
          'name': category.name,
@@ -28,4 +28,5 @@ def categorySerializer(category):
          'winner': category.winner,
          'tournament': category.tournament,
          'registration_status': category.registration_status,
+         # 'matches': category.matches.all(),
    }
