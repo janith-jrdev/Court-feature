@@ -108,7 +108,13 @@ class Match(models.Model):
     sets = models.ManyToManyField('SetScoreboard', related_name='match_sets', blank=True)
     current_set = models.ForeignKey('SetScoreboard', on_delete=models.SET_NULL, related_name='match_current_set', blank=True, null=True)
     def __str__(self):
-        return f"{self.team1.name} vs {self.team2.name} - {self.category.name} - {self.category.tournament.name}"
+        team1, team2 = "Bye", "Bye"
+        if self.team1:
+            team1 = self.team1.name
+        if self.team2:
+            team2 = self.team2.name
+        
+        return f"{team1} vs {team2} - {self.category.name} - {self.category.tournament.name}"
     
 class SetScoreboard(models.Model):
     set_no = models.IntegerField()

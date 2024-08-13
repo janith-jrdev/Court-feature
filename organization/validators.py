@@ -102,9 +102,9 @@ class TournamentValidator(AbstractValidator):
         if not end_date:
             self.errors['end_date'] = "End date cannot be empty"
             return False
-        end_date = datetime.strptime('2024-08-04', '%Y-%m-%d')
+        end_date = datetime.strptime(end_date, '%Y-%m-%d')
         start_date = datetime.strptime(self.data.get('start_date'), '%Y-%m-%d')
-        if end_date< datetime.now():
+        if end_date < datetime.now():
             self.errors['end_date'] = "End date cannot be in the past"
             return False
         if end_date < start_date:
@@ -217,7 +217,7 @@ class CategoryValidator(AbstractValidator):
         return True
 
 
-def ScheduleMatchValidator(data, category_instance):
+def ScheduleMatchValidator(data, category_instance, ko_instance):
     data = json.loads(data)
     if not data:
         return False, "Invalid JSON data"
@@ -244,11 +244,14 @@ def ScheduleMatchValidator(data, category_instance):
         
         if not team1:
             match_instance.winner = team2
+            ko_instance.winners_bracket.add(team2)
         elif not team2:
             match_instance.winner = team1
+            ko_instance.winners_bracket.add(team1)
         else:
             match_instances.append(match_instance)
         
         match_instance.save()
-        
+    ko_instance.bracket_matches.set(match_instances)
+    ko_instance.save()
     return True, match_instances

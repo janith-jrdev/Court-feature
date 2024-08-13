@@ -115,14 +115,14 @@ def manual_schedule_matches(req, category_id):
         return JsonResponse({"message": "Manual scheduling is not enabled"}, status=400)
 
     matches_instances = []
-    _, info = ScheduleMatchValidator(req.body, category)
+    _, info = ScheduleMatchValidator(req.body, category, ko_instance)
     
     if not _:
         return JsonResponse({"message": info}, status=400)
     
-    matches_instances = info
-    ko_instance.bracket_matches.set(matches_instances)
-    ko_instance.save()
+    # matches_instances = info
+    # ko_instance.bracket_matches.set(matches_instances)
+    # ko_instance.save()
     
     return JsonResponse({"message": "Match scheduled successfully"})
         

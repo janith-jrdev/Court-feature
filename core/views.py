@@ -46,7 +46,9 @@ def profile_view(req):
         url = construct_next_url(reverse('core:additional_userdata'), req.path)
         return redirect(url)
     
-    auth0_user = req.user.social_auth.get(provider="auth0")
+    auth0_user = None
+    if req.user.social_auth.exists():
+        auth0_user = req.user.social_auth.get(provider="auth0")
     return render(req, 'core/profile.html', {
         "auth0_user": auth0_user,
     })
