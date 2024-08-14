@@ -96,33 +96,3 @@ def fixturetype_form(req, category_id):
         return JsonResponse({"message": "some server side error"}, status=500)
     
     return JsonResponse({"message": "Invalid request method"}, status=400)
-
-def manual_schedule_matches(req, category_id):
-    
-    if req.method != "POST":
-        return JsonResponse({"message": "Invalid request method"}, status=400)
-    
-    category = Category.objects.get(id=category_id)
-    tournament = category.tournament
-    if tournament.organization.admin != req.user:
-        return JsonResponse({"message": "User not authorized"}, status=403)
-    
-    if category.fixture.fixtureType != "KO":
-        return JsonResponse({"message": "Invalid Fixture Type"}, status=400)
-    
-    ko_instance = category.fixture.content_object
-    if not ko_instance.fixing_manual:
-        return JsonResponse({"message": "Manual scheduling is not enabled"}, status=400)
-
-    matches_instances = []
-    _, info = ScheduleMatchValidator(req.body, category, ko_instance)
-    
-    if not _:
-        return JsonResponse({"message": info}, status=400)
-    
-    # matches_instances = info
-    # ko_instance.bracket_matches.set(matches_instances)
-    # ko_instance.save()
-    
-    return JsonResponse({"message": "Match scheduled successfully"})
-        

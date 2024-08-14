@@ -24,7 +24,7 @@ def tournament_form(req):
     if req.method == "POST":
         if TournamentValidator(req.POST, req).validatation:
             messages.success(req, "Tournament created successfully")
-            return redirect("org:index")
+            return redirect("org:index")#redirect to category category form
     return render(req, "organization/create_tournament.html")
 
 @organizer_required
@@ -51,10 +51,9 @@ def select_orgs(req):
 @host_required
 def category_form(req, tournament_id):
     if req.method == "POST":
-        print(tournament_id)
         if CategoryValidator(req.POST, req, tournament_id).validatation:
             messages.success(req, "Category created successfully")
-            return redirect("org:index")
+            return redirect("org:index")# redirect to category or tournament view
     return render(req, "organization/create_category.html", {"tournament_id": tournament_id})
 
 @host_required
@@ -64,7 +63,6 @@ def tournament_view(req, tournament_id):
         messages.error(req, "You are not authorized for this Tournament")
         return redirect("org:index")
     data = tournamentSerializer(tournament_instance)
-    print(data)
     return render(req, "organization/tournament_view.html", {"tournament_data": data})
 
 @host_required
@@ -90,9 +88,18 @@ def manual_schedule_matches(req, tournament_id, category_id):
         messages.error(req, "Invalid Fixture Type this doesnt have manual scheduling")
         return redirect("org:index")
     
-    if not category.fixture.content_object.fixing_manual:
+    ko_instance = category.fixture.content_object
+    if not ko_instance.fixing_manual:
         messages.error(req, "Its automatic scheduling")
         return redirect("org:index")
+    
+    if req.method == "POST":
+        _, info = ScheduleMatchValidator(req.body, category, ko_instance)
+        if _:
+            messages.success(req, info)
+            return redirect("org:tournament_view", tournament_id=tournament_id)
+        
+        messages.error(req, info)
 
     category_teams = [{"id": team.id, "name":team.name } for team in category.teams.all()]
     category_teams= json.dumps(category_teams)
