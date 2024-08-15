@@ -75,7 +75,7 @@ def category_view(req, tournament_id, category_id):
     data = categorySerializer(category)
     return render(req, "organization/category_view.html", {"category_data": data})
 
-def manual_schedule_matches(req, tournament_id, category_id):
+def manual_create_matches(req, tournament_id, category_id):
     
     tournament = Tournament.objects.get(id=tournament_id)
     category = Category.objects.get(id=category_id)
@@ -104,5 +104,4 @@ def manual_schedule_matches(req, tournament_id, category_id):
     category_teams = [{"id": team.id, "name":team.name } for team in category.teams.all()]
     category_teams= json.dumps(category_teams)
     
-    return render(req, "organization/manual_schedule.html", {"teams": category_teams, "category": category})
-    
+    return render(req, "organization/create_manual_matches.html", {"teams": category_teams, "category": category})
