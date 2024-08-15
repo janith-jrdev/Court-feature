@@ -1,4 +1,3 @@
-
 <div>
     <button onclick="toggleDiv()">Add Registration</button>
     <form action="" id="offline_entry">
@@ -22,7 +21,7 @@
         e.preventDefault();
 
         var team_name = document.getElementById('team_name').value;
-        
+
         fetch("{% url 'api:offline_entry' category_data.id %}", {
             method: 'POST',
             headers: {
@@ -37,13 +36,11 @@
         }).then(function (data) {
             if (data.message === "Registration successfully") {
                 alert('Team successfully registered');
+                location.reload(); // Reload the page after registration
             } else {
                 alert('Error registering team');
             }
             console.log(data);
-        }).catch(function (error) {
-            console.error('Error:', error);
-            alert('Error registering team');
-        });
+        })
     });
 </script>

@@ -58,11 +58,11 @@
         {% endfor %}
     </div>
     {% if category_data.registration_status %}
-        {% include "components\forms\organization\offline_entry.html" %}
-        {% include "components\forms\organization\close_reg.html" %}
+        {% include "components/forms/organization/offline_entry.html" %}
+        {% include "components/forms/organization/close_reg.html" %}
     {% else %}
         {% if not category_data.fixture %}
-            {% include "components\forms\organization\create_fixture.html" %}
+            {% include "components/forms/organization/create_fixture.html" %}
         {% else %}
             {% if category_data.fixture.content_object.fixing_manual %}
             
@@ -70,10 +70,7 @@
                     <a href="{% url 'org:schedule_match' category_data.tournament.id category_data.id %}">Schedule Matches</a>
                 {% endif %}
                 <ul>
-                    {% for match in category_data.bracket_matches %}
-                        <li>{{match}}</li>
-                    {% endfor %}
-                    
+                    {% include "components/form/organization/create_match.html" %}
                 </ul>
             {% endif %}
         {% endif %}

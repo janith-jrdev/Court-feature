@@ -10,12 +10,9 @@
         }).then(function (response) {
             return response.json();
         }).then(function (data) {
-            if (data.message === "Registration closed") {
-                alert('Registration successfully closed');
-            } else {
-                alert('Error closing registration');
-            }
+            alert('Registration closed successfully');
             console.log(data);
+            location.reload();
         }).catch(function (error) {
             console.error('Error:', error);
             alert('Error closing registration');
