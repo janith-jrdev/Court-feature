@@ -33,6 +33,7 @@ def categorySerializer(category):
 
     if category.fixture:
         data["fixture"] = category.fixture
+        data["scheduled_matches"] = category.fixture.scheduled_matches.all()
         if category.fixture.fixtureType:
             data["fixture_type"] = category.fixture.fixtureType
             if category.fixture.content_object:
@@ -44,6 +45,4 @@ def categorySerializer(category):
                     data["bracket_matches"] = (
                         category.fixture.content_object.bracket_matches.all()
                     )
-                    
-    print(data)
     return data

@@ -1,3 +1,60 @@
-{% for match in category_data.bracket_matches %}
-<li>{{match}}</li>
-{% endfor %}
+<div id="match-scheduler">
+    <h3>Schedule match</h3>
+    <form id="Schedule Match" method="post">
+        <p>select a match</p>
+        <div id="matchList">
+            {% for match in category_data.bracket_matches %}
+                <div>
+                    <input type="radio" id="match{{ match.id }}" name="match" value="{{ match.id }}" class="form-radio">
+                    <label for="match{{ match.id }}">{{ match.team1.name }} vs {{match.team2.name}}</label>
+                </div>
+            {% endfor %}
+        </div>
+        <h3>Add Addtional match details</h3>
+        <div >
+            <div>
+                <label for="noSet" >Number of Sets:</label>
+                <input type="number" id="noSet" name="noSet" required min="1">
+            </div>
+            <div>
+                <label for="setWinningPoints" >Set Winning Points:</label>
+                <input type="number" id="setWinningPoints" name="setWinningPoints" required min="1">
+            </div>
+        </div>
+        <button type="submit">Schedule match</button>
+    </form>
+</div>
+
+
+<script>
+    const form_schedule_match = document.getElementById('Schedule Match');
+
+    form_schedule_match.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const match = document.querySelector('input[name="match"]:checked');
+        const no_sets = document.getElementById('noSet').value;
+        const set_winning_points = document.getElementById('setWinningPoints').value;
+
+        data = {
+            match: match.value,
+            no_sets: no_sets,
+            set_winning_points: set_winning_points
+        };
+
+        fetch("{% url 'api:schedule_match' category_data.id %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    });
+</script>

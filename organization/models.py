@@ -53,6 +53,7 @@ class Fixture(models.Model):
     fixture_data = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True, blank=True)
     content_object = GenericForeignKey('fixture_data', 'object_id')
+    scheduled_matches = models.ManyToManyField('Match', related_name='scheduled_matches', blank=True)
     
     def save(self, *args, **kwargs):
         if self.fixtureType == 'KO':
@@ -103,7 +104,7 @@ class Match(models.Model):
     winner = models.ForeignKey(Team, on_delete=models.SET_NULL, related_name="match_winner", blank=True, null=True)
     match_state = models.BooleanField(default=False)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="match_category")
-    # court 
+    # court add when scheduling matches or create a new model for courts and store match there
     no_sets = models.IntegerField(default=1)
     sets = models.ManyToManyField('SetScoreboard', related_name='match_sets', blank=True)
     current_set = models.ForeignKey('SetScoreboard', on_delete=models.SET_NULL, related_name='match_current_set', blank=True, null=True)
@@ -123,6 +124,7 @@ class SetScoreboard(models.Model):
     match = models.ForeignKey(Match, on_delete=models.CASCADE, related_name='set_match')
     winner = models.ForeignKey(Team, on_delete=models.SET_NULL, related_name='set_winner', blank=True, null=True)
     set_state = models.BooleanField(default=False)
-    
+    win_points = models.IntegerField(default=15)
+    # win set score
     def __str__(self):
         return f"Set {self.set_no} - {self.match.team1.name} vs {self.match.team2.name} - {self.match.category.name} - {self.match.category.tournament.name}"
