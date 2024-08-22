@@ -30,6 +30,12 @@ def categorySerializer(category):
         "tournament": category.tournament,
         "registration_status": category.registration_status,
     }
+    
+    # if no fixture.scheduled matches and no ko.bracket matches
+        # but ko.winners bracket has teams then
+            # if len = 1 : winner = team
+            # else: create matches with those teams
+            
 
     if category.fixture:
         data["fixture"] = category.fixture

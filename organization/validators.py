@@ -254,4 +254,4 @@ def ScheduleMatchValidator(data, category_instance, ko_instance):
         match_instance.save()
     ko_instance.bracket_matches.set(match_instances)
     ko_instance.save()
-    return True, match_instances
+    return True, "matches scheduled successfully"
