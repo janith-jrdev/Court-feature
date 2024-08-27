@@ -7,6 +7,8 @@ urlpatterns = [
     path("logout/", logout_view, name="logout"),
     path("userdata/", additionalUserdata_view, name="additional_userdata"),
     path("profile/", profile_view, name="profile"),
+    path("tournaments/<int:tournament_id>/", tournament_view, name="tournament"),
+    path("tournaments/<int:tournament_id>/<int:category_id>/", category_view, name="category"),
 ]
 
 app_name = "core"

@@ -62,3 +62,19 @@ def profile_view(req):
     return render(req, 'core/profile.html', {
         "auth0_user": auth0_user,
     })
+
+# do validation in decorator    
+
+def tournament_view(req, tournament_id):
+    tournament_instance = Tournament.objects.get(id=tournament_id)
+    return render(req, 'core/tournament_view.html', {
+        "tournament": tournament_instance,
+    })
+    
+def category_view(req, tournament_id, category_id):
+    tournament_instance = Tournament.objects.get(id=tournament_id)
+    category_instance = Category.objects.get(id=category_id)
+    return render(req, 'core/category_view.html', {
+        "tournament": tournament_instance,
+        "category": category_instance,
+    })
