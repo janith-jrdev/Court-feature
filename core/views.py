@@ -6,12 +6,22 @@ from decouple import config
 from .validator import addtionalUserData_validator
 from .decorators import *
 from sportshunt.utils import *
+from django.utils import timezone, dateformat
+from datetime import timedelta, datetime
+from organization.models import *
 
 # Create your views here.
 def index(req):
-    if req.user.is_authenticated:
-        return HttpResponse(f"Hello {req.user} ! You are logged in.")
-    return HttpResponse("Hello World ! You are not logged in.")
+    now_date = datetime.now().date()
+    end_date = now_date + timedelta(days=15)
+    
+    upcoming_tournaments = Tournament.objects.filter(start_date__gte=now_date, start_date__lte=end_date).order_by('start_date')[:8]
+    ongoing_tournaments = Tournament.objects.filter(start_date__lte=now_date, end_date__gte=now_date).order_by('start_date')[:8]
+    
+    return render(req, 'core/index.html', {
+        "upcoming_tournaments": upcoming_tournaments,
+        "ongoing_tournaments": ongoing_tournaments,
+    })
 
 def login_view(req):
     return HttpResponseRedirect(reverse('social:begin', args=['auth0']))

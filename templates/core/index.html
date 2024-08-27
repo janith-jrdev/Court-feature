@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <h1>Hello, 
+        {% if user.is_authenticated %}
+            {{ user.username }}
+        {% else %}
+            World
+        {% endif %}
+    </h1>
+
+    <div class="">
+        <h3>Upcoming tournaments</h3>
+        <ul>
+            {% for tournament in upcoming_tournaments %}
+                <li>{{ tournament.name }}</li> 
+                <!-- add ancor tag -->
+            
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="">
+        <h3>Ongoing tournaments</h3>
+        <ul>
+            {% for tournament in ongoing_tournaments %}
+                <li>{{ tournament.name }}</li>
+            {%endfor%}
+        </ul>
+    </div>
+{% endblock body %}
