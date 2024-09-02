@@ -2,9 +2,13 @@ from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from django.http import JsonResponse
 from organization.models import *
+from core.models import *
 import json
 from django.core.exceptions import ObjectDoesNotExist
 from organization.validators import *
+from django.conf import settings
+from django.urls import reverse
+import razorpay
 import math
 
 def off_registration(req, category_id):
@@ -145,3 +149,56 @@ def schedule_match(req, category_id):
     
     return JsonResponse({"message": "Other fixture types are not created yet"}, status=500)
         
+# create order -> get category, tournament ids, thn 
+# get price from category, thn create order
+
+def create_order(req):
+    if req.method != "POST":
+        return JsonResponse({"message": "Invalid request method"}, status=400)
+    
+    data = json.loads(req.body)
+    if not data:
+        return JsonResponse({"message": "Invalid JSON data"}, status=400)
+    
+    category_id = data.get('category_id')
+    # tournament_id = data.get('tournament_id')
+    team_name = data.get('team_name')
+    
+    category_instance = Category.objects.get(id=category_id)
+    Tournament_instance = category_instance.tournament
+    
+    category_price = category_instance.price
+    
+    
+    currency = 'INR'
+    amount = category_price * 100
+    
+    try:
+        razorpay_client = razorpay.Client(auth=(settings.RAZOR_KEY_ID,
+                                        settings.RAZOR_SECRET_KEY))
+        
+        razorpay_order = razorpay_client.order.create(dict(amount=amount,
+                                                        currency=currency,
+                                                        payment_capture='0'))
+        
+    except Exception as e:
+        print(f'error from razorpay side {e}')
+        return JsonResponse({"error": f'error from razorpay side {e}'}, status=400)
+        
+    callback_url = reverse('core:checkout') # add next url too 
+    
+    order_details = Order_addtional_details.objects.create(team_name=team_name, category=category_instance, tournament=Tournament_instance, user=req.user)
+    order_instance = Order.objects.create(order_id=razorpay_order['id'], user=req.user, amount=amount, tournament=Tournament_instance, category=category_instance, order_details=order_details)
+
+    response = {}
+    response['razorpay_order_id'] = razorpay_order['id']
+    response['razorpay_merchant_key'] = settings.RAZOR_KEY_ID
+    response['razorpay_amount'] = amount
+    response['currency'] = currency
+    response['callback_url'] = callback_url
+    
+    
+    print(order_instance)
+    return JsonResponse(response)    
+    
+    

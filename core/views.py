@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponse, redirect
 from .models import *
 from django.contrib.auth import logout 
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 from decouple import config
 from .validator import addtionalUserData_validator
 from .decorators import *
@@ -9,6 +10,8 @@ from sportshunt.utils import *
 from django.utils import timezone, dateformat
 from datetime import timedelta, datetime
 from organization.models import *
+import razorpay
+from django.conf import settings
 
 # Create your views here.
 def index(req):
@@ -78,3 +81,51 @@ def category_view(req, tournament_id, category_id):
         "tournament": tournament_instance,
         "category": category_instance,
     })
+    
+@csrf_exempt
+def checkout(req):
+    if req.method != "POST":
+        return render(req, "errors/404.html")
+    
+    payment_id = req.POST.get('razorpay_payment_id', '')
+    razorpay_order_id = req.POST.get('razorpay_order_id', '')
+    signature = req.POST.get('razorpay_signature', '')
+    
+    params_dict = {
+        'razorpay_order_id': razorpay_order_id,
+        'razorpay_payment_id': payment_id,
+        'razorpay_signature': signature
+    }
+
+    if Order.objects.filter(order_id=razorpay_order_id).exists():
+        order_instance = Order.objects.get(order_id=razorpay_order_id)
+        razorpay_client = razorpay.Client(auth=(settings.RAZOR_KEY_ID,
+                                settings.RAZOR_KEY_SECRET)) 
+        
+        result = razorpay_client.utility.verify_payment_signature(params_dict)
+        if result is not None:
+            amount = order_instance.amount
+            try:
+                razorpay_client.payment.capture(payment_id, amount)
+                order_instance.status = True
+                order_instance.signature = signature
+                order_instance.payment_id = payment_id
+                order_instance.save()
+                order_details = order_instance.order_details
+                team_name = order_details.team_name
+                category_instance = order_details.category
+                
+                Team.objects.create(name=team_name, category=category_instance)
+                print("team created")
+                
+                messages.add_message(req, messages.SUCCESS, f'Payment successful, and {team_name} is reqisted')
+                return redirect('core:category', category_instance.tournament.id, category_instance.id)
+                
+                
+            except Exception as e:
+                messages.add_message(req, messages.ERROR, f'Payment failed {e}')
+                return redirect('core:index') # take to a error page and a btn to go back using js windows prev or something
+            
+        return render(req, "payments/failed.html") # make a file like that
+
+    return render(req, "payments/failed.html")

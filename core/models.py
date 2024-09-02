@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+# from organization.models import *
 
 class AdditionalUserData(models.Model):
     GENDER_CHOICES = [
@@ -33,3 +34,20 @@ class User(AbstractUser):
         )
 
 
+class Order_addtional_details(models.Model):
+    team_name = models.CharField(max_length=100)
+    category = models.ForeignKey('organization.Category', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+
+class Order(models.Model):
+    order_id = models.CharField(max_length=100, primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount = models.IntegerField()
+    status = models.BooleanField(default=False)
+    order_timestamp = models.DateTimeField(auto_now_add=True)
+    order_details = models.OneToOneField(Order_addtional_details, on_delete=models.CASCADE, related_name='order_details', blank=True, null=True)
+    
+    signature = models.CharField(max_length=255, blank=True, null=True)
+    payment_id = models.CharField(max_length=100, blank=True, null=True)
+    

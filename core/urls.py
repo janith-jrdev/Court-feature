@@ -9,6 +9,7 @@ urlpatterns = [
     path("profile/", profile_view, name="profile"),
     path("tournaments/<int:tournament_id>/", tournament_view, name="tournament"),
     path("tournaments/<int:tournament_id>/<int:category_id>/", category_view, name="category"),
+    path("checkout/", checkout, name="checkout"),
 ]
 
 app_name = "core"
