@@ -16,6 +16,5 @@ DATABASES = {
     }
 }
 
-STATIC_URL = "static/"
 
 WSGI_APPLICATION = "sportshunt.wsgi.application"

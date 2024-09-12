@@ -104,3 +104,9 @@ LOGOUT_REDIRECT_URL = '/'
 
 RAZOR_KEY_ID = config('RAZOR_KEY_ID')
 RAZOR_SECRET_KEY = config('RAZOR_SECRET_KEY')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'static'

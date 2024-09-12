@@ -1,16 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SportsHunt</title>
-</head>
-<body>
-    {% for message in messages %}
-        <div>{{ message }}</div>
-    {% endfor %}
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.css" rel="stylesheet" />
+    <!-- <style>
+        .container {
+            display: flex;
+            padding: 20px;
+        }
 
+        .left-side,
+        .right-side {
+            padding: 10px;
+        }
+
+        .left-side {
+            flex: 2;
+        }
+
+        .right-side {
+            flex: 1;
+        }
+    </style> -->
+
+</head>
+
+<body>
+    <!-- navbar -->
+    {% include "components/navbar.html" %}
+    
+    <!-- body content -->
     {% block body %}
+        <!-- messages -->
+        {% for message in messages %}
+            <div>{{ message }}</div>
+        {% endfor %}
+
     {% endblock body %}
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
 </body>
+
 </html>

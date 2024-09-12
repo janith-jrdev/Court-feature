@@ -1,16 +1,44 @@
-<form method="POST">
+<form method="post">
     {% csrf_token %}
-    <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" class="form-control" id="name" name="name" required>
+    <div class="input-field">
+        <input name="name" type="text" id="organization-name"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            placeholder="Organization Name" required>
     </div>
-    <div class="form-group">
-        <label for="ph_number">Phone Number</label>
-        <input type="text" class="form-control" id="ph_number" name="ph_number" required>
+    <div class="input-field">
+        <input name="ph_number" type="tel" id="phone-number"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            placeholder="Phone Number" required>
     </div>
-    <div class="form-group">
-        <label for="mail">Email</label>
-        <input type="email" class="form-control" id="mail" name="mail" required>
+    <div class="input-field">
+        <input type="email" id="email" name="mail"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            placeholder="Mail address" required>
     </div>
-    <button type="submit" class="btn btn-primary">Create</button>
+    <button  type="submit"
+        class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full">Create
+        Organization →</button>
 </form>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    .main-container {
+        display: flex;
+        height: calc(100vh - 60px); /* Adjust for navbar height */
+    }
+    .left-side {
+        flex: 1;
+        background-color: #f3f4f6;
+    }
+    .right-side {
+        flex: 1;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .input-field {
+        margin-bottom: 1rem;
+    }
+</style>

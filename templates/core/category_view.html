@@ -18,4 +18,16 @@
   <p>End Date: {{ tournament.end_date }}</p>
   <p>Venue: {{ tournament.venue_address }} (<a href="{{ tournament.venue_link }}">Map</a>)</p>
   <p>Contact: {{ tournament.ph_number }}</p>
+
+  {% if category.registration_status %}
+	{% if user.is_authenticated %}
+		<!-- can register -->
+		<p>Register</p>
+	{% else %}
+		<!-- login to register -->
+		<p>Login to register</p>
+	{% endif %}
+  {% else %}
+	<p>Registration Closed</p>
+  {% endif %}
 {% endblock body %}
