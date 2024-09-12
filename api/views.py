@@ -6,13 +6,11 @@ from core.models import *
 import json
 from django.core.exceptions import ObjectDoesNotExist
 from organization.validators import *
-<<<<<<< HEAD
+
 from django.conf import settings
 from django.urls import reverse
 import razorpay
-=======
 from .decorators import *
->>>>>>> 438a8dca1d99a7656bca8197ba0903264b96f019
 import math
 
 @valid_json_data
