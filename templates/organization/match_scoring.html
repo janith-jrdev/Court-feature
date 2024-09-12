@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+
+{% block body %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+    }
+    .scoreboard {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .teams {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+    .team {
+        text-align: center;
+    }
+    .score {
+        font-size: 48px;
+        font-weight: bold;
+        margin: 10px 0;
+    }
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+        background-color: white;
+        margin: 15% auto;
+        padding: 20px;
+        border-radius: 5px;
+        width: 300px;
+        text-align: center;
+    }
+    .summary {
+        margin-top: 20px;
+    }
+</style>
+
+<div class="scoreboard">
+    <h1>Scoreboard</h1>
+    <div class="teams">
+        <div class="team">
+            <h2>{{match_data.team1.name}}</h2>
+            <div class="score" id="team1-score">0</div>
+            <button onclick="incrementScore('team1')">+1</button>
+        </div>
+        <div class="team">
+            <h2>{{match_data.team2.name}}</h2>
+            <div class="score" id="team2-score">0</div>
+            <button onclick="incrementScore('team2')">+1</button>
+        </div>
+    </div>
+    <p>Current Set: <span id="current-set">1</span></p>
+    <button onclick="completeSet()">Complete Set</button>
+    <div id="summary" class="summary"></div>
+</div>
+
+<div id="win-modal" class="modal">
+    <div class="modal-content">
+        <h2 id="winner-text"></h2>
+        <p id="continue-text">Continue to the next set?</p>
+        <button onclick="continueGame()">Continue</button>
+    </div>
+</div>
+
+
+<script>
+    // get from django
+    const NUM_SETS = {{ match_data.no_sets }};
+    const WIN_POINTS = {{ match_data.win_points }};
+    // const TEAM1 = "{{ match_data.team1.name }}";
+    // const TEAM2 = "{{ match_data.team2.name }}";
+    // need to change these
+
+    let scores = {{scores|safe}};
+    let setWins = {{team_wins|safe}};
+    let currentSet = {{ match_data.current_set.set_no }} -1;
+    console.log(currentSet);
+
+    let gameOver = false;
+
+    function incrementScore(team) {
+        if (gameOver) return;
+        scores[currentSet][team]++;
+        updateScoreboard();
+        checkWinCondition();
+        if (team === 'team1') {
+            incrementScoreApi({{ match_data.team1.id }});
+        } else {
+            incrementScoreApi({{ match_data.team2.id }});
+        }
+
+    }
+
+    function updateScoreboard() {
+        document.getElementById('team1-score').textContent = scores[currentSet].team1;
+        document.getElementById('team2-score').textContent = scores[currentSet].team2;
+        document.getElementById('current-set').textContent = currentSet + 1;
+    }
+
+    function checkWinCondition() {
+        const currentScores = scores[currentSet];
+        if (currentScores.team1 >= WIN_POINTS || currentScores.team2 >= WIN_POINTS) {
+            const winner = currentScores.team1 > currentScores.team2 ? 'team1' : 'team2';
+            setWins[winner]++;
+            document.getElementById('winner-text').textContent = `${winner.charAt(0).toUpperCase() + winner.slice(1)} wins the set!`;
+            
+            if (setWins[winner] > NUM_SETS / 2) {
+                endGame();
+            } else if (currentSet === NUM_SETS - 1) {
+                endGame();
+            } else {
+                document.getElementById('win-modal').style.display = 'block';
+            }
+        }
+    }
+
+    function continueGame() {
+        currentSet++;
+        updateScoreboard();
+        completeSetApi();
+
+        document.getElementById('win-modal').style.display = 'none';
+    }
+
+    function completeSet() {
+        if (gameOver) return;
+        const currentScores = scores[currentSet];
+        const winner = currentScores.team1 > currentScores.team2 ? 'team1' : 'team2';
+        setWins[winner]++;
+        
+        completeSetApi();
+        if (setWins[winner] > NUM_SETS / 2 || currentSet === NUM_SETS - 1) {
+            endGame();
+        } else {
+            currentSet++;
+        }
+    }
+
+    function endGame() {
+        completeSetApi();
+        gameOver = true;
+        document.getElementById('win-modal').style.display = 'none';
+        const summaryElement = document.getElementById('summary');
+        let summaryHTML = '<h2>Game Over</h2><h3>Match Summary:</h3>';
+        scores.forEach((set, index) => {
+            if (index <= currentSet) {
+                summaryHTML += `<p>Set ${index + 1}: Team 1 - ${set.team1}, Team 2 - ${set.team2}</p>`;
+            }
+        });
+        const overallWinner = getOverallWinner();
+        summaryHTML += `<p><strong>Overall Winner: ${overallWinner}</strong></p>`;
+        summaryElement.innerHTML = summaryHTML;
+    }
+
+    function getOverallWinner() {
+        return setWins.team1 > setWins.team2 ? 'Team 1' : 'Team 2';
+    }
+
+    function incrementScoreApi(team_id){
+        let url = '{% url "api:score_match" match_data.id  %}';
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({team_id: team_id})
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Error:', error);
+        });
+    }
+
+    function completeSetApi(){
+        console.log('complete set');
+        let url = '{% url "api:complete_set" match_data.id %}';
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Error:', error);
+        });
+    }
+
+    updateScoreboard();
+</script>
+{% endblock body %}

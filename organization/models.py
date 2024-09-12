@@ -69,7 +69,7 @@ class Fixture(models.Model):
         
 
 class Knockout(models.Model):
-    json = models.JSONField(blank=True, null=True)
+    json = models.JSONField(blank=True, null=True) 
     fixing_manual = models.BooleanField(default=False)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="category")
     bracket_teams = models.ManyToManyField('Team', related_name='bracket', blank=True)
@@ -108,6 +108,7 @@ class Match(models.Model):
     no_sets = models.IntegerField(default=1)
     sets = models.ManyToManyField('SetScoreboard', related_name='match_sets', blank=True)
     current_set = models.ForeignKey('SetScoreboard', on_delete=models.SET_NULL, related_name='match_current_set', blank=True, null=True)
+    win_points = models.IntegerField(default=15)
     def __str__(self):
         team1, team2 = "Bye", "Bye"
         if self.team1:
@@ -124,7 +125,6 @@ class SetScoreboard(models.Model):
     match = models.ForeignKey(Match, on_delete=models.CASCADE, related_name='set_match')
     winner = models.ForeignKey(Team, on_delete=models.SET_NULL, related_name='set_winner', blank=True, null=True)
     set_state = models.BooleanField(default=False)
-    win_points = models.IntegerField(default=15)
     # win set score
     def __str__(self):
         return f"Set {self.set_no} - {self.match.team1.name} vs {self.match.team2.name} - {self.match.category.name} - {self.match.category.tournament.name}"

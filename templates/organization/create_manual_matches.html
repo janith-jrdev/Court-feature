@@ -183,6 +183,7 @@
             team2: match.team2.id
         }));
         console.log(JSON.stringify(matchesWithIdsOnly, null, 2));
+        console.log('{% url "org:create_match" category.tournament.id category.id %}');
         fetch('{% url "org:create_match" category.tournament.id category.id %}', {
             method: 'POST',
             headers: {
@@ -196,7 +197,9 @@
                 console.log(data);
             })
             .catch(error => {
-                console.error('Error:', error);
+                // console.error('Error:', error);
+                console.log('Error:', error);
+                alert('Error:', error);
             });
     }
 

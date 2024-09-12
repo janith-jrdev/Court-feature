@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render
 from .decorators import *
 from .validators import *
@@ -73,17 +74,15 @@ def category_view(req, tournament_id, category_id):
         messages.error(req, "You are not authorized for this Category")
         return redirect("org:index")
     data = categorySerializer(category)
+    
     return render(req, "organization/category_view.html", {"category_data": data})
 
+@host_required
 def manual_create_matches(req, tournament_id, category_id):
     
     tournament = Tournament.objects.get(id=tournament_id)
     category = Category.objects.get(id=category_id)
-    if tournament.organization.admin != req.user:
-        messages.error(req, "You are not authorized for this Category")
-        return redirect("org:index")
 
-    
     if category.fixture.fixtureType != "KO":
         messages.error(req, "Invalid Fixture Type this doesnt have manual scheduling")
         return redirect("org:index")
@@ -97,11 +96,51 @@ def manual_create_matches(req, tournament_id, category_id):
         _, info = ScheduleMatchValidator(req.body, category, ko_instance)
         if _:
             messages.success(req, info)
-            return redirect("org:tournament_view", tournament_id=tournament_id)
-        
+            # return redirect("org:tournament_view", tournament_id=tournament_id)# redirect not working
+            return JsonResponse({"success": True, "info": info})
         messages.error(req, info)
+    teams = category.teams.all()
+    if category.fixture.fixtureType == "KO":
+        teams = category.fixture.content_object.bracket_teams.all()
 
-    category_teams = [{"id": team.id, "name":team.name } for team in category.teams.all()]
+    # if len(teams) < 2:
+    #     messages.error(req, "Not enough teams to schedule matches")
+    #     return redirect("org:index")
+    category_teams = [{"id": team.id, "name":team.name } for team in teams]
     category_teams= json.dumps(category_teams)
     
     return render(req, "organization/create_manual_matches.html", {"teams": category_teams, "category": category})
+
+@host_required
+def scheduled_match_view(req, category_id):
+    category_instance = Category.objects.get(id=category_id)
+    
+    if not category_instance.fixture:
+        messages.error(req, "No fixture for this category")
+        return redirect("org:index") # redirect to category page, 
+    
+    scheduled_matches = category_instance.fixture.scheduled_matches.filter(match_state=False)
+    if not scheduled_matches:
+        messages.error(req, "No scheduled matches")
+        return redirect("org:index") # redirect to category page,
+    return render(req, "organization/scheduled_matches.html", {"matches": scheduled_matches})
+
+@host_required
+def match_scoring(req, match_id):
+    match_instance = Match.objects.get(id=match_id)
+    
+    if match_instance.match_state:
+        messages.error(req, "Match is already completed")
+        return redirect("org:index")
+    
+    if match_instance.id not in match_instance.category.fixture.scheduled_matches.values_list('id', flat=True):
+        messages.error(req, "Match not scheduled")
+        return redirect("org:index")  # Redirect to category page
+
+    scores = [{'team1': set_data.team1_score, 'team2': set_data.team2_score} for set_data in match_instance.sets.all()]
+    team_wins = {
+        'team1': sum(1 for set_data in match_instance.sets.all() if set_data.set_state and set_data.winner == match_instance.team1),
+        'team2': sum(1 for set_data in match_instance.sets.all() if set_data.set_state and set_data.winner == match_instance.team2)
+    }
+
+    return render(req, "organization/match_scoring.html", {"match_data": match_instance, "scores": scores, "team_wins": team_wins})
