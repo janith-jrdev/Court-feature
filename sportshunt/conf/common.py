@@ -1,6 +1,7 @@
 
 from pathlib import Path
-from decouple import config
+import os
+
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
@@ -102,8 +103,8 @@ LOGIN_URL = '/login/auth0'
 LOGIN_REDIRECT_URL = '/' 
 LOGOUT_REDIRECT_URL = '/'
 
-RAZOR_KEY_ID = config('RAZOR_KEY_ID')
-RAZOR_SECRET_KEY = config('RAZOR_SECRET_KEY')
+RAZOR_KEY_ID = os.getenv('RAZOR_KEY_ID')
+RAZOR_SECRET_KEY = os.getenv('RAZOR_SECRET_KEY')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
