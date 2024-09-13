@@ -31,6 +31,10 @@
 <body>
     <!-- navbar -->
     {% include "components/navbar.html" %}
+
+    {% for message in messages %}
+        {{ message }}
+    {% endfor %}
     
     <!-- body content -->
     {% block body %}

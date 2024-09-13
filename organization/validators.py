@@ -75,7 +75,10 @@ class OrganizationValidator(AbstractValidator):
         return True
        
 class TournamentValidator(AbstractValidator):
-    
+    def __init__(self, data, req):
+        self.tournament_id = None
+        super().__init__(data, req)
+
     def validate_name(self, name):
         if not name:
             self.errors['name'] = "Name cannot be empty"
@@ -141,7 +144,7 @@ class TournamentValidator(AbstractValidator):
     def save(self):
         try:
             org_instance = Organization.objects.get(id=int(self.req.session.get('organization')))
-            Tournament.objects.create(
+            tournament_instance = Tournament.objects.create(
                 name=self.data.get('name'),
                 details=self.data.get('details'),
                 organization= org_instance,
@@ -157,11 +160,13 @@ class TournamentValidator(AbstractValidator):
                 for key, value in self.errors.items():
                     messages.error(self.req, f"{key}: {value}")
             return False
+        self.tournament_id = tournament_instance.id
         return True
     
 class CategoryValidator(AbstractValidator):
     def __init__(self, data, req, tournament_id):
         self.tournament_id = tournament_id
+        self.category_id = None
         super().__init__(data, req)
     
     def validate_name(self, name):
@@ -201,7 +206,7 @@ class CategoryValidator(AbstractValidator):
     def save(self):
         try:
             tournament_instance = Tournament.objects.get(id=self.tournament_id)
-            Category.objects.create(
+            category_instance = Category.objects.create(
                 name=self.data.get('name'),
                 details=self.data.get('details'),
                 price=self.data.get('price'),
@@ -214,6 +219,7 @@ class CategoryValidator(AbstractValidator):
                 for key, value in self.errors.items():
                     messages.error(self.req, f"{key}: {value}")
             return False
+        self.category_id = category_instance.id
         return True
 
 

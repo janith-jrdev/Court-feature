@@ -23,9 +23,13 @@ def organization_form(req):
 @host_required
 def tournament_form(req):
     if req.method == "POST":
-        if TournamentValidator(req.POST, req).validatation:
+        tournament_validator = TournamentValidator(req.POST, req)
+        
+        if tournament_validator.validatation:
             messages.success(req, "Tournament created successfully")
-            return redirect("org:index")#redirect to category category form
+            tournament_id = tournament_validator.tournament_id
+            return redirect("org:category_form", tournament_id=tournament_id)
+        
     return render(req, "organization/create_tournament.html")
 
 @organizer_required
@@ -52,9 +56,12 @@ def select_orgs(req):
 @host_required
 def category_form(req, tournament_id):
     if req.method == "POST":
-        if CategoryValidator(req.POST, req, tournament_id).validatation:
+        category_validator = CategoryValidator(req.POST, req, tournament_id)
+        if category_validator.validatation:
             messages.success(req, "Category created successfully")
-            return redirect("org:index")# redirect to category or tournament view
+            category_id = category_validator.category_id
+            return redirect("org:category_view", tournament_id=tournament_id, category_id=category_id)
+        
     return render(req, "organization/create_category.html", {"tournament_id": tournament_id})
 
 @host_required

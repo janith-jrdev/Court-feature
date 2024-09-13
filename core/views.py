@@ -3,7 +3,6 @@ from .models import *
 from django.contrib.auth import logout 
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-from decouple import config
 from .validator import addtionalUserData_validator
 from .decorators import *
 from sportshunt.utils import *
@@ -12,6 +11,7 @@ from datetime import timedelta, datetime
 from organization.models import *
 import razorpay
 from django.conf import settings
+import os
 
 # Create your views here.
 def index(req):
@@ -33,8 +33,8 @@ def logout_view(req):
     req.session.flush()
     logout(req)
     
-    domain = config('AUTH0_DOMAIN')
-    client_id = config('AUTH0_CLIENT_ID')
+    domain = os.getenv('AUTH0_DOMAIN')
+    client_id = os.getenv('AUTH0_CLIENT_ID')
     return_to = req.build_absolute_uri(reverse('core:index'))
     
     return HttpResponseRedirect(f"https://{domain}/v2/logout?client_id={client_id}&returnTo={return_to}")
@@ -116,7 +116,6 @@ def checkout(req):
                 category_instance = order_details.category
                 
                 Team.objects.create(name=team_name, category=category_instance)
-                print("team created")
                 
                 messages.add_message(req, messages.SUCCESS, f'Payment successful, and {team_name} is reqisted')
                 return redirect('core:category', category_instance.tournament.id, category_instance.id)

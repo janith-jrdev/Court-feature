@@ -266,6 +266,8 @@ def complete_set(req, match_id):
         # adding to winner bracket
         ko_instance = category_instance.fixture.content_object
         ko_instance.winners_bracket.add(match_instance.winner)
+        ko_instance.scheduled_matches.remove(match_instance)
+        
         # then checking if all matches are over
         if not ko_instance.bracket_matches.all():
             if winners:=ko_instance.winners_bracket.all():
@@ -280,6 +282,8 @@ def complete_set(req, match_id):
                     category_instance.save()
                     return JsonResponse({"message": "Category over"})
                 
+                
+                print("uh this is happening")
                 ko_instance.bracket_teams.set(winners)
                 category_instance.fixture.content_object.winners_bracket.clear()
                 category_instance.fixture.scheduled_matches.clear()

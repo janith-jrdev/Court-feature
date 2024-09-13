@@ -1,15 +1,28 @@
 from functools import wraps
 from django.shortcuts import redirect
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import *
+from sportshunt.utils import construct_next_url
 import inspect
 
 def organizer_required(f):
+    
     @wraps(f)
     def decorated_function(req,*args, **kwargs):
-        if not req.user.additional_data.is_organizer:
+        if not req.user.is_authenticated:
+            messages.error(req, "You need to login first")
+            return redirect('core:login')
+        
+        if not req.user.additional_data:
+            messages.error(req, "Please fill in your additional userdata")
+            return redirect(construct_next_url(reverse('core:additional_userdata'), req.get_full_path()))
+        
+        elif not req.user.additional_data.is_organizer:
             messages.error(req, "You are not organizer")
             return redirect('core:index')
+        
         return f(req,*args, **kwargs)
     return decorated_function
 class ArgsValidator:
