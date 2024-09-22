@@ -5,6 +5,7 @@ from .validators import *
 from .models import *
 from .serializer import *
 import json
+import math
 # Create your views here.
 
 @host_required
@@ -81,8 +82,7 @@ def category_view(req, tournament_id, category_id):
         messages.error(req, "You are not authorized for this Category")
         return redirect("org:index")
     data = categorySerializer(category)
-    
-    return render(req, "organization/category_view.html", {"category_data": data})
+    return render(req, "organization/category_view.html", {"category_data": data, "category": category})
 
 @host_required
 def manual_create_matches(req, tournament_id, category_id):
@@ -103,19 +103,23 @@ def manual_create_matches(req, tournament_id, category_id):
         _, info = ScheduleMatchValidator(req.body, category, ko_instance)
         if _:
             messages.success(req, info)
-            # return redirect("org:tournament_view", tournament_id=tournament_id)# redirect not working
             return JsonResponse({"success": True, "info": info})
         messages.error(req, info)
+        return JsonResponse({"success": False, "info": info})
     teams = category.teams.all()
     if category.fixture.fixtureType == "KO":
         teams = category.fixture.content_object.bracket_teams.all()
 
-    # if len(teams) < 2:
-    #     messages.error(req, "Not enough teams to schedule matches")
-    #     return redirect("org:index")
+
     category_teams = [{"id": team.id, "name":team.name } for team in teams]
-    category_teams= json.dumps(category_teams)
+    next_power_of_2 = 2 ** math.ceil(math.log2(len(teams)))
+    byes = next_power_of_2 - len(teams)
     
+    for i in range(byes):
+        category_teams.append({"id": None, "name": "Bye"})
+    
+    category_teams= json.dumps(category_teams)
+
     return render(req, "organization/create_manual_matches.html", {"teams": category_teams, "category": category})
 
 @host_required

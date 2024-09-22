@@ -1,88 +1,91 @@
-<button onclick="toggleForm()">Create Fixture</button>
+<div class="container mx-auto p-4"></div>
+    <button onclick="openPopup()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        Select Fixture
+    </button>
 
-<form id="fixture_form" style="display: none;">
-    <h2>Select Fixture Type</h2>
-    <select name="fixture_type" id="fixture_type" onchange="showFixtureContent()">
-        <option value="">Select a type</option>
-        <option value="KO">Knockout</option>
-        <option value="RR">Round Robin</option>
-        <option value="RRKO">RR+KO</option>
-    </select>
+    <div id="popup" class="hidden fixed inset-0 overflow-y-auto h-full w-full" style="background-color: transparent;">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 id="select-fixture-type" class="text-lg leading-6 font-medium text-gray-900">Select Fixture Type</h3>
 
-    <div id="KO_content" class="fixture-content">
-        <h3>Knockout Content</h3>
-        <input type="radio" name="fixture_mode" value="manual"> Manual
-        <input type="radio" name="fixture_mode" value="automatic" disabled> Automatic
-        <button type="submit">Create</button>
+                <div class="mt-2 px-7 py-3">
+                    <button onclick="selectFixtureType('KO')" class="w-full bg-blue-500 text-white py-2 px-4 rounded mb-2 hover:bg-blue-600">KO</button>
+                    <button disabled class="w-full bg-gray-300 text-gray-600 py-2 px-4 rounded mb-2 cursor-not-allowed">RR (Feature coming soon)</button>
+                    <button disabled class="w-full bg-gray-300 text-gray-600 py-2 px-4 rounded mb-2 cursor-not-allowed">KO + RR (Feature coming soon)</button>
+                </div>
+
+                <div id="koOptions" class="hidden mt-2 px-7 py-3">
+                    <h4 id="ko-options" class="text-md font-medium text-gray-900 mb-2">KO Options</h4>
+                    <button disabled class="w-full bg-gray-300 text-gray-600 py-2 px-4 rounded mb-2 cursor-not-allowed">Automatic</button>
+                    <button onclick="selectKOOption('Manual')" class="w-full bg-yellow-500 text-white py-2 px-4 rounded mb-2 hover:bg-yellow-600">Manual</button>
+                </div>
+
+                <div id="createFixtureBtnContainer" class="hidden mt-4">
+                    <button onclick="createFixture()" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                        Create Fixture
+                    </button>
+                </div>
+            </div>
+
+            <button onclick="closePopup()" class="absolute top-0 right-0 mt-4 mr-4">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
     </div>
-
-    <div id="RR_content" class="fixture-content">
-        <h3>Round Robin Content</h3>
-        <p>RR Feature will be added soon.</p>
-    </div>
-
-    <div id="RRKO_content" class="fixture-content">
-        <h3>RR+KO Content</h3>
-        <p>RR + KO Feature will be added soon.</p>
-    </div>
-</form>
+</div>
 
 <script>
-    var form = document.getElementById("fixture_form");
-    var fixtureTypeSelect = document.getElementById("fixture_type");
+    let selectedFixtureType = '';
+    let selectedKOOption = '';
 
-    function toggleForm() {
-        form.style.display = form.style.display === "none" ? "block" : "none";
-        if (form.style.display === "block") {
-            showFixtureContent(); // Ensure correct content is shown when form is displayed
+    function openPopup() {
+        document.getElementById('popup').classList.remove('hidden');
+    }
+
+    function closePopup() {
+        document.getElementById('popup').classList.add('hidden');
+        resetSelection();
+    }
+
+    function selectFixtureType(type) {
+        selectedFixtureType = type;
+        if (type === 'KO') {
+            document.getElementById('koOptions').classList.remove('hidden');
         }
     }
 
-    function showFixtureContent() {
-        var selectedValue = fixtureTypeSelect.value;
-        var contentDivs = document.getElementsByClassName("fixture-content");
-
-        // Hide all content divs
-        for (var div of contentDivs) {
-            div.style.display = "none";
-        }
-
-        // Show the selected content div
-        if (selectedValue) {
-            var selectedContent = document.getElementById(selectedValue + "_content");
-            if (selectedContent) {
-                selectedContent.style.display = "block";
-            }
-        }
+    function selectKOOption(option) {
+        selectedKOOption = option;
+        document.getElementById('createFixtureBtnContainer').classList.remove('hidden');
     }
 
-    form.addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        var data = {
-            fixture_type: fixtureTypeSelect.value,
-            fixture_mode: document.querySelector('input[name="fixture_mode"]:checked')?.value,
+    function createFixture() {
+        const fixtureData = {
+            fixtureType: selectedFixtureType,
+            koOption: selectedKOOption
         };
+        console.log('Fixture Data:', JSON.stringify(fixtureData, null, 2));
 
-        fetch("{% url 'api:create_fixture' category_data.id %}", {
+        fetch('{% url "api:create_fixture" category_data.id %}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': '{{ csrf_token }}'
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(fixtureData)
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Success:', data);
-            alert('Fixture created successfully!');
-            location.reload();
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            alert('There was an error creating the fixture.');
-        });
-    });
 
-    showFixtureContent();
+        alert('Fixture created! ');
+        closePopup();
+        window.location.reload();
+    }
+
+    function resetSelection() {
+        selectedFixtureType = '';
+        selectedKOOption = '';
+        document.getElementById('koOptions').classList.add('hidden');
+        document.getElementById('createFixtureBtnContainer').classList.add('hidden');
+    }
 </script>

@@ -1,60 +1,220 @@
-<div id="match-scheduler">
-    <h3>Schedule match</h3>
-    <form id="Schedule Match" method="post">
-        <p>select a match</p>
-        <div id="matchList">
-            {% for match in category_data.bracket_matches %}
-                <div>
-                    <input type="radio" id="match{{ match.id }}" name="match" value="{{ match.id }}" class="form-radio">
-                    <label for="match{{ match.id }}">{{ match.team1.name }} vs {{match.team2.name}}</label>
+<button id="createMatchBtn" data-modal-target="matchModal" data-modal-toggle="matchModal"
+    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+    Create Match
+</button>
+
+<div id="matchModal" tabindex="-1" aria-hidden="true"
+    class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-2xl max-h-full">
+        <div class="relative bg-white rounded-lg shadow">
+            <div class="flex items-start justify-between p-4 border-b rounded-t">
+                <h3 class="text-xl font-semibold text-gray-900">
+                    Create a New Match
+                </h3>
+                <button type="button"
+                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+                    data-modal-hide="matchModal">
+                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <div class="p-6 space-y-6">
+                <h4 class="text-lg font-medium text-gray-900">Select Teams</h4>
+                <div id="teamCheckboxes" class="space-y-2"></div>
+                <button id="scheduleMatch"
+                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                    Schedule Match
+                </button>
+                <div class="mt-6">
+                    <h4 class="text-lg font-medium text-gray-900 mb-2">Scheduled Matches</h4>
+                    <div id="scheduledMatchesList" class="space-y-1"></div>
                 </div>
-            {% endfor %}
-        </div>
-        <h3>Add Addtional match details</h3>
-        <div >
-            <div>
-                <label for="noSet" >Number of Sets:</label>
-                <input type="number" id="noSet" name="noSet" required min="1">
-            </div>
-            <div>
-                <label for="setWinningPoints" >Set Winning Points:</label>
-                <input type="number" id="setWinningPoints" name="setWinningPoints" required min="1">
+                <div id="confirmButtonContainer" class="mt-4"></div>
             </div>
         </div>
-        <button type="submit">Schedule match</button>
-    </form>
+    </div>
 </div>
 
+<div id="confirmModal" tabindex="-1" aria-hidden="true"
+    class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow">
+            <div class="flex items-start justify-between p-4 border-b rounded-t">
+                <h3 class="text-xl font-semibold text-gray-900">
+                    Confirm Tournament Details
+                </h3>
+                <button type="button"
+                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+                    data-modal-hide="confirmModal">
+                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <div class="p-6 space-y-6">
+                <div class="mb-4">
+                    <label for="setNo" class="block mb-2 text-sm font-medium text-gray-900">Number of Sets</label>
+                    <input type="number" id="setNo"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                        min="1" required>
+                </div>
+                <div class="mb-4">
+                    <label for="pointsToWin" class="block mb-2 text-sm font-medium text-gray-900">Points to
+                        Win</label>
+                    <input type="number" id="pointsToWin"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                        min="1" required>
+                </div>
+                <button id="confirmTournament"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">
+                    Confirm
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
-    const form_schedule_match = document.getElementById('Schedule Match');
+    // Team data (you can replace this with your JSON data)
+    const teams = {{ category_data.teams_data | safe }};
 
-    form_schedule_match.addEventListener('submit', function (e) {
-        e.preventDefault();
-        const match = document.querySelector('input[name="match"]:checked');
-        const no_sets = document.getElementById('noSet').value;
-        const set_winning_points = document.getElementById('setWinningPoints').value;
+    teams.forEach(team => {
+        if (team.id === "None") {
+            team.id = null;
+        }
+    });
+    let scheduledMatches = [];
 
-        data = {
-            match: match.value,
-            no_sets: no_sets,
-            set_winning_points: set_winning_points
+    function updateTeamCheckboxes() {
+        const teamCheckboxes = document.getElementById('teamCheckboxes');
+        teamCheckboxes.innerHTML = '';
+
+        teams.forEach((team, index) => {
+            let teamId = team.id;
+
+            // If the team ID is null, assign a unique temporary ID but send null in JSON
+            if (team.id === null) {
+                teamId = `null_${index}`;
+            }
+
+            const isScheduled = scheduledMatches.some(match =>
+                match.team1 === team.id || match.team2 === team.id
+            );
+
+            const checkbox = document.createElement('div');
+            checkbox.className = 'flex items-center';
+            checkbox.innerHTML = `
+        <input type="checkbox" id="team${teamId}" value="${teamId}" 
+               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+               ${isScheduled ? 'disabled' : ''}>
+        <label for="team${teamId}" class="ml-2 text-sm font-medium text-gray-900 ${isScheduled ? 'opacity-50' : ''}">
+            ${team.name}
+        </label>
+    `;
+            teamCheckboxes.appendChild(checkbox);
+        });
+    }
+
+
+    function updateScheduledMatches() {
+        const scheduledMatchesList = document.getElementById('scheduledMatchesList');
+        scheduledMatchesList.innerHTML = '';
+
+        scheduledMatches.forEach((match, index) => {
+            const matchElement = document.createElement('div');
+            matchElement.className = 'text-sm text-gray-700';
+            const team1 = teams.find(t => t.id === match.team1);
+            const team2 = teams.find(t => t.id === match.team2);
+            matchElement.textContent = `Match ${index + 1}: ${team1.name} vs ${team2.name}`;
+            scheduledMatchesList.appendChild(matchElement);
+        });
+
+        updateConfirmButton();
+    }
+
+    function updateConfirmButton() {
+        const confirmButtonContainer = document.getElementById('confirmButtonContainer');
+        confirmButtonContainer.innerHTML = '';
+
+        if (scheduledMatches.length > 0) {
+            const confirmButton = document.createElement('button');
+            confirmButton.textContent = 'Confirm Tournament';
+            confirmButton.className = 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full';
+
+            // Attach event listener to open the confirm modal
+            confirmButton.addEventListener('click', () => {
+                const confirmModal = document.getElementById('confirmModal');
+                const matchModal = document.getElementById('matchModal');
+                matchModal.classList.add('hidden');  // Close the first modal
+                confirmModal.classList.remove('hidden');  // Show the confirm modal
+            });
+
+            confirmButtonContainer.appendChild(confirmButton);
+        }
+    }
+
+    document.getElementById('createMatchBtn').addEventListener('click', () => {
+        updateTeamCheckboxes();
+        updateScheduledMatches();
+    });
+
+    document.getElementById('scheduleMatch').addEventListener('click', () => {
+        const selectedTeams = Array.from(document.querySelectorAll('#teamCheckboxes input:checked')).map(checkbox => {
+            // If the value starts with "null_", return null; otherwise, return the integer value
+            return checkbox.value.startsWith('null_') ? null : parseInt(checkbox.value);
+        });
+
+        if (selectedTeams.length === 2) {
+            scheduledMatches.push({
+                team1: selectedTeams[0],
+                team2: selectedTeams[1]
+            });
+
+            updateTeamCheckboxes();
+            updateScheduledMatches();
+        } else {
+            alert('Please select two teams to schedule a match.');
+        }
+    });
+
+
+    document.getElementById('confirmTournament').addEventListener('click', () => {
+        const sets = document.getElementById('setNo').value;
+        const pointsToWin = document.getElementById('pointsToWin').value;
+
+        // Log the final JSON that will be sent via API
+        const tournamentData = {
+            matches: scheduledMatches,
+            no_sets: sets,
+            points_win: pointsToWin
         };
 
-        fetch("{% url 'api:schedule_match' category_data.id %}", {
+        console.log('Tournament Data:', tournamentData);
+        fetch('{% url "api:create_match_ko" category_data.id %}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': '{{ csrf_token }}'
             },
-            body: JSON.stringify(data)
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+            body: JSON.stringify(tournamentData)
+        }).then(response => {
+            return response.json();
+        }).then(data => {
+            console.log(data);
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+
+        alert('Tournament confirmed!');
+        window.location.reload();
     });
 </script>

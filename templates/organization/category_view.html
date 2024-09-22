@@ -33,9 +33,9 @@
         
         <div class="col-md-6">
             <h3>Fixture</h3>
-            {% if category_data.fixture %}
+            {% if category.fixture %}
                 <ul class="list-group">
-                    <li class="list-group-item">{{ category_data.fixture }}</li>
+                    <li class="list-group-item">{{ category.fixture }}</li>
                 </ul>
             {% else %}
                 <p>No fixture available for this category.</p>
@@ -57,27 +57,24 @@
             <p>No teams registered for this category.</p>
         {% endfor %}
     </div>
-    {% if category_data.registration_status %}
-        {% include "components/forms/organization/offline_entry.html" %}
-        {% include "components/forms/organization/close_reg.html" %}
-    {% else %}
-        {% if not category_data.fixture %}
-            {% include "components/forms/organization/create_fixture.html" %}
+
+    <!-- logic stuff -->
+    <div class="">
+        {% if category.registration_status %}
+            {% include "components/forms/organization/offline_entry.html" %}
+            {% include "components/forms/organization/close_reg.html" %}
         {% else %}
-            {% if category_data.fixture.content_object.fixing_manual %}
-            
-                {% if not category_data.bracket_matches %}
-                    {% if category_data.scheduled_matches %}
-                      Matches are scheduled
-                        <a href="{% url 'org:scheduled_matches' category_data.id %}">Scheduled Matches</a>
-                    {% else %}
-                        <a href="{% url 'org:create_match' category_data.tournament.id category_data.id %}">create Matches</a>
-                    {% endif %}
+            {% if category.fixture %}
+                <!-- ko -->
+                {% if category.fixture.fixtureType == 'KO' %}
+                    {% include "components/logic/org/category_ko_logic.html" %}
                 {% else %}
-                    {% include "components/forms/organization/create_match.html" %}
+                    Not Supported yet.
                 {% endif %}
+            {% else %}
+                {% include "components/forms/organization/create_fixture.html" %}
             {% endif %}
         {% endif %}
-    {% endif %}
+    </div>
 </div>
 {% endblock body %}

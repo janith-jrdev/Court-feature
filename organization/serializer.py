@@ -1,5 +1,5 @@
 from .models import *
-
+import math
 
 def tournamentSerializer(tournament):
     # tournament
@@ -35,20 +35,20 @@ def categorySerializer(category):
         # but ko.winners bracket has teams then
             # if len = 1 : winner = team
             # else: create matches with those teams
+    
+    if category.fixture and category.fixture.fixtureType == "KO":
+        teams_data = []
+        if category.fixture.content_object.bracket_teams.all():
+            for team in category.fixture.content_object.bracket_teams.all():
+                teams_data.append({"id": team.id, "name": team.name})
             
-
-    if category.fixture:
-        data["fixture"] = category.fixture
-        data["scheduled_matches"] = category.fixture.scheduled_matches.all()
-        if category.fixture.fixtureType:
-            data["fixture_type"] = category.fixture.fixtureType
-            if category.fixture.content_object:
-                data["fixture_data"] = category.fixture.content_object
-                if category.fixture.content_object.fixing_manual:
-                    data["winners_bracket"] = (
-                        category.fixture.content_object.winners_bracket.all()
-                    )
-                    data["bracket_matches"] = (
-                        category.fixture.content_object.bracket_matches.all()
-                    )
+            print(teams_data, len(teams_data))
+            next_power_of_2 = 2 ** math.ceil(math.log2(len(teams_data)))
+            byes = next_power_of_2 - len(teams_data)
+            
+            for i in range(byes):
+                teams_data.append({"id": "None", "name": "Bye"})
+                
+            print(teams_data)
+            data["teams_data"] = teams_data
     return data
