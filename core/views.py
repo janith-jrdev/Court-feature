@@ -49,15 +49,10 @@ def additionalUserdata_view(req):
         messages.error(req, "Error Occured")
     return render(req, 'core/additional_userdata.html') 
 
+@userdataDecorator
 def profile_view(req):
     # future add like a serializer to get the user data [ if custom profile then send that or else the other one]
-    if not req.user.is_authenticated:
-        return redirect(reverse('core:login'))
     
-    if not req.user.additional_data:
-        messages.info(req, "Please fill in your additional userdata")
-        url = construct_next_url(reverse('core:additional_userdata'), req.path)
-        return redirect(url)
     
     auth0_user = None
     if req.user.social_auth.exists():
@@ -66,7 +61,7 @@ def profile_view(req):
         "auth0_user": auth0_user,
     })
 
-# do validation in decorator    
+    
 
 def tournament_view(req, tournament_id):
     tournament_instance = Tournament.objects.get(id=tournament_id)
