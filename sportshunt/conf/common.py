@@ -102,12 +102,3 @@ SOCIAL_AUTH_USER_MODEL = 'core.User'
 LOGIN_URL = '/login/auth0'
 LOGIN_REDIRECT_URL = '/' 
 LOGOUT_REDIRECT_URL = '/'
-
-RAZOR_KEY_ID = os.getenv('RAZOR_KEY_ID')
-RAZOR_SECRET_KEY = os.getenv('RAZOR_SECRET_KEY')
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'static'

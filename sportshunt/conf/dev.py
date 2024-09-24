@@ -18,3 +18,12 @@ DATABASES = {
 
 
 WSGI_APPLICATION = "sportshunt.wsgi.application"
+
+RAZOR_KEY_ID = os.getenv('RAZOR_KEY_ID')
+RAZOR_SECRET_KEY = os.getenv('RAZOR_SECRET_KEY')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'static'
