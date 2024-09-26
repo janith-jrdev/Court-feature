@@ -200,6 +200,10 @@ def create_matches_ko_manual(req, category_id):
     
     data = json.loads(req.body)
     print(data)
+    
+    # if len(data["matches"]) < math.ceil(ko_instance.bracket_teams.count() / 2):
+    #     return JsonResponse({"message": "Not enough matches"}, status=400)
+    
     no_sets = int(data.get("no_sets"))
     points_win = int(data.get("points_win"))
     
@@ -220,6 +224,7 @@ def create_matches_ko_manual(req, category_id):
             team2 = Team.objects.get(id=team2)
             ko_instance.bracket_teams.remove(team2)
         
+        # if want to add match no add here
         match_instance = Match.objects.create(
             category=category_instance,
             team1=team1,
@@ -283,7 +288,7 @@ def schedule_match(req, category_id):
 
 @host_required
 def score_match(req, match_id):
-    
+    # CHECK DEC WORKS IN ADMIN PANEL
     # get match_id [args]
 
     # get team_id [req data]
@@ -378,13 +383,18 @@ def score_match(req, match_id):
                                 category_instance.winner = winners[0]
                                 category_instance.save()
                                 return JsonResponse({"message": "Category over"})
+                            
+                            
                             ko_instance.bracket_teams.clear()  # ughh should this be here?
                             ko_instance.bracket_teams.set(winners)
+                            # schedule matches for next stage automatically
                             
                             ko_instance.winners_bracket.clear()
                             ko_instance.ko_stage -= 1
                             ko_instance.save()
                             category_instance.fixture.save()
+                            
+                            
                             return JsonResponse({"message": "THis stage is over, create matches for next stage"})
                         print("something went wrong")
                         return JsonResponse({"message": "Match over"})

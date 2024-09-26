@@ -28,6 +28,18 @@ class User(AbstractUser):
         related_name='user'
     ) 
 
+    @property
+    def short_username(self):
+        parts = self.username.split()
+        if len(parts) >= 2:
+            return (parts[0][0] + parts[-1][0]).upper()
+        elif len(self.username) >= 2:
+            return self.username[:2].upper()
+        elif len(self.username) == 1:
+            return (self.username[0]).upper()
+        else:
+            return 'UK'
+    
     def __str__(self):
         return (
             f"{self.username}"

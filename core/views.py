@@ -128,3 +128,11 @@ def checkout(req):
         return render(req, "payments/failed.html") # make a file like that
 
     return render(req, "payments/failed.html")
+
+
+@userdataDecorator
+def orders_view(req):
+    orders = Order.objects.filter(user=req.user)
+    return render(req, 'core/orders.html', {
+        "orders": orders,
+    })
