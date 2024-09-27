@@ -102,6 +102,3 @@ SOCIAL_AUTH_USER_MODEL = 'core.User'
 LOGIN_URL = '/login/auth0'
 LOGIN_REDIRECT_URL = '/' 
 LOGOUT_REDIRECT_URL = '/'
-
-
-
