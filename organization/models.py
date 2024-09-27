@@ -2,6 +2,7 @@ from django.db import models
 from core.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from datetime import datetime
 
 # Create your models here.
 class Organization(models.Model):
@@ -26,6 +27,10 @@ class Tournament(models.Model):
     # things to be added
         
         # courts
+        
+    @property
+    def completed(self):
+        return self.end_date < datetime.now().date()
         
     def __str__(self):
         return f"{self.name} - {self.organization.name}"

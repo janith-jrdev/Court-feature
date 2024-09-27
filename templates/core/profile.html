@@ -1,11 +1,18 @@
 {% extends "base.html" %}
 
 {% block body %}
-    <h1>Profile</h1>
-    <p>Username: {{ user.username }}</p>
-    <p>Email: {{ user.email }}</p>
-    <p>First Name: {{ user.first_name }}</p>
-    <p>Last Name: {{ user.last_name }}</p>
-    <img src="{{ auth0_user.extra_data.picture }}" alt="img">
-    <a href="{% url 'core:logout' %}">Logout</a>
+<h1>Profile</h1>
+<p>Username: {{ user.username }}</p>
+<p>Email: {{ user.email }}</p>
+<p>First Name: {{ user.first_name }}</p>
+<p>Last Name: {{ user.last_name }}</p>
+{% if auth0_user.extra_data.picture %}
+<img src="{{ auth0_user.extra_data.picture }}" alt="img">
+{% else %}
+<div
+    class="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+    <span class="font-medium text-gray-600 dark:text-gray-300">{{user.short_username}}</span>
+</div>
+{% endif %}
+<a href="{% url 'core:logout' %}">Logout</a>
 {% endblock body %}
