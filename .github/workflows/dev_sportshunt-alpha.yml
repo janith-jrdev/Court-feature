@@ -70,6 +70,11 @@ jobs:
           python manage.py makemigrations core organization
           python manage.py migrate
 
+      - name: Collect static files
+        run: |
+          source venv/bin/activate
+          python manage.py collectstatic --noinput
+
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
