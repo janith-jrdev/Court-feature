@@ -58,6 +58,18 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
+      - name: Create virtual environment and install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+  
+      - name: Run Django migrations
+        run: |
+          source venv/bin/activate
+          python manage.py makemigrations core organization
+          python manage.py migrate
+
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
