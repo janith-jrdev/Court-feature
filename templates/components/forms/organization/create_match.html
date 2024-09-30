@@ -1,6 +1,6 @@
 <button id="createMatchBtn" data-modal-target="matchModal" data-modal-toggle="matchModal"
     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-    Create Match
+    Create Match ada
 </button>
 
 <div id="matchModal" tabindex="-1" aria-hidden="true"
@@ -84,46 +84,51 @@
 </div>
 
 <script>
-    // Team data (you can replace this with your JSON data)
     const teams = {{ category_data.teams_data | safe }};
-
-    teams.forEach(team => {
-        if (team.id === "None") {
-            team.id = null;
-        }
-    });
     let scheduledMatches = [];
+    let remainingTeams = [];
+    let byeTeams = [];
+
+    function initializeTeams() {
+        remainingTeams = teams.filter(team => team.id !== "None" && team.id !== null);
+        byeTeams = teams.filter(team => team.id === "None" || team.id === null);
+        updateTeamCheckboxes();
+    }
 
     function updateTeamCheckboxes() {
         const teamCheckboxes = document.getElementById('teamCheckboxes');
         teamCheckboxes.innerHTML = '';
 
-        teams.forEach((team, index) => {
-            let teamId = team.id;
-
-            // If the team ID is null, assign a unique temporary ID but send null in JSON
-            if (team.id === null) {
-                teamId = `null_${index}`;
-            }
-
-            const isScheduled = scheduledMatches.some(match =>
-                match.team1 === team.id || match.team2 === team.id
-            );
-
+        remainingTeams.forEach((team, index) => {
             const checkbox = document.createElement('div');
             checkbox.className = 'flex items-center';
             checkbox.innerHTML = `
-        <input type="checkbox" id="team${teamId}" value="${teamId}" 
-               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-               ${isScheduled ? 'disabled' : ''}>
-        <label for="team${teamId}" class="ml-2 text-sm font-medium text-gray-900 ${isScheduled ? 'opacity-50' : ''}">
-            ${team.name}
-        </label>
-    `;
+                <input type="checkbox" id="team${index}" value="${team.id}" 
+                       class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                <label for="team${index}" class="ml-2 text-sm font-medium text-gray-900">
+                    ${team.name}
+                </label>
+            `;
             teamCheckboxes.appendChild(checkbox);
         });
+
+        checkAndAssignByes();
     }
 
+    function checkAndAssignByes() {
+        if (remainingTeams.length === byeTeams.length && byeTeams.length > 0) {
+            remainingTeams.forEach(team => {
+                scheduledMatches.push({
+                    team1: team.id,
+                    team2: null
+                });
+            });
+            remainingTeams = [];
+            byeTeams = [];
+            updateScheduledMatches();
+            updateTeamCheckboxes();
+        }
+    }
 
     function updateScheduledMatches() {
         const scheduledMatchesList = document.getElementById('scheduledMatchesList');
@@ -133,8 +138,8 @@
             const matchElement = document.createElement('div');
             matchElement.className = 'text-sm text-gray-700';
             const team1 = teams.find(t => t.id === match.team1);
-            const team2 = teams.find(t => t.id === match.team2);
-            matchElement.textContent = `Match ${index + 1}: ${team1.name} vs ${team2.name}`;
+            const team2 = match.team2 ? teams.find(t => t.id === match.team2) : null;
+            matchElement.textContent = `Match ${index + 1}: ${team1.name} vs ${team2 ? team2.name : 'BYE'}`;
             scheduledMatchesList.appendChild(matchElement);
         });
 
@@ -149,29 +154,24 @@
             const confirmButton = document.createElement('button');
             confirmButton.textContent = 'Confirm Tournament';
             confirmButton.className = 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full';
-
-            // Attach event listener to open the confirm modal
-            confirmButton.addEventListener('click', () => {
-                const confirmModal = document.getElementById('confirmModal');
-                const matchModal = document.getElementById('matchModal');
-                matchModal.classList.add('hidden');  // Close the first modal
-                confirmModal.classList.remove('hidden');  // Show the confirm modal
-            });
-
+            confirmButton.addEventListener('click', openConfirmModal);
             confirmButtonContainer.appendChild(confirmButton);
         }
     }
 
+    function openConfirmModal() {
+        document.getElementById('matchModal').classList.add('hidden');
+        document.getElementById('confirmModal').classList.remove('hidden');
+    }
+
     document.getElementById('createMatchBtn').addEventListener('click', () => {
-        updateTeamCheckboxes();
+        initializeTeams();
         updateScheduledMatches();
     });
 
     document.getElementById('scheduleMatch').addEventListener('click', () => {
-        const selectedTeams = Array.from(document.querySelectorAll('#teamCheckboxes input:checked')).map(checkbox => {
-            // If the value starts with "null_", return null; otherwise, return the integer value
-            return checkbox.value.startsWith('null_') ? null : parseInt(checkbox.value);
-        });
+        const selectedTeams = Array.from(document.querySelectorAll('#teamCheckboxes input:checked'))
+            .map(checkbox => parseInt(checkbox.value));
 
         if (selectedTeams.length === 2) {
             scheduledMatches.push({
@@ -179,6 +179,7 @@
                 team2: selectedTeams[1]
             });
 
+            remainingTeams = remainingTeams.filter(team => !selectedTeams.includes(team.id));
             updateTeamCheckboxes();
             updateScheduledMatches();
         } else {
@@ -186,12 +187,10 @@
         }
     });
 
-
     document.getElementById('confirmTournament').addEventListener('click', () => {
         const sets = document.getElementById('setNo').value;
         const pointsToWin = document.getElementById('pointsToWin').value;
 
-        // Log the final JSON that will be sent via API
         const tournamentData = {
             matches: scheduledMatches,
             no_sets: sets,
@@ -206,15 +205,14 @@
                 'X-CSRFToken': '{{ csrf_token }}'
             },
             body: JSON.stringify(tournamentData)
-        }).then(response => {
-            return response.json();
-        }).then(data => {
-            console.log(data);
-        }).catch(error => {
-            console.error('Error:', error);
-        });
-
-        alert('Tournament confirmed!');
-        window.location.reload();
+        }).then(response => response.json())
+          .then(data => {
+              console.log(data);
+              alert('Tournament confirmed!');
+              window.location.reload();
+          }).catch(error => {
+              console.error('Error:', error);
+              alert('An error occurred while confirming the tournament.');
+          });
     });
 </script>

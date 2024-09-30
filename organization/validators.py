@@ -95,8 +95,9 @@ class TournamentValidator(AbstractValidator):
         if not start_date:
             self.errors['start_date'] = "Start date cannot be empty"
             return False
-        start_date = datetime.strptime(start_date, '%Y-%m-%d')
-        if start_date < datetime.now():
+        start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+        today = datetime.now().date()
+        if start_date < today:
             self.errors['start_date'] = "Start date cannot be in the past"
             return False
         return True
@@ -105,9 +106,9 @@ class TournamentValidator(AbstractValidator):
         if not end_date:
             self.errors['end_date'] = "End date cannot be empty"
             return False
-        end_date = datetime.strptime(end_date, '%Y-%m-%d')
-        start_date = datetime.strptime(self.data.get('start_date'), '%Y-%m-%d')
-        if end_date < datetime.now():
+        end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+        start_date = datetime.strptime(self.data.get('start_date'), '%Y-%m-%d').date()
+        if end_date < datetime.now().date():
             self.errors['end_date'] = "End date cannot be in the past"
             return False
         if end_date < start_date:

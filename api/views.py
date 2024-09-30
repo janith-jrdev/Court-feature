@@ -201,8 +201,8 @@ def create_matches_ko_manual(req, category_id):
     data = json.loads(req.body)
     print(data)
     
-    # if len(data["matches"]) < math.ceil(ko_instance.bracket_teams.count() / 2):
-    #     return JsonResponse({"message": "Not enough matches"}, status=400)
+    if len(data["matches"]) < math.ceil(ko_instance.bracket_teams.count() / 2):
+        return JsonResponse({"message": "Not enough matches"}, status=400)
     
     no_sets = int(data.get("no_sets"))
     points_win = int(data.get("points_win"))
