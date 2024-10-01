@@ -6,10 +6,12 @@
         {% if not category.fixture.content_object.bracket_matches.all %}
             {% if category.fixture.scheduled_matches.all %}
                 Matches are scheduled.
-                <a href="{% url 'org:scheduled_matches' category_data.id %}">Scheduled Matches</a>
+                <a href="{% url 'org:scheduled_matches' category_data.id %}">S  cheduled Matches</a>
                 <!-- replace here -->
             {% else %}
-                {% include "components/forms/organization/create_match.html" %}
+                {% if category.fixture.content_object.bracket_teams.all %}
+                    {% include "components/forms/organization/create_match.html" %}
+                {% endif %}
             {% endif %}
 
         {% else %}

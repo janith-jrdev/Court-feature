@@ -82,7 +82,7 @@ def category_view(req, tournament_id, category_id):
         messages.error(req, "You are not authorized for this Category")
         return redirect("org:index")
     data = categorySerializer(category)
-    return render(req, "organization/category_view.html", {"category_data": data, "category": category})
+    return render(req, "organization/category_view.html", {"category_data": data, "category": category, "fixture_json": json.dumps(category.fixture.content_object.json)})
 
 @host_required
 def manual_create_matches(req, tournament_id, category_id):
