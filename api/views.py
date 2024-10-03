@@ -264,8 +264,8 @@ def create_matches_ko_manual(req, category_id):
 
         match_json = {
             "id": match_instance.id,
-            "teams": [team1.name if team1 else None, team2.name if team2 else None],
-            "winner": None
+            "teams": [team1.name if team1 else "BYE", team2.name if team2 else "BYE"],
+            "winner": 0 if not team2 else 1 if not team1 else None
         }
         current_round.append(match_json)
 
@@ -286,7 +286,7 @@ def create_matches_ko_manual(req, category_id):
             ]
         }
         fixture_json["rounds"].append(empty_round)
-    
+    print(fixture_json)
     ko_instance.json = json.dumps(fixture_json)
     ko_instance.all_matches.set(match_instances)
     print(fixture_json)
@@ -330,16 +330,10 @@ def schedule_match(req, category_id):
 
 @host_required
 def score_match(req, match_id):
-    # CHECK DEC WORKS IN ADMIN PANEL
-    # get match_id [args]
 
-    # get team_id [req data]
-    # get inc/dec [req data]
     data = json.loads(req.body)
     team_id = data.get('team_id')
     inc = data.get('inc', False)
-    
-    print("hereee",data)
     
     # check if match is scheduled
     match_instance = Match.objects.get(id=match_id)
@@ -370,8 +364,6 @@ def score_match(req, match_id):
                 cur_set.team2_score += 1
                 
             #if the score above win points
-            print("win points")
-            print(cur_set.team1_score, cur_set.team2_score, match_instance.win_points)
             if cur_set.team1_score >= match_instance.win_points or cur_set.team2_score >= match_instance.win_points:
                 
                 no_set = match_instance.no_sets
@@ -396,9 +388,6 @@ def score_match(req, match_id):
                                     
                 majority_sets = math.ceil(no_set / 2)
 
-                print("wins")
-                print(team1_wins, team2_wins, majority_sets, team1_wins >= majority_sets or team2_wins >= majority_sets)
-                
                 if team1_wins >= majority_sets or team2_wins >= majority_sets:
                     match_instance.winner = match_instance.team1 if team1_wins >= majority_sets else match_instance.team2
                     
@@ -416,9 +405,16 @@ def score_match(req, match_id):
                     print(f"bracket matches: {ko_instance.bracket_matches.all()}")
                     
                     if not category_instance.fixture.scheduled_matches.all() and not ko_instance.bracket_matches.all():
-                        
+
+                        json_data = json.loads(ko_instance.json)
+
+                        json_data["rounds"][ko_instance.ko_stage - match_instance.stage_number]['matches'][match_instance.match_number - 1]["winner"] = 0 if team1_wins >= majority_sets else 1
+                        ko_instance.json = json.dumps(json_data)
+                        ko_instance.save()
+                        print("json updated")
                         if winners:=ko_instance.winners_bracket.all():
                             if ko_instance.ko_stage == 1:
+                                print("category over /dawda")
                                 len_winners = len(winners)
                                 if not len_winners == 1:
                                     return JsonResponse({"message": "Uh oh, something went wrong"})
@@ -434,9 +430,6 @@ def score_match(req, match_id):
                             all_matches = ko_instance.all_matches.filter(stage_number=ko_instance.ko_stage).order_by('match_number')
                             
                             for i in range(0, len(all_matches), 2):
-                                print("\n\n")
-                                print(all_matches[i].winner)
-                                print(all_matches[i+1].winner)
                                 match_instance = Match.objects.create(
                                     category=category_instance,
                                     team1=all_matches[i].winner,
