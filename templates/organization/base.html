@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organization Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4a5568',
+                        secondary: '#ed8936',
+                        muted: '#e2e8f0',
+                        accent: '#48bb78',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-primary text-white p-4 flex justify-between items-center">
+        <div class="relative">
+            <button id="orgDropdown" class="text-2xl font-bold flex items-center">
+                Org name <i class="ri-arrow-down-s-line ml-2"></i>
+            </button>
+            <div id="orgMenu" class="absolute top-full left-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden">
+                <div class="py-1">
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Org 1</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Org 2</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Org 3</a>
+                </div>
+            </div>
+        </div>
+        <button class="bg-secondary text-white px-4 py-2 rounded-md text-sm flex items-center">
+            <i class="ri-user-line mr-2"></i> User Name
+        </button>
+    </header>
+
+    {% block body %}
+      
+    {% endblock body %}
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const orgDropdown = document.getElementById('orgDropdown');
+            const orgMenu = document.getElementById('orgMenu');
+
+            orgDropdown.addEventListener('click', function() {
+                orgMenu.classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', function(event) {
+                if (!orgDropdown.contains(event.target) && !orgMenu.contains(event.target)) {
+                    orgMenu.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

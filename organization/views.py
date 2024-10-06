@@ -10,7 +10,16 @@ import math
 
 @host_required
 def index(req):
-    return render(req, "organization/index.html")
+    org_id = req.session.get('organization')
+    org = Organization.objects.get(id=org_id)
+    past_tournaments = org.tournaments.filter(end_date__lt=datetime.now()).order_by('-start_date')
+    upcoming_tournaments = org.tournaments.filter(start_date__gte=datetime.now()).order_by('start_date')
+    print(past_tournaments, upcoming_tournaments)
+    context = {
+        'past_tournaments': past_tournaments,
+        'upcoming_tournaments': upcoming_tournaments,
+    }
+    return render(req, "organization/index.html", context)
 
 @organizer_required
 def organization_form(req):
@@ -72,7 +81,7 @@ def tournament_view(req, tournament_id):
         messages.error(req, "You are not authorized for this Tournament")
         return redirect("org:index")
     data = tournamentSerializer(tournament_instance)
-    return render(req, "organization/tournament_view.html", {"tournament_data": data})
+    return render(req, "organization/tournament_view.html", {"tournament_data": data, "tournament": tournament_instance})
 
 @host_required
 def category_view(req, tournament_id, category_id):
