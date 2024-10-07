@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SportsHunt - Add Fixture</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100">
+    <header class="bg-blue-100 py-2">
+      <div class="py-4">
+        <div class="container mx-auto px-6">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center">
+              <img
+                src="/api/placeholder/50/50"
+                alt="SportsHunt Logo"
+                class="mr-3 h-12"
+              />
+            </div>
+            <div>
+              <h3 id="organizer-name" class="text-xl font-semibold">
+                Organizer Name
+              </h3>
+              <a href="#" class="text-gray-800 hover:text-blue-600">Log out</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+      <h1 class="text-3xl font-bold mb-6">Select Category</h1>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="md:col-span-2">
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="mb-4">
+              <label
+                for="category"
+                class="block mb-2 text-sm font-medium text-gray-900"
+                >Category</label
+              >
+              <select
+                id="category"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+              >
+                <option selected>Choose a category</option>
+                <option value="UB-9">UB-9</option>
+                <option value="UB-11">UB-11</option>
+                <option value="UB-13">UB-13</option>
+                <option value="UB-15">UB-15</option>
+                <option value="UB-17">UB-17</option>
+                <option value="UG-11">UG-11</option>
+                <option value="UG-13">UG-13</option>
+                <option value="UG-15">UG-15</option>
+                <option value="UG-17">UG-17</option>
+              </select>
+            </div>
+
+            <div class="flex justify-between mt-6">
+              <button
+                type="button"
+                data-modal-target="close-registration-modal"
+                data-modal-toggle="close-registration-modal"
+                class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2"
+              >
+                Close Registration
+              </button>
+              <button
+                type="button"
+                data-modal-target="create-matches-modal"
+                data-modal-toggle="create-matches-modal"
+                class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2"
+              >
+                Create Matches
+              </button>
+            </div>
+
+            <div class="flex justify-between mt-6">
+              <button
+                data-modal-target="select-fixtures-modal"
+                data-modal-toggle="select-fixtures-modal"
+                class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                type="button"
+              >
+                Select Fixtures
+              </button>
+              <button
+                data-modal-target="scheduled-matches-modal"
+                data-modal-toggle="scheduled-matches-modal"
+                class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                type="button"
+              >
+                Select Scheduled Matches
+              </button>
+            </div>
+
+            <div class="flex justify-between mt-6">
+              <button
+                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2"
+              >
+                Save
+              </button>
+              <button
+                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2"
+              >
+                Save and add another
+              </button>
+              <button
+                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2"
+              >
+                Save and continue editing
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="md:col-span-1">
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">Category Details</h2>
+            <div id="category-details">
+              <p class="text-gray-500">Select a category to see details</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="bg-white mt-12 py-6">
+      <div class="container mx-auto px-6">
+        <div class="flex justify-center space-x-4 mb-4">
+          <a href="#" class="text-gray-600 hover:text-red-600">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"
+              ></path>
+            </svg>
+          </a>
+          <a href="#" class="text-gray-600 hover:text-blue-400">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
+              ></path>
+            </svg>
+          </a>
+          <a href="#" class="text-gray-600 hover:text-blue-800">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+              ></path>
+            </svg>
+          </a>
+          <a href="#" class="text-gray-600 hover:text-pink-600">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"
+              ></path>
+            </svg>
+          </a>
+        </div>
+        <p class="text-center text-gray-500">
+          © 2024 SportsHunt. All rights reserved.
+        </p>
+      </div>
+    </footer>
+    <!-- Select Fixtures Modal -->
+    <div
+      id="select-fixtures-modal"
+      tabindex="-1"
+      aria-hidden="true"
+      class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full"
+    >
+      <div class="relative w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow">
+          <div class="flex items-start justify-between p-4 border-b rounded-t">
+            <h3 class="text-xl font-semibold text-gray-900">Select Fixtures</h3>
+            <button
+              type="button"
+              class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
+              data-modal-hide="select-fixtures-modal"
+            >
+              <svg
+                class="w-3 h-3"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 14"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                />
+              </svg>
+              <span class="sr-only">Close modal</span>
+            </button>
+          </div>
+          <div class="p-6 space-y-6">
+            <div class="flex items-center mb-4">
+              <input
+                id="knockout"
+                type="radio"
+                value="knockout"
+                name="fixture-type"
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
+              />
+              <label
+                for="knockout"
+                class="ml-2 text-sm font-medium text-gray-900"
+                >Knockout</label
+              >
+            </div>
+            <div class="flex items-center mb-4">
+              <input
+                id="round-robin"
+                type="radio"
+                value="round-robin"
+                name="fixture-type"
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
+              />
+              <label
+                for="round-robin"
+                class="ml-2 text-sm font-medium text-gray-900"
+                >Round Robin</label
+              >
+            </div>
+            <div class="flex items-center">
+              <input
+                id="knockout-rr"
+                type="radio"
+                value="knockout-rr"
+                name="fixture-type"
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
+              />
+              <label
+                for="knockout-rr"
+                class="ml-2 text-sm font-medium text-gray-900"
+                >Knockout + RR</label
+              >
+            </div>
+          </div>
+          <div
+            class="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b"
+          >
+            <button
+              data-modal-hide="select-fixtures-modal"
+              type="button"
+              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+            >
+              Select
+            </button>
+            <button
+              data-modal-hide="select-fixtures-modal"
+              type="button"
+              class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Close Registration Modal -->
+    <div
+      id="close-registration-modal"
+      tabindex="-1"
+      aria-hidden="true"
+      class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full"
+    >
+      <div class="relative w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow">
+          <div class="flex items-start justify-between p-4 border-b rounded-t">
+            <h3 class="text-xl font-semibold text-gray-900">
+              Close Registration
+            </h3>
+            <button
+              type="button"
+              class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
+              data-modal-hide="close-registration-modal"
+            >
+              <svg
+                class="w-3 h-3"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 14"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                />
+              </svg>
+              <span class="sr-only">Close modal</span>
+            </button>
+          </div>
+          <div class="p-6 text-center">
+            <svg
+              class="mx-auto mb-4 text-gray-400 w-12 h-12"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 20"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+              />
+            </svg>
+            <h3 class="mb-5 text-lg font-normal text-gray-500">
+              Registration has been closed successfully.
+            </h3>
+            <button
+              data-modal-hide="close-registration-modal"
+              type="button"
+              class="text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create Matches Modal -->
+    <div
+      id="create-matches-modal"
+      tabindex="-1"
+      aria-hidden="true"
+      class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full"
+    >
+      <div class="relative w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow">
+          <div class="flex items-start justify-between p-4 border-b rounded-t">
+            <h3 class="text-xl font-semibold text-gray-900">Create Matches</h3>
+            <button
+              type="button"
+              class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
+              data-modal-hide="create-matches-modal"
+            >
+              <svg
+                class="w-3 h-3"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 14"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                />
+              </svg>
+              <span class="sr-only">Close modal</span>
+            </button>
+          </div>
+          <div class="p-6 text-center">
+            <svg
+              class="mx-auto mb-4 text-gray-400 w-12 h-12"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 20"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+              />
+            </svg>
+            <h3 class="mb-5 text-lg font-normal text-gray-500">
+              Matches have been created successfully.
+            </h3>
+            <button
+              data-modal-hide="create-matches-modal"
+              type="button"
+              class="text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scheduled Matches Modal -->
+    <div
+      id="scheduled-matches-modal"
+      tabindex="-1"
+      aria-hidden="true"
+      class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full"
+    >
+      <div class="relative w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow">
+          <div class="flex items-start justify-between p-4 border-b rounded-t">
+            <h3 class="text-xl font-semibold text-gray-900">
+              Select Scheduled Matches
+            </h3>
+            <button
+              type="button"
+              class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
+              data-modal-hide="scheduled-matches-modal"
+            >
+              <svg
+                class="w-3 h-3"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 14"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                />
+              </svg>
+              <span class="sr-only">Close modal</span>
+            </button>
+          </div>
+          <div class="p-6 space-y-6">
+            <div class="flex items-center mb-4">
+              <input
+                id="match-1"
+                type="checkbox"
+                value=""
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+              />
+              <label
+                for="match-1"
+                class="ml-2 text-sm font-medium text-gray-900"
+                >Match 1: Team A vs Team B</label
+              >
+            </div>
+            <div class="flex items-center mb-4">
+              <input
+                id="match-2"
+                type="checkbox"
+                value=""
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+              />
+              <label
+                for="match-2"
+                class="ml-2 text-sm font-medium text-gray-900"
+                >Match 2: Team C vs Team D</label
+              >
+            </div>
+            <div class="flex items-center mb-4">
+              <input
+                id="match-3"
+                type="checkbox"
+                value=""
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+              />
+              <label
+                for="match-3"
+                class="ml-2 text-sm font-medium text-gray-900"
+                >Match 3: Team E vs Team F</label
+              >
+            </div>
+          </div>
+          <div
+            class="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b"
+          >
+            <button
+              data-modal-hide="scheduled-matches-modal"
+              type="button"
+              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+            >
+              Select
+            </button>
+            <button
+              data-modal-hide="scheduled-matches-modal"
+              type="button"
+              class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const categorySelect = document.getElementById("category");
+        const categoryDetails = document.getElementById("category-details");
+
+        categorySelect.addEventListener("change", function () {
+          const selectedCategory = this.value;
+          if (selectedCategory) {
+            categoryDetails.innerHTML = `
+                        <h3 class="font-medium">${selectedCategory}</h3>
+                        <p class="text-gray-600 mt-2">This is the category for ${selectedCategory}. It includes players or teams within this age group and gender.</p>
+                    `;
+          } else {
+            categoryDetails.innerHTML =
+              '<p class="text-gray-500">Select a category to see details</p>';
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
