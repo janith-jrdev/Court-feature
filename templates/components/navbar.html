@@ -44,7 +44,11 @@
         <img src="{% static 'logos\sh-full-logo.png' %}" alt="Sportshunt logo" style="width: 250px; height: auto;" />
     </div>
     <div class="nav-buttons">
-        <button>Login</button>
-        <button>Getting Started</button>
+        {% if user.is_authenticated %}
+            {{user.username}}
+        {% else %}
+            <button>Login</button>
+            <button>Getting Started</button>
+        {% endif %}
     </div>
 </nav>

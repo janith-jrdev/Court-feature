@@ -1,82 +1,60 @@
 {% extends "organization/base.html" %}
 
 {% block body %}
-<div class="container mt-4">
-    <h1>{{ category_data.name }}</h1>
-    
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title">Category Details</h5>
-            <p class="card-text">{{ category_data.details }}</p>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-md-6">
-            <h3>General Information</h3>
-            <ul class="list-group">
-                <li class="list-group-item"><strong>Price:</strong> ${{ category_data.price }}</li>
-                <li class="list-group-item">
-                    <strong>Registration Status:</strong>
-                    {% if category_data.registration_status %}
-                        Open
-                    {% else %}
-                        Closed
-                    {% endif %}
-                </li>
-                <li class="list-group-item"><strong>Tournament:</strong> {{ category_data.tournament }}</li>
-                {% if category_data.winner %}
-                    <li class="list-group-item"><strong>Winner:</strong> {{ category_data.winner }}</li>
-                {% endif %}
-            </ul>
-        </div>
-        
-        <div class="col-md-6">
-            <h3>Fixture</h3>
-            {% if category.fixture %}
-                <ul class="list-group">
-                    <li class="list-group-item">{{ category.fixture }}</li>
-                </ul>
-            {% else %}
-                <p>No fixture available for this category.</p>
-            {% endif %}
-        </div>
-    </div>
-    
-    <h3 class="mt-4">Teams</h3>
-    <div class="row">
-        {% for team in category_data.teams %}
-            <div class="col-md-4 mb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ team.name }}</h5>
-                    </div>
-                </div>
-            </div>
-        {% empty %}
-            <p>No teams registered for this category.</p>
-        {% endfor %}
-    </div>
+<main class="container mx-auto mt-8 p-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="md:col-span-2">
+            <h2 class="text-3xl font-bold">{{ category.name }}</h2>
+            <h3 class="text-xl text-gray-600"> in {{ category.tournament.name }}</h3>
 
-    <!-- logic stuff -->
-    <div class="">
-        {% if category.registration_status %}
-            {% include "components/forms/organization/offline_entry.html" %}
-            {% include "components/forms/organization/close_reg.html" %}
-        {% else %}
-            {% if category.fixture %}
-                <!-- ko -->
-                {% if category.fixture.fixtureType == 'KO' %}
-                    {% include "components/logic/org/category_ko_logic.html" %}
-                {% else %}
-                    Not Supported yet.
-                {% endif %}
-            {% else %}
+            <!-- offline reg and close reg -->
+            {% if category.registration_status %}
+                {% include "components/forms/organization/offline_entry_close_reg.html" %}
+            {% elif not category.fixture %}
                 {% include "components/forms/organization/create_fixture.html" %}
+            {% else %}
+                {% if category.fixture.content_object %}
+                    <!-- fixture type KO, RR, KO+RR -->
+                    {% if category.fixture.fixtureType == 'KO' %}
+                        <!-- Manual, Automatic -->
+                        {% if category.fixture.content_object.fixing_manual %}
+                            {% if not category.fixture.content_object.bracket_matches.all and not category.fixture.scheduled_matches.all %}
+                                {% include "components/forms/organization/create_match.html" %}
+                            {% elif category.fixture.content_object.bracket_matches.all %}
+                                <h3>Fixture Diagram</h3>
+                                {% include "components/fixture_diagram.html" %}
+                            {% endif %}
+                        {% else %}
+                            Automatic Coming soon
+                        {% endif %}
+                    {% else %}
+                        Coming soon
+                    {% endif %}
+                {% else %}
+                    Error occured
+                {% endif %}
             {% endif %}
-        {% endif %}
-    </div>
-</div>
+        </div>
 
-{% include "components\fixture_diagram.html" %}
+        <div class="bg-white p-6 rounded-lg shadow">
+            <!-- Add team list here -->
+            {% if scheduled_matches %}
+                <h4 class="text-lg font-semibold mb-4">Scheduled match</h4>
+                {% for match in scheduled_matches %}
+                    <a href="{% url 'org:scoring' match.id %}">{{ match }}</a>
+                {% endfor %}
+            {% else %}
+                <h4 class="text-lg font-semibold mb-4">Teams</h4>
+                {% for team in category.teams.all %}
+                    {{ team.name }}
+                {% endfor %}
+            {% endif %}
+
+            {% if category.fixture.scheduled_matches %}
+                {% include "components/forms/organization/schedule_matches.html" %}
+            {% endif %}
+        </div>
+    </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
 {% endblock body %}

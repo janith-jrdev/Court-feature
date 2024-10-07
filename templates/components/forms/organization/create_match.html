@@ -1,86 +1,34 @@
-<button id="createMatchBtn" data-modal-target="matchModal" data-modal-toggle="matchModal"
-    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-    Create Match ada
-</button>
-
-<div id="matchModal" tabindex="-1" aria-hidden="true"
-    class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-    <div class="relative w-full max-w-2xl max-h-full">
-        <div class="relative bg-white rounded-lg shadow">
-            <div class="flex items-start justify-between p-4 border-b rounded-t">
-                <h3 class="text-xl font-semibold text-gray-900">
-                    Create a New Match
-                </h3>
-                <button type="button"
-                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
-                    data-modal-hide="matchModal">
-                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                            clip-rule="evenodd"></path>
-                    </svg>
-                    <span class="sr-only">Close modal</span>
-                </button>
-            </div>
-            <div class="p-6 space-y-6">
-                <h4 class="text-lg font-medium text-gray-900">Select Teams</h4>
-                <div id="teamCheckboxes" class="space-y-2"></div>
-                <button id="scheduleMatch"
-                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                    Schedule Match
-                </button>
-                <div class="mt-6">
-                    <h4 class="text-lg font-medium text-gray-900 mb-2">Scheduled Matches</h4>
-                    <div id="scheduledMatchesList" class="space-y-1"></div>
-                </div>
-                <div id="confirmButtonContainer" class="mt-4"></div>
-            </div>
-        </div>
+<div id="createMatchContainer" class="bg-white p-6 rounded-lg shadow mt-4">
+    <h3 class="text-xl font-semibold text-gray-900 mb-4">Create a New Match</h3>
+    <h4 class="text-lg font-medium text-gray-900">Select Teams</h4>
+    <div id="teamCheckboxes" class="space-y-2"></div>
+    <button id="scheduleMatch" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4">
+        Schedule Match
+    </button>
+    <div class="mt-6">
+        <h4 class="text-lg font-medium text-gray-900 mb-2">Scheduled Matches</h4>
+        <div id="scheduledMatchesList" class="space-y-1"></div>
     </div>
+    <div id="confirmButtonContainer" class="mt-4"></div>
 </div>
 
-<div id="confirmModal" tabindex="-1" aria-hidden="true"
-    class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-    <div class="relative w-full max-w-md max-h-full">
-        <div class="relative bg-white rounded-lg shadow">
-            <div class="flex items-start justify-between p-4 border-b rounded-t">
-                <h3 class="text-xl font-semibold text-gray-900">
-                    Confirm Tournament Details
-                </h3>
-                <button type="button"
-                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
-                    data-modal-hide="confirmModal">
-                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                            clip-rule="evenodd"></path>
-                    </svg>
-                    <span class="sr-only">Close modal</span>
-                </button>
-            </div>
-            <div class="p-6 space-y-6">
-                <div class="mb-4">
-                    <label for="setNo" class="block mb-2 text-sm font-medium text-gray-900">Number of Sets</label>
-                    <input type="number" id="setNo"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                        min="1" required>
-                </div>
-                <div class="mb-4">
-                    <label for="pointsToWin" class="block mb-2 text-sm font-medium text-gray-900">Points to
-                        Win</label>
-                    <input type="number" id="pointsToWin"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                        min="1" required>
-                </div>
-                <button id="confirmTournament"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">
-                    Confirm
-                </button>
-            </div>
-        </div>
+<div id="confirmTournamentContainer" class="bg-white p-6 rounded-lg shadow mt-4" style="display: none;">
+    <h3 class="text-xl font-semibold text-gray-900 mb-4">Confirm Tournament Details</h3>
+    <div class="mb-4">
+        <label for="setNo" class="block mb-2 text-sm font-medium text-gray-900">Number of Sets</label>
+        <input type="number" id="setNo"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            min="1" required>
     </div>
+    <div class="mb-4">
+        <label for="pointsToWin" class="block mb-2 text-sm font-medium text-gray-900">Points to Win</label>
+        <input type="number" id="pointsToWin"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            min="1" required>
+    </div>
+    <button id="confirmTournament" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">
+        Confirm
+    </button>
 </div>
 
 <script>
@@ -150,7 +98,7 @@
         const confirmButtonContainer = document.getElementById('confirmButtonContainer');
         confirmButtonContainer.innerHTML = '';
 
-        if (scheduledMatches.length > 0) {
+        if (scheduledMatches.length > 0 && remainingTeams.length === 0) {
             const confirmButton = document.createElement('button');
             confirmButton.textContent = 'Confirm Tournament';
             confirmButton.className = 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full';
@@ -160,11 +108,11 @@
     }
 
     function openConfirmModal() {
-        document.getElementById('matchModal').classList.add('hidden');
-        document.getElementById('confirmModal').classList.remove('hidden');
+        document.getElementById('createMatchContainer').style.display = 'none';
+        document.getElementById('confirmTournamentContainer').style.display = 'block';
     }
 
-    document.getElementById('createMatchBtn').addEventListener('click', () => {
+    document.addEventListener('DOMContentLoaded', () => {
         initializeTeams();
         updateScheduledMatches();
     });
@@ -198,6 +146,14 @@
         };
 
         console.log('Tournament Data:', tournamentData);
+        // Show loading animation
+        const loadingAnimation = document.createElement('div');
+        loadingAnimation.className = 'flex justify-center items-center fixed inset-0 bg-opacity-50 bg-gray-700';
+        loadingAnimation.innerHTML = `
+            <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
+        `;
+        document.body.appendChild(loadingAnimation);
+
         fetch('{% url "api:create_match_ko" category_data.id %}', {
             method: 'POST',
             headers: {
@@ -213,6 +169,9 @@
           }).catch(error => {
               console.error('Error:', error);
               alert('An error occurred while confirming the tournament.');
+          }).finally(() => {
+              // Hide loading animation
+              document.body.removeChild(loadingAnimation);
           });
     });
 </script>

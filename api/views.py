@@ -23,6 +23,9 @@ def off_registration(req, category_id):
     if not team_name:
         return JsonResponse({"message": "Team name cannot be empty"}, status=400)
     
+    if not category_instance.registration_status:
+        return JsonResponse({"message": "Registration closed"}, status=400)
+    
     Team.objects.create(
         name=team_name,
         category=category_instance
@@ -33,6 +36,7 @@ def off_registration(req, category_id):
 
 @host_required
 def close_categoryReg(req, category_id):
+    print("close category")
     category_instance = Category.objects.get(id=category_id)
     category_instance.registration_status = False
     category_instance.save()
@@ -42,7 +46,8 @@ def close_categoryReg(req, category_id):
         category_instance.winner = Teams[0]
         category_instance.save()
         return JsonResponse({"message": "Category over"})
-        
+    
+    print("category closed")
     return JsonResponse({"message": "Registration closed successfully"})
 
 @valid_json_data
@@ -187,7 +192,8 @@ def create_order(req):
 
 @host_required
 def create_matches_ko_manual(req, category_id):
-    
+    import time
+    start_time = time.time()
     category_instance = Category.objects.get(id=category_id)
     fixture = category_instance.fixture
     
@@ -291,6 +297,11 @@ def create_matches_ko_manual(req, category_id):
     ko_instance.all_matches.set(match_instances)
     print(fixture_json)
     ko_instance.save()
+
+    
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print(f"Elapsed time: {elapsed_time} seconds")
 
     return JsonResponse({"message": "Matches created successfully", "fixture": fixture_json})
 

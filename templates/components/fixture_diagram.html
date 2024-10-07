@@ -5,6 +5,7 @@
         padding: 0;
         background-color: #f0f0f0;
     }
+
     .tournament-container {
         width: 100%;
         overflow-x: auto;
@@ -12,13 +13,15 @@
         box-sizing: border-box;
         position: relative;
     }
+
     .tournament-bracket {
         display: flex;
         justify-content: flex-start;
         align-items: center;
         min-width: max-content;
-        height: calc(50vh - 40px);
+        height: calc(100vh - 40px);
     }
+
     .round {
         display: flex;
         flex-direction: column;
@@ -26,6 +29,7 @@
         height: 100%;
         margin-right: 20px;
     }
+
     .match {
         background-color: white;
         border-radius: 8px;
@@ -34,22 +38,32 @@
         width: 120px;
         font-size: 12px;
     }
+
     .team {
         padding: 5px;
         margin-bottom: 5px;
         border-radius: 4px;
     }
+
     .winner {
         background-color: #333;
         color: white;
     }
+
     .loser {
         background-color: #ccc;
         color: #333;
     }
+
     .pending {
         background-color: #eee;
     }
+
+    .placeholder {
+        background-color: #f8f8f8;
+        border: 1px dashed #ccc;
+    }
+
     #bracket-svg {
         position: absolute;
         top: 0;
@@ -58,6 +72,7 @@
         height: 100%;
         pointer-events: none;
     }
+
     @media (max-width: 768px) {
         .match {
             width: 100px;
@@ -74,7 +89,7 @@
 </div>
 
 <script>
-    const tournamentData = JSON.parse({{ fixture_json | safe }}); 
+    const tournamentData = JSON.parse({{ fixture_json | safe }});
 
     function createTournamentBracket(data) {
         const bracketContainer = document.getElementById('tournamentBracket');
@@ -84,20 +99,28 @@
             round.matches.forEach((match, matchIndex) => {
                 const matchElement = document.createElement('div');
                 matchElement.className = 'match';
-                matchElement.id = `match-${match.id}`;
-                match.teams.forEach((team, teamIndex) => {
-                    const teamElement = document.createElement('div');
-                    teamElement.className = 'team';
-                    teamElement.textContent = team;
-                    if (match.winner === undefined) {
-                        teamElement.classList.add('pending');
-                    } else if (match.winner === teamIndex) {
-                        teamElement.classList.add('winner');
-                    } else {
-                        teamElement.classList.add('loser');
-                    }
-                    matchElement.appendChild(teamElement);
-                });
+
+                if (match.id === null) {
+                    // Create a placeholder for future matches
+                    matchElement.classList.add('placeholder');
+                    matchElement.id = `placeholder-${roundIndex}-${matchIndex}`;
+                    matchElement.innerHTML = '<div class="team">TBD</div><div class="team">TBD</div>';
+                } else {
+                    matchElement.id = `match-${match.id}`;
+                    match.teams.forEach((team, teamIndex) => {
+                        const teamElement = document.createElement('div');
+                        teamElement.className = 'team';
+                        teamElement.textContent = team || 'TBD';
+                        if (match.winner === null) {
+                            teamElement.classList.add('pending');
+                        } else if (match.winner === teamIndex) {
+                            teamElement.classList.add('winner');
+                        } else {
+                            teamElement.classList.add('loser');
+                        }
+                        matchElement.appendChild(teamElement);
+                    });
+                }
                 roundElement.appendChild(matchElement);
             });
             bracketContainer.appendChild(roundElement);
@@ -114,9 +137,11 @@
         tournamentData.rounds.forEach((round, roundIndex) => {
             if (roundIndex < tournamentData.rounds.length - 1) {
                 round.matches.forEach((match, matchIndex) => {
-                    const currentMatch = document.getElementById(`match-${match.id}`);
-                    const nextMatchId = tournamentData.rounds[roundIndex + 1].matches[Math.floor(matchIndex / 2)].id;
-                    const nextMatch = document.getElementById(`match-${nextMatchId}`);
+                    const currentMatch = document.getElementById(`match-${match.id}`) ||
+                        document.getElementById(`placeholder-${roundIndex}-${matchIndex}`);
+                    const nextMatchIndex = Math.floor(matchIndex / 2);
+                    const nextMatch = document.getElementById(`match-${tournamentData.rounds[roundIndex + 1].matches[nextMatchIndex].id}`) ||
+                        document.getElementById(`placeholder-${roundIndex + 1}-${nextMatchIndex}`);
 
                     if (currentMatch && nextMatch) {
                         const currentRect = currentMatch.getBoundingClientRect();

@@ -1,0 +1,57 @@
+<div class="mt-6 bg-white p-6 rounded-lg shadow">
+    <h4 class="text-lg font-semibold mb-4">Offline registration</h4>
+    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-4">
+        <form action="" id="offline-registration" class="w-full flex ">
+            <input id="team_name" type="text" name="team_name" placeholder="Enter Team name" class="w-2/3 p-2 border rounded mr-2" required>
+            <button type="submit" class="w-1/3 bg-blue-500 text-white px-4 py-2 rounded">Confirm</button>
+        </form>
+    </div>
+    <hr class="my-4">
+    <button id="close-reg" class="w-full border border-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-red-500 hover:text-white">
+        Close registration
+    </button>
+</div>
+
+<script>
+    document.getElementById('offline-registration').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        var team_name = document.getElementById('team_name').value;
+
+        fetch("{% url 'api:offline_entry' category_data.id %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                team_name: team_name
+            })
+        }).then(function (response) {
+            return response.json();
+        }).then(function (data) {
+            if (data.ok) {
+                alert(data.message);
+                location.reload();
+            } else {
+                alert(data.message);
+            }
+
+        })
+    });
+
+    document.getElementById('close-reg').addEventListener('click', function () {
+        fetch("{% url 'api:close_reg' category_data.id %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        }).then(function (response) {
+            return response.json();
+        }).then(function (data) {
+            alert('Registration closed');
+            location.reload();
+        })
+    });
+</script>

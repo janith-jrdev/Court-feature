@@ -96,7 +96,8 @@ def category_view(req, tournament_id, category_id):
         ko_instance = category.fixture.content_object
         fixture_json = json.dumps(ko_instance.json)
         data["fixture_json"] = fixture_json
-    
+        scheduled_matches = category.fixture.scheduled_matches.filter(match_state=False)
+        data["scheduled_matches"] = scheduled_matches
     return render(req, "organization/category_view.html", data)
 
 @host_required
