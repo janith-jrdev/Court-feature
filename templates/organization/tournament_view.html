@@ -1,64 +1,89 @@
-{% extends "base.html" %}
+{% extends "organization/base.html" %}
 
 {% block body %}
-<div class="container mt-4">
-    <h1>{{ tournament_data.name }}</h1>
-    
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title">Tournament Details</h5>
-            <p class="card-text">{{ tournament_data.details }}</p>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-md-6">
-            <h3>General Information</h3>
-            <ul class="list-group">
-                <li class="list-group-item"><strong>Organization:</strong> {{ tournament_data.organization }}</li>
-                <li class="list-group-item"><strong>Start Date:</strong> {{ tournament_data.start_date }}</li>
-                <li class="list-group-item"><strong>End Date:</strong> {{ tournament_data.end_date }}</li>
-                <li class="list-group-item"><strong>Phone Number:</strong> {{ tournament_data.ph_number }}</li>
-            </ul>
-        </div>
-        
-        <div class="col-md-6">
-            <h3>Venue Information</h3>
-            <ul class="list-group">
-                <li class="list-group-item"><strong>Address:</strong> {{ tournament_data.venue }}</li>
-                <li class="list-group-item">
-                    <strong>Venue Link:</strong> 
-                    <a href="{{ tournament_data.venue_link }}" target="_blank">View on Map</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-    
-    <h3 class="mt-4">Categories</h3>
-    <div class="row">
-        {% for category in tournament_data.categories %}
-            <div class="col-md-4 mb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ category.name }}</h5>
-                        <p class="card-text">{{ category.details }}</p>
-                        <p><strong>Price:</strong> ₹{{ category.price }}</p>
-                        <p><strong>Registration:</strong> 
-                            {% if category.registration_status %}
-                                Open
-                            {% else %}
-                                Closed
-                            {% endif %}
-                        </p>
-                        {% if category.winner %}
-                            <p><strong>Winner:</strong> {{ category.winner }}</p>
-                        {% endif %}
+<style>
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
+<main class="container mx-auto p-4 mt-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="md:col-span-2 space-y-6">
+            <h2 class="text-3xl font-bold">{{ tournament.name }}</h2>
+            <p class="text-gray-600">by {{tournament.organization.name}}</p>
+            <div class="flex flex-col md:flex-row items-start space-x-4">
+                <div class="bg-white rounded-lg shadow p-4 flex-1 h-60 m-4 mb-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold">Details</h3>
+                        <button>
+                            <i data-lucide="edit" class="w-4 h-4 text-gray-600"></i>
+                        </button>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="phone" class="w-4 h-4 text-gray-600"></i>
+                            <span class="text-sm">{{tournament.ph_number}}</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="calendar" class="w-4 h-4 text-gray-600"></i>
+                            <span class="text-sm">{{tournament.start_date}} - {{tournament.end_date}}</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="map-pin" class="w-4 h-4 text-gray-600"></i>
+                            <span class="text-sm">{{tournament.venue_address}}</span>
+                        </div>
+                        <div class="text-sm text-gray-600"><a href="{{ tournament.venue_link }}">Google maps</a></div>
                     </div>
                 </div>
+
+                <div class="bg-white rounded-lg shadow p-4 flex-1 md:flex-2">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold">Categories</h3>
+                        <a href="{% url 'org:category_form' tournament.id %}" class="text-sm text-gray-600 flex items-center">
+                            new
+                            <i data-lucide="plus" class="w-4 h-4 ml-1"></i>
+                        </a>
+                    </div>
+                    {% if tournament.categories.all  %}
+                        <div class="max-h-60 overflow-y-auto scrollbar-hide">
+                            <div class="space-y-2">
+                                {% for category in tournament.categories.all %}
+                                    <a href="{% url 'org:category_view' tournament.id category.id %}" class="m-2">
+                                        <div class="h-10 bg-gray-200 rounded-md">{{ category.name }}</div>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="flex flex-col items-center justify-center bg-muted rounded-md">
+                            <div class="flex flex-col items-center border-b border-dashed border-gray-300 pb-4 mb-4">
+                                <i class="ri-add-line text-4xl text-gray-400 mb-2"></i>
+                                <p class="text-gray-500">No Categories</p>
+                            </div>
+                            <!-- <button class="text-primary">Create one</button> -->
+                        </div>
+                    {% endif %}
+                </div>
             </div>
-        {% empty %}
-            <p>No categories available for this tournament.</p>
-        {% endfor %}
+
+
+
+        </div>
+
+        <div class="md:col-span-1">
+            <div class="bg-white rounded-lg shadow p-4 h-full flex items-center justify-center">
+                <span class="text-gray-500">Additional content or map</span>
+            </div>
+        </div>
     </div>
-</div>
+</main>
+
+<script>
+    lucide.createIcons();
+</script>
+
 {% endblock body %}

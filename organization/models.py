@@ -80,6 +80,7 @@ class Knockout(models.Model):
     bracket_teams = models.ManyToManyField('Team', related_name='bracket', blank=True)
     winners_bracket = models.ManyToManyField('Team', related_name='bracket_winners', blank=True)
     bracket_matches = models.ManyToManyField('Match', related_name='bracket_match', blank=True)
+    all_matches = models.ManyToManyField('Match', related_name='bracket_all_matches', blank=True)
     ko_stage = models.IntegerField(default=-1)
     def __str__(self):
         return f"Knockout - {self.category.name} - {self.category.tournament.name}"
@@ -104,16 +105,27 @@ class Team(models.Model):
         return f"{self.name} - {self.category.name} - {self.category.tournament.name}"
 
 class Match(models.Model):
+    # Teams
     team1 = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="match_team1", blank=True, null=True)
     team2 = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="match_team2", blank=True, null=True)
     winner = models.ForeignKey(Team, on_delete=models.SET_NULL, related_name="match_winner", blank=True, null=True)
-    match_state = models.BooleanField(default=False)
+
+    # Match details
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="match_category")
-    # court add when scheduling matches or create a new model for courts and store match there
+    match_state = models.BooleanField(default=False)
+    match_number = models.IntegerField(null=True, blank=True)
+    stage_number = models.IntegerField(null=True, blank=True)
+
+    # Set information
     no_sets = models.IntegerField(default=1)
     sets = models.ManyToManyField('SetScoreboard', related_name='match_sets', blank=True)
     current_set = models.ForeignKey('SetScoreboard', on_delete=models.SET_NULL, related_name='match_current_set', blank=True, null=True)
+
+    # Scoring
     win_points = models.IntegerField(default=15)
+
+    # TODO: Add court information when scheduling matches or create a new model for courts
+    
     def __str__(self):
         team1, team2 = "Bye", "Bye"
         if self.team1:

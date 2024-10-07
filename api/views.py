@@ -201,13 +201,23 @@ def create_matches_ko_manual(req, category_id):
     data = json.loads(req.body)
     print(data)
     
-    # if len(data["matches"]) < math.ceil(ko_instance.bracket_teams.count() / 2):
-    #     return JsonResponse({"message": "Not enough matches"}, status=400)
+    if len(data["matches"]) < math.ceil(ko_instance.bracket_teams.count() / 2):
+        return JsonResponse({"message": "Not enough matches"}, status=400)
     
     no_sets = int(data.get("no_sets"))
     points_win = int(data.get("points_win"))
     
-    for match in data["matches"]:
+    
+    if not ko_instance.json:
+        fixture_json = {
+            "rounds": []
+        }
+    else:
+        fixture_json = json.loads(ko_instance.json)
+    current_round = []
+    match_instances = []
+
+    for match_num, match in enumerate(data["matches"], start=1):
         team1 = match.get("team1", None)
         team2 = match.get("team2", None)
         
@@ -231,8 +241,10 @@ def create_matches_ko_manual(req, category_id):
             team2=team2,
             no_sets=no_sets,
             win_points=points_win,
+            match_number=match_num,  # Add match number here
+            stage_number=ko_instance.ko_stage
         )
-        
+        match_instances.append(match_instance)
         if not team1:
             match_instance.winner = team2
             ko_instance.winners_bracket.add(team2)
@@ -249,8 +261,38 @@ def create_matches_ko_manual(req, category_id):
 
         match_instance.save()
         ko_instance.save()
-    
-    return JsonResponse({"message": "Matches created successfully"})
+
+        match_json = {
+            "id": match_instance.id,
+            "teams": [team1.name if team1 else "BYE", team2.name if team2 else "BYE"],
+            "winner": 0 if not team2 else 1 if not team1 else None
+        }
+        current_round.append(match_json)
+
+    # Add all matches to the first round
+    fixture_json["rounds"].append({"matches": current_round})
+
+    # Add empty rounds for future stages
+    teams_count = len(data["matches"])
+    while teams_count > 1:
+        teams_count = teams_count // 2
+        empty_round = {
+            "matches": [
+                {
+                    "id": None,
+                    "teams": [None, None],
+                    "winner": None
+                } for _ in range(teams_count)
+            ]
+        }
+        fixture_json["rounds"].append(empty_round)
+    print(fixture_json)
+    ko_instance.json = json.dumps(fixture_json)
+    ko_instance.all_matches.set(match_instances)
+    print(fixture_json)
+    ko_instance.save()
+
+    return JsonResponse({"message": "Matches created successfully", "fixture": fixture_json})
 
 @host_required
 def schedule_match(req, category_id):
@@ -288,16 +330,10 @@ def schedule_match(req, category_id):
 
 @host_required
 def score_match(req, match_id):
-    # CHECK DEC WORKS IN ADMIN PANEL
-    # get match_id [args]
 
-    # get team_id [req data]
-    # get inc/dec [req data]
     data = json.loads(req.body)
     team_id = data.get('team_id')
     inc = data.get('inc', False)
-    
-    print("hereee",data)
     
     # check if match is scheduled
     match_instance = Match.objects.get(id=match_id)
@@ -328,8 +364,6 @@ def score_match(req, match_id):
                 cur_set.team2_score += 1
                 
             #if the score above win points
-            print("win points")
-            print(cur_set.team1_score, cur_set.team2_score, match_instance.win_points)
             if cur_set.team1_score >= match_instance.win_points or cur_set.team2_score >= match_instance.win_points:
                 
                 no_set = match_instance.no_sets
@@ -354,9 +388,6 @@ def score_match(req, match_id):
                                     
                 majority_sets = math.ceil(no_set / 2)
 
-                print("wins")
-                print(team1_wins, team2_wins, majority_sets, team1_wins >= majority_sets or team2_wins >= majority_sets)
-                
                 if team1_wins >= majority_sets or team2_wins >= majority_sets:
                     match_instance.winner = match_instance.team1 if team1_wins >= majority_sets else match_instance.team2
                     
@@ -374,13 +405,21 @@ def score_match(req, match_id):
                     print(f"bracket matches: {ko_instance.bracket_matches.all()}")
                     
                     if not category_instance.fixture.scheduled_matches.all() and not ko_instance.bracket_matches.all():
-                        
+
+                        json_data = json.loads(ko_instance.json)
+
+                        json_data["rounds"][ko_instance.ko_stage - match_instance.stage_number]['matches'][match_instance.match_number - 1]["winner"] = 0 if team1_wins >= majority_sets else 1
+                        ko_instance.json = json.dumps(json_data)
+                        ko_instance.save()
+                        print("json updated")
                         if winners:=ko_instance.winners_bracket.all():
                             if ko_instance.ko_stage == 1:
+                                print("category over /dawda")
                                 len_winners = len(winners)
                                 if not len_winners == 1:
                                     return JsonResponse({"message": "Uh oh, something went wrong"})
                                 category_instance.winner = winners[0]
+                                ko_instance.bracket_teams.clear()
                                 category_instance.save()
                                 return JsonResponse({"message": "Category over"})
                             
@@ -388,7 +427,49 @@ def score_match(req, match_id):
                             ko_instance.bracket_teams.clear()  # ughh should this be here?
                             ko_instance.bracket_teams.set(winners)
                             # schedule matches for next stage automatically
+                            all_matches = ko_instance.all_matches.filter(stage_number=ko_instance.ko_stage).order_by('match_number')
                             
+                            for i in range(0, len(all_matches), 2):
+                                match_instance = Match.objects.create(
+                                    category=category_instance,
+                                    team1=all_matches[i].winner,
+                                    team2=all_matches[i+1].winner,
+                                    no_sets=match_instance.no_sets,
+                                    win_points=match_instance.win_points,
+                                    match_number=i+1,  # Add match number here
+                                    stage_number=ko_instance.ko_stage - 1
+                                )
+                                sets = []
+                                for set_no in range(match_instance.no_sets):
+                                    sets.append(SetScoreboard.objects.create(set_no=set_no+1, match=match_instance ))
+                                match_instance.sets.set(sets) 
+                                ko_instance.all_matches.add(match_instance)
+                                ko_instance.bracket_matches.add(match_instance)
+                                
+                            # Update the existing JSON with new matches
+                            new_matches = []
+                            for match in ko_instance.bracket_matches.filter(stage_number=ko_instance.ko_stage - 1).order_by('match_number'):
+                                new_match = {
+                                    "id": match.id,
+                                    "teams": [match.team1.name, match.team2.name],
+                                    "winner": None
+                                }
+                                new_matches.append(new_match)
+                            
+                            json_data = json.loads(ko_instance.json)
+                            if json_data is None:
+                                ko_instance.json = {"rounds": []}
+                            
+                            # Find the index of the round we need to update
+                            round_index = len(json_data["rounds"]) - (ko_instance.ko_stage - 1)
+                            
+                            # Update the existing round or append a new one if it doesn't exist
+                            if round_index < len(json_data["rounds"]):
+                                json_data["rounds"][round_index]["matches"] = new_matches
+                            else:
+                                json_data["rounds"].append({"matches": new_matches})
+                                
+                            ko_instance.json = json.dumps(json_data)
                             ko_instance.winners_bracket.clear()
                             ko_instance.ko_stage -= 1
                             ko_instance.save()
