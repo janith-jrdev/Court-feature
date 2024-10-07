@@ -5,9 +5,9 @@
 name: Build and deploy Python app to Azure Web App - sportshunt-alpha
 
 on:
-  push:
-    branches:
-      - dev
+  release:
+    types:
+      - created
   workflow_dispatch:
 
 jobs:
@@ -57,6 +57,16 @@ jobs:
 
       - name: Unzip artifact for deployment
         run: unzip release.zip
+
+      - name: Install ODBC Driver 18 for SQL Server
+        run: |
+          sudo su
+          curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+          curl https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/prod.list > /etc/apt/sources.list.d/mssql-release.list
+          exit
+          sudo apt-get update
+          sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
+          sudo apt-get install -y unixodbc-dev
 
       - name: Create virtual environment and install dependencies
         run: |
