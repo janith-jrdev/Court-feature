@@ -28,15 +28,12 @@
                 team_name: team_name
             })
         }).then(function (response) {
-            return response.json();
-        }).then(function (data) {
-            if (data.ok) {
-                alert(data.message);
+            console.log(response);
+            if (response.ok) {
                 location.reload();
             } else {
-                alert(data.message);
+                alert("Error Occured ");
             }
-
         })
     });
 

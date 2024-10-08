@@ -31,7 +31,7 @@ def off_registration(req, category_id):
         category=category_instance
     )
     
-    return JsonResponse({"message": "Registration successfully"})
+    return JsonResponse({"message": "Registration successfully"}, status=200)
 
 
 @host_required
@@ -258,9 +258,9 @@ def create_matches_ko_manual(req, category_id):
         match_instance.save()
         ko_instance.save()
 
+
     fixture_manager = Fixture_Json_Manager(ko_instance)
     fixture_json = fixture_manager.update_fixture_json(match_instances, data)
-    
     end_time = time.time()
     elapsed_time = end_time - start_time
     print(f"Elapsed time: {elapsed_time} seconds")
