@@ -19,8 +19,12 @@
                         <!-- Manual, Automatic -->
                         {% if category.fixture.content_object.fixing_manual %}
                             {% if not category.fixture.content_object.bracket_matches.all and not category.fixture.scheduled_matches.all %}
-                                {% include "components/forms/organization/create_match.html" %}
-                            {% elif category.fixture.content_object.bracket_matches.all %}
+                                {% if category.winner %}
+                                  {{ category.winner }} is the winner
+                                {% else %}
+                                    {% include "components/forms/organization/create_match.html" %}
+                                {% endif %}
+                            {% else %}
                                 <h3>Fixture Diagram</h3>
                                 {% include "components/fixture_diagram.html" %}
                             {% endif %}

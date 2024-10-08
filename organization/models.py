@@ -3,6 +3,7 @@ from core.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from datetime import datetime
+import json
 
 # Create your models here.
 class Organization(models.Model):
@@ -74,7 +75,15 @@ class Fixture(models.Model):
         
 
 class Knockout(models.Model):
-    json = models.JSONField(blank=True, null=True) 
+    _json = models.TextField(db_column='json', blank=True, null=True)
+    
+    @property
+    def json(self):
+        return json.loads(self._json) if self._json else None
+    
+    @json.setter
+    def json(self, value):
+        self._json = json.dumps(value) if value is not None else None
     fixing_manual = models.BooleanField(default=False)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="category")
     bracket_teams = models.ManyToManyField('Team', related_name='bracket', blank=True)

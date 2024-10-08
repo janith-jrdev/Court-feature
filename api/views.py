@@ -31,7 +31,7 @@ def off_registration(req, category_id):
         category=category_instance
     )
     
-    return JsonResponse({"message": "Registration successfully"})
+    return JsonResponse({"message": "Registration successfully"}, status=200)
 
 
 @host_required
@@ -292,12 +292,9 @@ def create_matches_ko_manual(req, category_id):
             ]
         }
         fixture_json["rounds"].append(empty_round)
-    print(fixture_json)
     ko_instance.json = json.dumps(fixture_json)
     ko_instance.all_matches.set(match_instances)
-    print(fixture_json)
     ko_instance.save()
-
     
     end_time = time.time()
     elapsed_time = end_time - start_time
