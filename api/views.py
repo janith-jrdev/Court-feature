@@ -6,12 +6,12 @@ from core.models import *
 import json
 from django.core.exceptions import ObjectDoesNotExist
 from organization.validators import *
-
 from django.conf import settings
 from django.urls import reverse
 import razorpay
 from .decorators import *
 import math
+from .utils import Fixture_Json_Manager
 
 @valid_json_data
 @host_required
@@ -189,7 +189,6 @@ def create_order(req):
 
 
 
-
 @host_required
 def create_matches_ko_manual(req, category_id):
     import time
@@ -213,14 +212,6 @@ def create_matches_ko_manual(req, category_id):
     no_sets = int(data.get("no_sets"))
     points_win = int(data.get("points_win"))
     
-    
-    if not ko_instance.json:
-        fixture_json = {
-            "rounds": []
-        }
-    else:
-        fixture_json = json.loads(ko_instance.json)
-    current_round = []
     match_instances = []
 
     for match_num, match in enumerate(data["matches"], start=1):
@@ -240,14 +231,13 @@ def create_matches_ko_manual(req, category_id):
             team2 = Team.objects.get(id=team2)
             ko_instance.bracket_teams.remove(team2)
         
-        # if want to add match no add here
         match_instance = Match.objects.create(
             category=category_instance,
             team1=team1,
             team2=team2,
             no_sets=no_sets,
             win_points=points_win,
-            match_number=match_num,  # Add match number here
+            match_number=match_num,
             stage_number=ko_instance.ko_stage
         )
         match_instances.append(match_instance)
@@ -260,7 +250,7 @@ def create_matches_ko_manual(req, category_id):
         else:
             sets = []
             for set_no in range(no_sets):
-                sets.append(SetScoreboard.objects.create(set_no=set_no+1, match=match_instance ))
+                sets.append(SetScoreboard.objects.create(set_no=set_no+1, match=match_instance))
                 
             ko_instance.bracket_matches.add(match_instance)
             match_instance.sets.set(sets)
@@ -268,36 +258,8 @@ def create_matches_ko_manual(req, category_id):
         match_instance.save()
         ko_instance.save()
 
-        match_json = {
-            "id": match_instance.id,
-            "teams": [team1.name if team1 else "BYE", team2.name if team2 else "BYE"],
-            "winner": 0 if not team2 else 1 if not team1 else None
-        }
-        current_round.append(match_json)
-
-    # Add all matches to the first round
-    fixture_json["rounds"].append({"matches": current_round})
-
-    # Add empty rounds for future stages
-    teams_count = len(data["matches"])
-    while teams_count > 1:
-        teams_count = teams_count // 2
-        empty_round = {
-            "matches": [
-                {
-                    "id": None,
-                    "teams": [None, None],
-                    "winner": None
-                } for _ in range(teams_count)
-            ]
-        }
-        fixture_json["rounds"].append(empty_round)
-    print(fixture_json)
-    ko_instance.json = json.dumps(fixture_json)
-    ko_instance.all_matches.set(match_instances)
-    print(fixture_json)
-    ko_instance.save()
-
+    fixture_manager = Fixture_Json_Manager(ko_instance)
+    fixture_json = fixture_manager.update_fixture_json(match_instances, data)
     
     end_time = time.time()
     elapsed_time = end_time - start_time
