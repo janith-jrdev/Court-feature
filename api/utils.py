@@ -103,23 +103,44 @@ class Fixture_Json_Manager:
 
         return self.fixture_json
 
-    def update_winner(self, match_id, winner):
+    def update_winner(self, match_id, winner, winner_name):
+        print("Updating winner")
+        print(match_id, winner)
         for round_index, round in enumerate(self.fixture_json["rounds"]):
             for match in round["matches"]:
                 if match["id"] == match_id:
+                    print("Match found", match, match["winner"])
                     match["winner"] = 0 if winner == 0 else 1
-                    # Add the winner to the next stage matches
+                    print("Match found", match["winner"])
+                    # Check if there is a next round in the fixture
                     if round_index + 1 < len(self.fixture_json["rounds"]):
+                        print("next stage exists")
+                        # Get the next round
                         next_round = self.fixture_json["rounds"][round_index + 1]
-                        next_match_index = match_id // 2
+                        
+                        # Calculate the index of the next match
+                        next_match_index = round["matches"].index(match) // 2
+                        
+                        # Check if the calculated match index is within the bounds of the next round's matches
                         if next_match_index < len(next_round["matches"]):
+                            # Get the next match
                             next_match = next_round["matches"][next_match_index]
+                            print("Next match found", next_match)
+                            
+                            # Determine which team (0 or 1) to update in the next match
                             if match_id % 2 == 0:
-                                next_match["teams"][0] = match["teams"][winner]
+                                print("team a")
+                                # Update team a (index 0) with the winner of the current match
+                                next_match["teams"][0] = winner_name
+                                print("Next match updated", next_match)
                             else:
-                                next_match["teams"][1] = match["teams"][winner]
+                                print("team b")
+                                # Update team b (index 1) with the winner of the current match
+                                next_match["teams"][1] = winner_name
+                                print("Next match updated", next_match)
+                    # Exit the loop or function (depending on the context)
                     break
+        print("Fixture updated")
+        print(self.fixture_json)
         self.ko_instance.json = json.dumps(self.fixture_json)
         self.ko_instance.save()
-
-        

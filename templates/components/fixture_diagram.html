@@ -104,7 +104,12 @@
                     // Create a placeholder for future matches
                     matchElement.classList.add('placeholder');
                     matchElement.id = `placeholder-${roundIndex}-${matchIndex}`;
-                    matchElement.innerHTML = '<div class="team">TBD</div><div class="team">TBD</div>';
+                    match.teams.forEach((team, teamIndex) => {
+                        const teamElement = document.createElement('div');
+                        teamElement.className = 'team';
+                        teamElement.textContent = team || 'TBD';
+                        matchElement.appendChild(teamElement);
+                    });
                 } else {
                     matchElement.id = `match-${match.id}`;
                     match.teams.forEach((team, teamIndex) => {
