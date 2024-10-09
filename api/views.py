@@ -362,6 +362,7 @@ def score_match(req, match_id):
                 majority_sets = math.ceil(no_set / 2)
 
                 if team1_wins >= majority_sets or team2_wins >= majority_sets:
+                    team_no = 0 if team1_wins >= majority_sets else 1
                     match_instance.winner = match_instance.team1 if team1_wins >= majority_sets else match_instance.team2
                     
                     match_instance.match_state = True
@@ -371,6 +372,8 @@ def score_match(req, match_id):
                     
                     # check if all matches are over
                     ko_instance = category_instance.fixture.content_object
+                    # manuplate json
+                    Fixture_Json_Manager(ko_instance).update_winner(match_instance.id, team_no, match_instance.winner.name)
                     ko_instance.winners_bracket.add(match_instance.winner)
                     ko_instance.save()
                     
