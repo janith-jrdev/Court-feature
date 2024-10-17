@@ -1,0 +1,64 @@
+<form action="" method="post">
+    {% csrf_token %}
+    <div class="input-field">
+        <label for="name" class="block mb-2 text-sm font-medium text-gray-900">Tournament Name:</label>
+        <input type="text" id="name" name="name" maxlength="255" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+    </div>
+    <div class="input-field">
+        <label for="details" class="block mb-2 text-sm font-medium text-gray-900">Details:</label>
+        <textarea id="details" name="details" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
+    </div>
+    <div class="input-field date-inputs">
+        <div class="date-input">
+            <label for="start_date" class="block mb-2 text-sm font-medium text-gray-900">Start Date:</label>
+            <input type="date" id="start_date" name="start_date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+        </div>
+        <div class="date-input">
+            <label for="end_date" class="block mb-2 text-sm font-medium text-gray-900">End Date:</label>
+            <input type="date" id="end_date" name="end_date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+        </div>
+    </div>
+    <div class="input-field">
+        <label for="venue_address" class="block mb-2 text-sm font-medium text-gray-900">Venue Address:</label>
+        <input type="text" id="venue_address" name="venue_address" maxlength="1024" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+    </div>
+    <div class="input-field">
+        <label for="venue_link" class="block mb-2 text-sm font-medium text-gray-900">Venue Link:</label>
+        <input type="url" id="venue_link" name="venue_link" maxlength="512" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+    </div>
+    <div class="input-field">
+        <label for="ph_number" class="block mb-2 text-sm font-medium text-gray-900">Phone Number:</label>
+        <input type="text" id="ph_number" name="ph_number" maxlength="10" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+    </div>
+    <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full">Create Tournament →</button>
+</form>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    .main-container {
+        display: flex;
+        height: calc(100vh - 60px); /* Adjust for navbar height */
+    }
+    .left-side {
+        flex: 1;
+        background-color: #f3f4f6;
+    }
+    .right-side {
+        flex: 1;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .input-field {
+        margin-bottom: 1rem;
+    }
+    .date-inputs {
+        display: flex;
+        gap: 1rem;
+    }
+    .date-input {
+        flex: 1;
+    }
+</style>

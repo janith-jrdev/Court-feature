@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="main-container">
+    <div class="left-side"></div>
+    <div class="right-side">
+        <h1 class="text-3xl font-bold mb-6">Create Organization</h1>
+        {% include "components/forms/organization/create_org.html" %}
+    </div>
+</div>
+{% endblock body %}

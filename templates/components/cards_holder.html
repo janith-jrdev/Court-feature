@@ -1,0 +1,16 @@
+<div class="tournaments-container">
+    <div class="tournaments-scroll" id="tournaments-scroll">
+        <!-- Tournament cards will be dynamically added here -->
+         {% for tournament in tournaments %}
+            <div class="tournament-card">
+                <h4>{{ tournament.name }}</h4>
+                <p>{{ tournament.start_date }}</p>
+                <a href="{% url 'core:tournament' tournament.id %}">View Tournament</a>
+            </div>
+         {% endfor %}
+    </div>
+</div>
+
+<script>
+
+</script>

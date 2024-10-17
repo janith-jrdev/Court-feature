@@ -1,0 +1,42 @@
+<form action="" id="offline_entry" method="post">
+    <label for="team_name">Name:</label>
+    <input type="text" name="team_name" id="team_name" required>
+    <button type="submit">Submit</button>
+</form>
+
+<script>
+    document.getElementById('offline_entry').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        var team_name = document.getElementById('team_name').value;
+        
+        // Ensure the URL is correct
+        var url = "{% url 'api:offline_entry' category_id %}";
+        
+        // Ensure CSRF token is correctly included
+        var csrfToken = '{{ csrf_token }}';
+        
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({
+                team_name: team_name
+            })
+        }).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            if (data.message === "Registration successfully") {
+                alert('Team successfully registered');
+            } else {
+                alert('Error registering team');
+            }
+            console.log(data);
+        }).catch(function(error) {
+            console.error('Error:', error);
+            alert('Error registering team');
+        });
+    });
+</script>

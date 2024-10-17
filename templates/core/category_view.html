@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block body %}
+  <h1>{{ category.name }} - {{ tournament.name }}</h1>
+  <p>{{ category.details }}</p>
+  <p>Price: {{ category.price }}</p>
+  {% if category.winner %}
+    <p>Winner: {{ category.winner.name }}</p>
+  {% endif %}
+  {% if category.fixture %}
+    <p>Fixture:>View</p>
+  {% endif %}
+  <p>Registration Status: {{ category.registration_status }}</p>
+
+  <h2>Tournament Details</h2>
+  <p>Organized by: {{ tournament.organization.name }}</p>
+  <p>Start Date: {{ tournament.start_date }}</p>
+  <p>End Date: {{ tournament.end_date }}</p>
+  <p>Venue: {{ tournament.venue_address }} (<a href="{{ tournament.venue_link }}">Map</a>)</p>
+  <p>Contact: {{ tournament.ph_number }}</p>
+
+  {% if category.registration_status %}
+	{% if user.is_authenticated %}
+		<!-- can register -->
+		<p>Register</p>
+	{% else %}
+		<!-- login to register -->
+		<p>Login to register</p>
+	{% endif %}
+  {% else %}
+	<p>Registration Closed</p>
+  {% endif %}
+{% endblock body %}

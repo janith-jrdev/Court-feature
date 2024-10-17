@@ -1,0 +1,303 @@
+{% extends "base.html" %}
+
+{% block body %}
+<style>
+    .container {
+        min-height: 90vh;
+        min-width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: #f7fafc;
+        padding: 1rem;
+    }
+    .header {
+        font-family: gloock;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+    }
+    .scoreboard {
+        display: flex;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    .team-card {
+        transition: transform 0.5s ease-in-out;
+        width: 16rem;
+        background-color: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        padding: 1.5rem;
+        text-align: center;
+    }
+    .team-card-left {
+        margin-right: 2rem;
+    }
+    .team-card-right {
+        margin-left: 2rem;
+    }
+    .team-name {
+        font-family: heal_the_web;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    .team-score {
+        font-family: heal_the_web;
+        font-size: 4rem;
+        margin-bottom: 1rem;
+    }
+    .button-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .button {
+        width: 100%;
+        padding: 0.5rem 1rem;
+        color: white;
+        border-radius: 0.25rem;
+        transition: background-color 0.2s;
+    }
+    button {
+        font-family: gendy;
+        font-size: 2rem;
+        font-weight: 700;
+    }
+    .button-green {
+        background-color: #16a34a;
+    }
+    .button-green:hover {
+        background-color: #15803d;
+    }
+    .button-red {
+        background-color: #dc2626;
+    }
+    .button-red:hover {
+        background-color: #b91c1c;
+    }
+    .controls {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+    .control-button {
+        padding: 0.5rem 1.5rem;
+        color: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        transition: background-color 0.2s;
+    }
+    .button-blue {
+        background-color: #2563eb;
+    }
+    .button-blue:hover {
+        background-color: #1d4ed8;
+    }
+    .button-yellow {
+        background-color: #eab308;
+    }
+    .button-yellow:hover {
+        background-color: #ca8a04;
+    }
+    .info {
+        margin-top: 1rem;
+        font-family: heal_the_web;
+        font-weight: 700;
+        font-size: 3.75rem;
+    }
+    .info-text {
+    }
+    .winner-message {
+        margin-top: 2rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #22c55e;
+    }
+</style>
+
+<div class="container">
+    <h1 class="header">Match Scoreboard</h1>
+    
+    <div class="scoreboard">
+        <div id="teamA" class="team-card team-card-left">
+            <h2 class="team-name">{{match_data.team1.name}}</h2>
+            <p id="scoreA" class="team-score">{{ match_data.current_set.team1_score }}</p>
+            <div class="button-group">
+                <button onclick="increaseScore('A')" class="button button-green">+1</button>
+                <button onclick="decreaseScore('A')" class="button button-red">-1</button>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="startMatch" class="control-button button-blue">Start Match</button>
+            <button id="switchTeams" class="control-button button-yellow">Switch Teams</button>
+        </div>
+        
+        <div id="teamB" class="team-card team-card-right">
+            <h2 class="team-name">{{match_data.team2.name}}</h2>
+            <p id="scoreB" class="team-score">{{ match_data.current_set.team2_score }}</p>
+            <div class="button-group">
+                <button onclick="increaseScore('B')" class="button button-green">+1</button>
+                <button onclick="decreaseScore('B')" class="button button-red">-1</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="info">
+        <p >Set Number: <span id="setNumber" class="info-text">{{ match_data.current_set.set_no }}</span></p>
+        <p>Points to Win: <span id="pointsToWin" class="info-text">{{ match_data.win_points }}</span></p>
+    </div>
+    
+    <div id="winnerMessage" class="winner-message"></div>
+</div>
+
+<script>
+    let scoreA = {{ match_data.current_set.team1_score }};
+    let scoreB = {{ match_data.current_set.team2_score }};
+    let teamA_id = {{ match_data.team1_id }};
+    let teamB_id = {{ match_data.team2_id }};
+    let setNumber = {{ match_data.current_set.set_no }};
+    let pointsToWin = {{ match_data.win_points }};
+    let matchStarted = false;
+    let setsWonA = {{ team_wins.team1 }};
+    let setsWonB = {{ team_wins.team2 }};
+    const maxSets = {{ match_data.no_sets }};
+    let isTeamsSwitched = false;
+
+    const scoreADisplay = document.getElementById('scoreA');
+    const scoreBDisplay = document.getElementById('scoreB');
+    const setNumberDisplay = document.getElementById('setNumber');
+    const pointsToWinDisplay = document.getElementById('pointsToWin');
+    const winnerMessage = document.getElementById('winnerMessage');
+
+    document.getElementById('startMatch').addEventListener('click', () => {
+        matchStarted = true;
+        alert('Match Started! Now you can update the scores.');
+    });
+
+    document.getElementById('switchTeams').addEventListener('click', () => {
+        const teamA = document.querySelector('#teamA');
+        const teamB = document.querySelector('#teamB');
+        teamA.classList.add('switch-left');
+        teamB.classList.add('switch-right');
+
+        setTimeout(() => {
+            const teamAName = teamA.querySelector('.team-name').innerText;
+            const teamBName = teamB.querySelector('.team-name').innerText;
+
+            teamA.querySelector('.team-name').innerText = teamBName;
+            teamB.querySelector('.team-name').innerText = teamAName;
+
+            teamA.classList.remove('switch-left');
+            teamB.classList.remove('switch-right');
+            teamA.classList.add('fade-in');
+            teamB.classList.add('fade-in');
+
+            isTeamsSwitched = !isTeamsSwitched;
+
+            setTimeout(() => {
+                teamA.classList.remove('fade-in');
+                teamB.classList.remove('fade-in');
+            }, 500);
+        }, 500);
+    });
+
+    function increaseScore(team) {
+        if (!matchStarted) {
+            alert('Please start the match first!');
+            return;
+        }
+        const actualTeam = isTeamsSwitched ? (team === 'A' ? 'B' : 'A') : team;
+        if (actualTeam === 'A') {
+            scoreA++;
+            scoreADisplay.innerText = scoreA;
+            increment_api(teamA_id);
+        } else if (actualTeam === 'B') {
+            scoreB++;
+            scoreBDisplay.innerText = scoreB;
+            increment_api(teamB_id);
+        }
+        checkWinCondition();
+    }
+
+    function decreaseScore(team) {
+        if (!matchStarted) {
+            alert('Please start the match first!');
+            return;
+        }
+        const actualTeam = isTeamsSwitched ? (team === 'A' ? 'B' : 'A') : team;
+        if (actualTeam === 'A' && scoreA > 0) {
+            scoreA--;
+            scoreADisplay.innerText = scoreA;
+        } else if (actualTeam === 'B' && scoreB > 0) {
+            scoreB--;
+            scoreBDisplay.innerText = scoreB;
+        }
+    }
+
+    function checkWinCondition() {
+        if (scoreA >= pointsToWin) {
+            alert('Team A wins the set!');
+            setsWonA++;
+            resetSet();
+        } else if (scoreB >= pointsToWin) {
+            alert('Team B wins the set!');
+            setsWonB++;
+            resetSet();
+        }
+    }
+
+    function resetSet() {
+        scoreA = 0;
+        scoreB = 0;
+        scoreADisplay.innerText = scoreA;
+        scoreBDisplay.innerText = scoreB;
+        setNumber++;
+        setNumberDisplay.innerText = setNumber;
+
+        if (setsWonA === Math.ceil(maxSets / 2)) {
+            declareWinner('A');
+        } else if (setsWonB === Math.ceil(maxSets / 2)) {
+            declareWinner('B');
+        } else if (setNumber > maxSets) {
+            declareWinner();
+        }
+    }
+
+    function declareWinner(winningTeam = '') {
+        matchStarted = false;
+        if (winningTeam === 'A') {
+            winnerMessage.innerText = 'Team A is the overall winner!';
+        } else if (winningTeam === 'B') {
+            winnerMessage.innerText = 'Team B is the overall winner!';
+        } else {
+            if (setsWonA > setsWonB) {
+                alert('Team A is the overall winner!');
+            } else if (setsWonB > setsWonA) {
+                alert('Team B is the overall winner!');
+            } else {
+                alert('It\'s a draw!');
+            }
+        }
+        window.location.href = '{% url "org:category_view" match_data.category.tournament.id match_data.category.id  %}';
+    }
+
+    function increment_api(team_id){
+        fetch('{% url "api:score_match" match_data.id %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                "inc": true,
+                "team_id": team_id
+            })
+        })
+    }
+</script>
+{% endblock body %}

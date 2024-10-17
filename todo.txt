@@ -1,0 +1,12 @@
+set complete is not working automatically
+
+1 more issue
+    if major matches won by team then directly call match win,
+    better we can do that in view it self.
+
+recode all the html codes or do a check.
+
+when set completed -> call update score html side
+    
+todo, 
+    - for scoring url i removed category_id so remove it from passing in html pages

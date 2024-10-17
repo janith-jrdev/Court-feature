@@ -1,0 +1,7 @@
+<form action="" method="post">
+    {% csrf_token %}
+    {% for org in orgs %}
+    <input type="radio" name="org" value="{{ org.id }}"> {{ org.name }}<br>
+    {% endfor %}
+    <button type="submit">Submit</button>
+</form>

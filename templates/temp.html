@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scoreboard</title>
+</head>
+<body>
+
+    <h2>Set: <span id="set-info">1</span></h2>
+
+    <div>
+        <h3>Team A: <span id="scoreA">0</span></h3>
+        <button onclick="incrementScore('A')">+</button>
+    </div>
+    
+    <div>
+        <h3>Team B: <span id="scoreB">0</span></h3>
+        <button onclick="incrementScore('B')">+</button>
+    </div>
+    
+    <div>
+        <button onclick="completeSet()">Complete Set</button>
+    </div>
+    
+    <h3>Results:</h3>
+    <div id="results"></div>
+
+    <script>
+        let scoreA = 0;
+        let scoreB = 0;
+        let setNumber = 1;
+        const maxScore = 15;
+        const maxSets = 3;
+
+        function incrementScore(team) {
+            if (team === 'A' && scoreA < maxScore) {
+                scoreA++;
+                document.getElementById('scoreA').innerText = scoreA;
+            } else if (team === 'B' && scoreB < maxScore) {
+                scoreB++;
+                document.getElementById('scoreB').innerText = scoreB;
+            }
+        }
+
+        function completeSet() {
+            if (setNumber <= maxSets) {
+                const result = document.createElement('p');
+                result.innerText = `Set ${setNumber}: Team A: ${scoreA} - Team B: ${scoreB}`;
+                document.getElementById('results').appendChild(result);
+                
+                setNumber++;
+                resetScores();
+                
+                if (setNumber <= maxSets) {
+                    document.getElementById('set-info').innerText = setNumber;
+                } else {
+                    document.getElementById('set-info').innerText = 'Game Over';
+                }
+            }
+        }
+
+        function resetScores() {
+            scoreA = 0;
+            scoreB = 0;
+            document.getElementById('scoreA').innerText = scoreA;
+            document.getElementById('scoreB').innerText = scoreB;
+        }
+    </script>
+
+</body>
+</html>

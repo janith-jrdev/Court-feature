@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sportshunt</title>
+    <link href="https://fonts.googleapis.com/css2?family=Love+Ya+Like+A+Sister&family=Cinzel+Decorative&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/TextPlugin.min.js"></script>
+    <style>
+        :root {
+            --color-mint: #84DCCF;
+            --color-vermilion: #0066ff;
+            --color-black: #000000;
+            --color-yellow: #F2E863;
+            --color-white: #FCF7FF;
+        }
+
+        @font-face {
+            font-family: 'heal_the_web';
+            src: url("{% static 'fonts/HealTheWebB-Regular.otf' %}")format('opentype');
+        }
+
+        @font-face {
+            font-family: 'gloock';
+            src: url("{% static 'fonts/Gloock-Regular.otf' %}")format('opentype');
+        }
+
+        @font-face {
+            font-family: 'humion';
+            src: url("{% static 'fonts/mahliga.otf' %}")format('opentype');
+        }
+
+        @font-face {
+            font-family: 'bonivar';
+            src: url("{% static 'fonts/BONIVAR.otf' %}")format('opentype');
+        }
+
+        @font-face {
+            font-family: 'gendy';
+            src: url("{% static 'fonts/gendy.otf' %}")format('opentype');
+        }
+
+        body {
+            font-family: humion, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-vermilion);
+        }
+
+        p {
+            font-family: humion, sans-serif;
+        }
+    </style>
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ofzol93vxd");
+    </script>
+</head>
+
+<body>
+    <!-- navbar -->
+    {% include "components/navbar.html" %}
+
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+
+    <!-- body content -->
+    {% block body %}
+    <!-- messages -->
+    {% for message in messages %}
+    <div>{{ message }}</div>
+    {% endfor %}
+
+    {% endblock body %}
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
+</body>
+
+</html>

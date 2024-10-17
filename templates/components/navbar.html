@@ -1,0 +1,131 @@
+<!-- nav bar -->
+{% load static %}
+<style>
+    nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background-color: var(--color-black);
+    }
+
+
+    .nav-buttons a {
+        font: 'gloock' sans-serif;
+        font-size: 2rem;
+        padding: 0.5rem 1rem;
+        margin-left: 0.5rem;
+        border: none;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .nav-buttons a:first-child {
+        background-color: var(--color-white);
+        color: var(--color-black);
+    }
+
+    .nav-buttons a:last-child {
+        background-color: var(--color-white);
+        color: var(--color-black);
+    }
+
+    .nav-buttons a:hover {
+        background-color: var(--color-yellow);
+    }
+</style>
+
+<nav>
+    <div class="logo">
+        <img src="{% static 'logos\sh-full-logo.png' %}" alt="Sportshunt logo" style="width: 250px; height: auto;" />
+    </div>
+    <div class="nav-buttons">
+        {% if user.is_authenticated %}
+
+        <button id="dropdownInformationButton" type="button" style="color: white; background-color: #1D4ED8; padding: 0.625rem 1.25rem; border-radius: 0.5rem; font-size: 1.5rem; display: inline-flex; align-items: center; border: none; cursor: pointer; transition: background-color 0.3s; font-family: bonivar, gendy;">
+            {{user.username}}
+            <svg style="width: 1.25rem; height: 1.25rem; margin-left: 0.75rem;" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+            </svg>
+        </button>
+
+        <!-- Dropdown menu -->
+        <div id="dropdownInformation" style="display: none; z-index: 99; padding: 20px; background-color: aqua; position: absolute; top: 3rem; right: 0; border-radius: 0.5rem; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                <li style="margin-bottom: 0.5rem;">
+                    <a href="{% url 'core:getting_started' %}" style="text-decoration: none; color: black;">Get Started</a>
+                </li>
+                {% if user.is_organizer %}
+                <li style="margin-bottom: 0.5rem;">
+                    <a href="{% url 'org:index' %}" style="text-decoration: none; color: black;">Organization Dashboard</a> 
+                </li>
+                {% endif %}
+                <li style="margin-bottom: 0.5rem;">
+                    <a href="{% url 'core:profile' %}" style="text-decoration: none; color: black;">Profile</a>
+                </li>
+                <li style="margin-bottom: 0.5rem;">
+                    <a href="#" style="text-decoration: none; color: black;">Orders</a>
+                </li>
+            </ul>
+            <div style="padding-top: 0.5rem;">
+                <a href="{% url 'core:logout' %}" style="text-decoration: none; color: black;">Sign out</a>
+            </div>
+        </div>
+
+        <script>
+            function toggleDropdown() {
+                var dropdown = document.getElementById('dropdownInformation');
+                if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+                    dropdown.style.display = 'block';
+                } else {
+                    dropdown.style.display = 'none';
+                }
+            }
+
+            function closeDropdown(event) {
+                var dropdown = document.getElementById('dropdownInformation');
+                var button = document.getElementById('dropdownInformationButton');
+                if (!dropdown.contains(event.target) && !button.contains(event.target)) {
+                    dropdown.style.display = 'none';
+                }
+            }
+
+            document.getElementById('dropdownInformationButton').addEventListener('click', toggleDropdown);
+            document.addEventListener('click', closeDropdown);
+
+            // Media query to handle mobile view
+            var mediaQuery = window.matchMedia('(max-width: 768px)');
+            mediaQuery.addListener(function(e) {
+                if (e.matches) {
+                    document.getElementById('dropdownInformationButton').innerHTML = `
+                        <svg style="width: 1.5rem; height: 1.5rem;" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                    `;
+                } else {
+                    document.getElementById('dropdownInformationButton').innerHTML = `
+                        {{user.username}}
+                        <svg style="width: 1.25rem; height: 1.25rem; margin-left: 0.75rem;" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+                        </svg>
+                    `;
+                }
+            });
+
+            // Initial check
+            if (mediaQuery.matches) {
+                document.getElementById('dropdownInformationButton').innerHTML = `
+                    <svg style="width: 1.5rem; height: 1.5rem;" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                `;
+            }
+        </script>
+
+        {% else %}
+        <a href="{% url 'core:login' %}">Login</a>
+        <a href="{% url 'core:getting_started' %}">Getting Started</a>
+        {% endif %}
+    </div>
+</nav>

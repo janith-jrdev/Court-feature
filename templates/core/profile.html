@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block body %}
+<style>
+.container {
+    width: 100%;
+    max-width: 44rem;
+    padding: 1rem;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+
+    font-family: Gloock;
+}
+
+.card {
+    width: 100%;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.card-header {
+    text-align: center;
+    padding: 2rem;
+}
+
+.avatar {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    background-color: #e5e7eb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    color: #4b5563;
+    overflow: hidden;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.card-content {
+    padding: 1.5rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+@media (min-width: 640px) {
+    .info-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.info-item h2 {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0 0 0.25rem;
+}
+
+.info-item p {
+    font-size: 0.875rem;
+    color: #111827;
+    margin: 0;
+}
+
+.card-footer {
+    padding: 1.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.button {
+    background-color: #ef4444;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.button:hover {
+    background-color: #dc2626;
+}
+</style>
+
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <div class="avatar" id="avatar">
+                <span class="avatar-fallback" id="avatarFallback"></span>
+                {% if auth0_user.extra_data.picture %}
+                    <img src="{{ auth0_user.extra_data.picture }}" alt="img">
+                {% endif %}
+            </div>
+            <h1 class="card-title">Profile</h1>
+        </div>
+        <div class="card-content">
+            <div class="info-grid">
+                <div class="info-item">
+                    <h2>Username: <span style="color: #000000;">  {{ user.username }}</span></h2>
+                </div>
+                <div class="info-item">
+                    <h2>Email: <span style="color: #000000;">  {{ user.email }}</span> </h2>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'core:logout' %}" class="button">Logout</a>
+        </div>
+    </div>
+</div>
+
+
+{% endblock body %}

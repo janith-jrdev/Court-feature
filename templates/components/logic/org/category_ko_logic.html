@@ -1,0 +1,29 @@
+{% if not category.fixture.content_object %}
+    Error occured
+{% else %}
+<!-- if manual -->
+    {% if category.fixture.content_object.fixing_manual %}
+        {% if not category.fixture.content_object.bracket_matches.all %}
+            {% if category.fixture.scheduled_matches.all %} 
+                Matches are scheduled.
+                <a href="{% url 'org:scheduled_matches' category_data.id %}">Scheduled Matches</a>
+                <!-- replace here -->
+            {% else %}
+                {% if category.fixture.content_object.bracket_teams.all %}
+                    {% include "components/forms/organization/create_match.html" %}
+                {% endif %}
+            {% endif %}
+
+        {% else %}
+            <!-- add schedule match popup here  -->
+            Schedule matches
+            {% include "components/forms/organization/schedule_matches.html" %}
+            <br>
+            {% if category.fixture.scheduled_matches.all %}
+                Matches are scheduled.
+                <a href="{% url 'org:scheduled_matches' category_data.id %}">Scheduled Matches</a>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% endif %}
+    

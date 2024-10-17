@@ -1,0 +1,183 @@
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f0f0f0;
+    }
+
+    .tournament-container {
+        width: 100%;
+        overflow-x: auto;
+        padding: 20px;
+        box-sizing: border-box;
+        position: relative;
+    }
+
+    .tournament-bracket {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        min-width: max-content;
+    }
+
+    .round {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        height: 100%;
+        margin-right: 20px;
+    }
+
+    .match {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        width: 120px;
+        font-size: 12px;
+    }
+
+    .team {
+        padding: 5px;
+        margin-bottom: 5px;
+        border-radius: 4px;
+    }
+
+    .winner {
+        background-color: #333;
+        color: white;
+    }
+
+    .loser {
+        background-color: #ccc;
+        color: #333;
+    }
+
+    .pending {
+        background-color: #eee;
+    }
+
+    .placeholder {
+        background-color: #f8f8f8;
+        border: 1px dashed #ccc;
+    }
+
+    #bracket-svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    @media (max-width: 768px) {
+        .match {
+            width: 100px;
+            font-size: 10px;
+        }
+    }
+</style>
+
+<div class="tournament-container" id="tournamentContainer">
+    <div class="tournament-bracket" id="tournamentBracket">
+        <!-- Rounds will be dynamically inserted here -->
+    </div>
+    <svg id="bracket-svg"></svg>
+</div>
+
+<script>
+    const tournamentData = JSON.parse({{ fixture_json | safe }});
+
+    function createTournamentBracket(data) {
+        const bracketContainer = document.getElementById('tournamentBracket');
+        const totalRounds = data.rounds.length;
+        const matchesPerRound = Math.max(...data.rounds.map(round => round.matches.length));
+        const containerHeight = matchesPerRound * 150; // Adjust 150 based on match height and spacing
+
+        document.querySelector('.tournament-bracket').style.height = `${containerHeight}px`;
+
+        data.rounds.forEach((round, roundIndex) => {
+            const roundElement = document.createElement('div');
+            roundElement.className = 'round';
+            round.matches.forEach((match, matchIndex) => {
+                const matchElement = document.createElement('div');
+                matchElement.className = 'match';
+
+                if (match.id === null) {
+                    // Create a placeholder for future matches
+                    matchElement.classList.add('placeholder');
+                    matchElement.id = `placeholder-${roundIndex}-${matchIndex}`;
+                    match.teams.forEach((team, teamIndex) => {
+                        const teamElement = document.createElement('div');
+                        teamElement.className = 'team';
+                        teamElement.textContent = team || 'TBD';
+                        matchElement.appendChild(teamElement);
+                    });
+                } else {
+                    matchElement.id = `match-${match.id}`;
+                    match.teams.forEach((team, teamIndex) => {
+                        const teamElement = document.createElement('div');
+                        teamElement.className = 'team';
+                        teamElement.textContent = team || 'TBD';
+                        if (match.winner === null) {
+                            teamElement.classList.add('pending');
+                        } else if (match.winner === teamIndex) {
+                            teamElement.classList.add('winner');
+                        } else {
+                            teamElement.classList.add('loser');
+                        }
+                        matchElement.appendChild(teamElement);
+                    });
+                }
+                roundElement.appendChild(matchElement);
+            });
+            bracketContainer.appendChild(roundElement);
+        });
+    }
+
+    function drawConnectingLines() {
+        const svg = document.getElementById('bracket-svg');
+        svg.innerHTML = ''; // Clear existing lines
+        const bracketContainer = document.getElementById('tournamentContainer');
+        const containerRect = bracketContainer.getBoundingClientRect();
+        const scrollLeft = bracketContainer.scrollLeft;
+
+        tournamentData.rounds.forEach((round, roundIndex) => {
+            if (roundIndex < tournamentData.rounds.length - 1) {
+                round.matches.forEach((match, matchIndex) => {
+                    const currentMatch = document.getElementById(`match-${match.id}`) ||
+                        document.getElementById(`placeholder-${roundIndex}-${matchIndex}`);
+                    const nextMatchIndex = Math.floor(matchIndex / 2);
+                    const nextMatch = document.getElementById(`match-${tournamentData.rounds[roundIndex + 1].matches[nextMatchIndex].id}`) ||
+                        document.getElementById(`placeholder-${roundIndex + 1}-${nextMatchIndex}`);
+
+                    if (currentMatch && nextMatch) {
+                        const currentRect = currentMatch.getBoundingClientRect();
+                        const nextRect = nextMatch.getBoundingClientRect();
+
+                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        line.setAttribute('x1', currentRect.right - containerRect.left + scrollLeft);
+                        line.setAttribute('y1', currentRect.top + currentRect.height / 2 - containerRect.top);
+                        line.setAttribute('x2', nextRect.left - containerRect.left + scrollLeft);
+                        line.setAttribute('y2', nextRect.top + nextRect.height / 2 - containerRect.top);
+                        line.setAttribute('stroke', '#ccc');
+                        line.setAttribute('stroke-width', '1');
+                        svg.appendChild(line);
+                    }
+                });
+            }
+        });
+    }
+
+    window.addEventListener('load', () => {
+        createTournamentBracket(tournamentData);
+        drawConnectingLines();
+    });
+
+    window.addEventListener('resize', drawConnectingLines);
+
+    // Add scroll event listener to update lines when scrolling
+    document.getElementById('tournamentContainer').addEventListener('scroll', drawConnectingLines);
+</script>

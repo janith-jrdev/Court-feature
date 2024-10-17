@@ -1,0 +1,77 @@
+{% extends "organization/base.html" %}
+
+{% block body %}
+<main class="container mx-auto mt-8 p-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="md:col-span-2">
+            <h2 class="text-3xl font-bold">{{ category.name }}</h2>
+            <h3 class="text-xl text-gray-600"> in {{ category.tournament.name }}</h3>
+
+            <!-- offline reg and close reg -->
+            {% if category.registration_status %}
+                {% include "components/forms/organization/offline_entry_close_reg.html" %}
+            {% elif not category.fixture %}
+                {% include "components/forms/organization/create_fixture.html" %}
+            {% else %}
+                {% if category.fixture.content_object %}
+                    <!-- fixture type KO, RR, KO+RR -->
+                    {% if category.fixture.fixtureType == 'KO' %}
+                        <!-- Manual, Automatic -->
+                        {% if category.fixture.content_object.fixing_manual %}
+                            {% if not category.fixture.content_object.bracket_matches.all and not category.fixture.scheduled_matches.all %}
+                                {% if category.winner %}
+                                  {{ category.winner.name }} is the winner
+                                  <h3>Fixture Diagram</h3>
+                                  {% include "components/fixture_diagram.html" %}
+                                {% else %}
+                                    {% include "components/forms/organization/create_match.html" %}
+                                {% endif %}
+                            {% else %}
+                                <h3>Fixture Diagram</h3>
+                                {% include "components/fixture_diagram.html" %}
+                            {% endif %}
+                        {% else %}
+                            Automatic Coming soon
+                        {% endif %}
+                    {% else %}
+                        Coming soon
+                    {% endif %}
+                {% else %}
+                    Error occured
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow">
+            <!-- Add team list here -->
+            {% if not scheduled_matches and not category.fixture.content_object.bracket_matches.all %}
+                <h4 class="text-lg font-semibold mb-4">Teams</h4>
+                <div class="grid grid-cols-1 gap-4">
+                    {% for team in category.teams.all %}
+                        <div class="p-4 bg-white rounded-lg shadow hover:bg-gray-100 transition duration-300">
+                            <p class="text-sm font-medium">{{ team.name }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {% if scheduled_matches %}
+                    <h4 class="text-lg font-semibold mb-4">Scheduled Matches</h4>
+                    <ul class="space-y-2">
+                        {% for match in scheduled_matches %}
+                            <li class="p-4 bg-white rounded-lg shadow hover:bg-gray-100 transition duration-300">
+                                <a href="{% url 'org:scoring' match.id %}" class="text-blue-600 hover:underline">
+                                    {{ match.team1.name }} vs {{ match.team2.name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {% if category.fixture.content_object.bracket_matches.all %}
+                    {% include "components/forms/organization/schedule_matches.html" %}
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
+{% endblock body %}
