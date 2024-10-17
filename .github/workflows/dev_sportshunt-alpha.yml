@@ -58,32 +58,23 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
-      - name: Install ODBC Driver 18 for SQL Server
-        run: |
-          sudo su
-          curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-          curl https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/prod.list > /etc/apt/sources.list.d/mssql-release.list
-          exit
-          sudo apt-get update
-          sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
-          sudo apt-get install -y unixodbc-dev
-
+     
       - name: Create virtual environment and install dependencies
         run: |
           python -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
   
-      - name: Run Django migrations
+      - name: Run Django migrations (Production)
         run: |
           source venv/bin/activate
-          python manage.py makemigrations core organization
-          python manage.py migrate
+          python manage.prod.py makemigrations core organization
+          python manage.prod.py migrate
 
-      - name: Collect static files
+      - name: Collect static files (Production)
         run: |
           source venv/bin/activate
-          python manage.py collectstatic --noinput
+          python manage.prod.py collectstatic --noinput
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2

@@ -44,6 +44,16 @@ class User(AbstractUser):
         return (
             f"{self.username}"
         )
+    
+    @property
+    def has_additional_data(self):
+        return self.additional_data is not None
+    
+    @property
+    def is_organizer(self):
+        if self.additional_data:
+            return self.additional_data.is_organizer
+        return False
 
 
 class Order_addtional_details(models.Model):

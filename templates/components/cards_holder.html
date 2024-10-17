@@ -5,7 +5,7 @@
             <div class="tournament-card">
                 <h4>{{ tournament.name }}</h4>
                 <p>{{ tournament.start_date }}</p>
-                <a href="{% url 'core:tournament' tournament.id %}">Join Tournament</a>
+                <a href="{% url 'core:tournament' tournament.id %}">View Tournament</a>
             </div>
          {% endfor %}
     </div>

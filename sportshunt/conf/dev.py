@@ -13,26 +13,15 @@ ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = ["https://sportshunt-alpha.azurewebsites.net"]
 
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
-
 DATABASES = {
-    "default": {
-        "ENGINE": "mssql",
-        "NAME": "sportshunt-prod-db",
-        "USER": "theadmin",
-        "PASSWORD": "R-EsE4@DF@8FdHV6R2Aq",
-        "HOST": "sportshunt-db-prod-server.database.windows.net",
-        "PORT": "1433",
-        "OPTIONS": {
-            "driver": "ODBC Driver 18 for SQL Server",
-            "extra_params": "Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30",
-        },
-    },
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('PGDATABASE'),
+        'USER': os.getenv('PGUSER'),
+        'PASSWORD': os.getenv('PGPASSWORD'),
+        'HOST': os.getenv('PGHOST'),
+        'PORT': os.getenv('PGPORT'),
+    }
 }
 
 

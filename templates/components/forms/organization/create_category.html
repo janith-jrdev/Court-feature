@@ -1,13 +1,62 @@
-<form method="post">
-    {% csrf_token %}
-    <label for="category_name">Category Name:</label>
-    <input type="text" id="category_name" name="name" required>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f3f4f6;
+    }
 
-    <label for="details">Details:</label>
-    <textarea id="details" name="details" rows="4"></textarea>
+    .main-container {
+        display: flex;
+        height: 100vh;
+    }
 
-    <label for="price">Price:</label>
-    <input type="number" id="price" name="price" min="0" required>
+    .left-side {
+        flex: 1;
+        background-color: #f3f4f6;
+    }
 
-    <button type="submit">Create</button>
-</form>
+    .right-side {
+        flex: 1;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background-color: #ffffff;
+    }
+
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+</style>
+
+<div class="main-container">
+    <div class="left-side">
+        <!-- Optional content for the left side -->
+    </div>
+
+    <div class="right-side">
+        <div class="form-container" style="width: 100%;">
+            <form method="post" >
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="category_name" class="block mb-2 text-sm font-medium text-gray-900">Category Name</label>
+                    <input type="text" id="category_name" name="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Enter category name" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="details" class="block mb-2 text-sm font-medium text-gray-900">Details</label>
+                    <textarea id="details" name="details" rows="4" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Enter details"></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label for="price" class="block mb-2 text-sm font-medium text-gray-900">Price</label>
+                    <input type="number" id="price" name="price" min="0" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Enter price" required>
+                </div>
+
+                <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full">Create</button>
+            </form>
+        </div>
+    </div>
+</div>

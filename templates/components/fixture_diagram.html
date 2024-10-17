@@ -19,7 +19,6 @@
         justify-content: flex-start;
         align-items: center;
         min-width: max-content;
-        height: calc(100vh - 40px);
     }
 
     .round {
@@ -93,6 +92,12 @@
 
     function createTournamentBracket(data) {
         const bracketContainer = document.getElementById('tournamentBracket');
+        const totalRounds = data.rounds.length;
+        const matchesPerRound = Math.max(...data.rounds.map(round => round.matches.length));
+        const containerHeight = matchesPerRound * 150; // Adjust 150 based on match height and spacing
+
+        document.querySelector('.tournament-bracket').style.height = `${containerHeight}px`;
+
         data.rounds.forEach((round, roundIndex) => {
             const roundElement = document.createElement('div');
             roundElement.className = 'round';

@@ -6,25 +6,25 @@
     }
 
     #hero {
-        font-family: 'Love Ya Like A Sister', cursive;
+        font-family: 'heal_the_web', gendy, sans-serif;
         font-size: 8rem;
         /* Increased font size */
-        color: #2e5339;
+        color: var(--color-yellow);
         margin-bottom: 1rem;
         line-height: 1.2;
         /* Added for better spacing */
     }
 
     #subtitle {
-        font-family: 'Cinzel Decorative', cursive;
+        font-family: 'gloock', sans-serif;
         font-size: 2rem;
         /* Increased font size */
-        color: #2e5339;
+        color: var(--color-yellow);
         margin-bottom: 3rem;
     }
 
     .tournaments {
-        background-color: #5e8c61;
+        background-color: var(--color-black);
         padding: 1rem;
         border-radius: 0.5rem;
         margin: 0 3%;
@@ -38,13 +38,13 @@
     }
 
     .tournaments-title {
-        font-family: 'Cinzel Decorative', cursive;
+        font-family: 'gloock', sans-serif;
         font-size: 1.5rem;
-        color: white;
+        color: var(--color-yellow);
     }
 
     .view-more {
-        color: #f0f3bd;
+        color: var(--color-mint);
         background: none;
         border: none;
         cursor: pointer;
@@ -52,7 +52,7 @@
     }
 
     .view-more:hover {
-        color: white;
+        color: var(--color-white);
     }
 
     .tournaments-container {
@@ -70,7 +70,7 @@
         flex-shrink: 0;
         width: 320px;
         height: 320px;
-        background-color: #f0f3bd;
+        background-color:var(--color-vermilion);
         padding: 1.5rem;
         border-radius: 0.5rem;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -85,22 +85,24 @@
     }
 
     .tournament-card h4 {
-        font-family: 'Cinzel Decorative', cursive;
-        font-size: 1.5rem;
-        color: #2e5339;
+        font-family: 'bonivdaar', humion, sans-serif;
+        font-size: 2.5rem;
+        color: var(--color-white);
         margin-bottom: 1rem;
     }
 
     .tournament-card p {
-        color: #5e8c61;
+        color: var(--color-white);
+        font-size: 2rem;
         margin-bottom: 1rem;
     }
 
     .tournament-card a {
-        background-color: #5e8c61;
-        color: white;
+        background-color: var(--color-mint);
+        color: var(--color-black);
+        font-size: 2rem;
         border: none;
-        padding: 0.5rem 1rem;
+        padding: 0.25rem .5rem;
         border-radius: 0.25rem;
         cursor: pointer;
         transition: background-color 0.3s;
@@ -108,15 +110,11 @@
     }
 
     .tournament-card a:hover {
-        background-color: #2e5339;
+        background-color: var(--color-yellow);
     }
 
     .tournaments-container::-webkit-scrollbar {
-        /* width: 12px; */
-        /* Set the width of the scrollbar */
-        /* height: 12px; */
-        /* Set the height for horizontal scrollbar */
-        color: #000;
+        color: var(--color-black);
     }
 </style>
 
@@ -128,7 +126,7 @@
     <div class="tournaments">
         <div class="tournaments-header">
             <h3 class="tournaments-title" id="section-title">UPCOMING TOURNAMENTS</h3>
-            <button class="view-more">View More</button>
+            <!-- <button class="view-more">View More</button> -->
         </div>
         {% include "components/cards_holder.html" with tournaments=upcoming_tournaments %}
     </div>
@@ -137,29 +135,6 @@
 <script>
     gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
-    const tournaments = [
-        { id: 1, name: "Tournament 1", date: "June 15, 2023" },
-        { id: 2, name: "Tournament 2", date: "July 1, 2023" },
-        { id: 3, name: "Tournament 3", date: "July 10, 2023" },
-        { id: 4, name: "Tournament 4", date: "July 20, 2023" },
-        { id: 5, name: "Tournament 5", date: "August 5, 2023" },
-        { id: 6, name: "Tournament 6", date: "August 15, 2023" },
-    ];
-
-    // const tournamentsScroll = document.getElementById('tournaments-scroll');
-
-    // tournaments.forEach(tournament => {
-    //     const card = document.createElement('div');
-    //     card.className = 'tournament-card';
-    //     card.innerHTML = `
-    //         <h4>${tournament.name}</h4>
-    //         <p>${tournament.date}</p>
-    //         <button>Join Tournament</button>
-    //     `;
-    //     tournamentsScroll.appendChild(card);
-    // });
-
-    // Hero text animation
     gsap.from("#hero", {
         duration: 1,
         y: 50,
@@ -167,16 +142,22 @@
         ease: "power3.out",
     });
 
-    // Subtitle rolling text reveal
-    gsap.to("#subtitle", {
-        duration: .5,
-        text: "PROVE YOUR POINT.",
-        ease: "none",
-        delay: 0,
-        onComplete: () => {
-            gsap.to("#subtitle", { duration: 1, opacity: 1, ease: "power3.out" });
-        }
-    });
+    function toggleText() {
+        const heroElement = document.getElementById("hero");
+        const newText = heroElement.textContent === "Get. Set. Hunt!" ? "Prove Your Point." : "Get. Set. Hunt!";
+        
+        gsap.to("#hero", {
+            duration: 2.5,
+            text: newText,
+            ease: "none",
+            onComplete: () => {
+                setTimeout(toggleText, 3000); // Change text every 5 seconds
+            }
+        });
+    }
+
+    // Initial call to start the loop
+    setTimeout(toggleText, 4000);
 
 
     // Section title animation

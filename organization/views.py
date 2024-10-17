@@ -14,7 +14,6 @@ def index(req):
     org = Organization.objects.get(id=org_id)
     past_tournaments = org.tournaments.filter(end_date__lt=datetime.now()).order_by('-start_date')
     upcoming_tournaments = org.tournaments.filter(start_date__gte=datetime.now()).order_by('start_date')
-    print(past_tournaments, upcoming_tournaments)
     context = {
         'past_tournaments': past_tournaments,
         'upcoming_tournaments': upcoming_tournaments,

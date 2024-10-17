@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse, redirect
+from django.shortcuts import render, HttpResponse, redirect, HttpResponseRedirect
 from .models import *
 from django.contrib.auth import logout 
 from django.urls import reverse
@@ -39,7 +39,6 @@ def logout_view(req):
     
     return HttpResponseRedirect(f"https://{domain}/v2/logout?client_id={client_id}&returnTo={return_to}")
 
-@userdataDecorator
 def additionalUserdata_view(req):
     if req.method == 'POST':
         if addtionalUserData_validator(req.POST, req):
@@ -52,7 +51,6 @@ def additionalUserdata_view(req):
 @userdataDecorator
 def profile_view(req):
     # future add like a serializer to get the user data [ if custom profile then send that or else the other one]
-    
     
     auth0_user = None
     if req.user.social_auth.exists():
@@ -131,3 +129,7 @@ def orders_view(req):
     return render(req, 'core/orders.html', {
         "orders": orders,
     })
+    
+def getting_started_view(req):
+    # return render(req, 'core/getting_started.html')
+    return HttpResponse("<h1>Getting Started</h1>")

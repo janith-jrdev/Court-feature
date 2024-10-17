@@ -8,6 +8,8 @@ urlpatterns = [
     path("userdata/", additionalUserdata_view, name="additional_userdata"), # change to api in future
     path("profile/", profile_view, name="profile"),
     path("tournaments/<int:tournament_id>/", tournament_view, name="tournament"),
+    
+    path("getting_started/", getting_started_view, name="getting_started"),
     # path("tournaments/<int:tournament_id>/<int:category_id>/", category_view, name="category"),
     # path("checkout/", checkout, name="checkout"),
     # path("orders/", orders_view, name="orders"),

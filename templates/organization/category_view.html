@@ -20,7 +20,9 @@
                         {% if category.fixture.content_object.fixing_manual %}
                             {% if not category.fixture.content_object.bracket_matches.all and not category.fixture.scheduled_matches.all %}
                                 {% if category.winner %}
-                                  {{ category.winner }} is the winner
+                                  {{ category.winner.name }} is the winner
+                                  <h3>Fixture Diagram</h3>
+                                  {% include "components/fixture_diagram.html" %}
                                 {% else %}
                                     {% include "components/forms/organization/create_match.html" %}
                                 {% endif %}
@@ -42,20 +44,31 @@
 
         <div class="bg-white p-6 rounded-lg shadow">
             <!-- Add team list here -->
-            {% if scheduled_matches %}
-                <h4 class="text-lg font-semibold mb-4">Scheduled match</h4>
-                {% for match in scheduled_matches %}
-                    <a href="{% url 'org:scoring' match.id %}">{{ match }}</a>
-                {% endfor %}
-            {% else %}
+            {% if not scheduled_matches and not category.fixture.content_object.bracket_matches.all %}
                 <h4 class="text-lg font-semibold mb-4">Teams</h4>
-                {% for team in category.teams.all %}
-                    {{ team.name }}
-                {% endfor %}
-            {% endif %}
-
-            {% if category.fixture.scheduled_matches %}
-                {% include "components/forms/organization/schedule_matches.html" %}
+                <div class="grid grid-cols-1 gap-4">
+                    {% for team in category.teams.all %}
+                        <div class="p-4 bg-white rounded-lg shadow hover:bg-gray-100 transition duration-300">
+                            <p class="text-sm font-medium">{{ team.name }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {% if scheduled_matches %}
+                    <h4 class="text-lg font-semibold mb-4">Scheduled Matches</h4>
+                    <ul class="space-y-2">
+                        {% for match in scheduled_matches %}
+                            <li class="p-4 bg-white rounded-lg shadow hover:bg-gray-100 transition duration-300">
+                                <a href="{% url 'org:scoring' match.id %}" class="text-blue-600 hover:underline">
+                                    {{ match.team1.name }} vs {{ match.team2.name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {% if category.fixture.content_object.bracket_matches.all %}
+                    {% include "components/forms/organization/schedule_matches.html" %}
+                {% endif %}
             {% endif %}
         </div>
     </div>

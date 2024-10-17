@@ -2,85 +2,163 @@
 
 {% block body %}
 <style>
+    .container {
+        min-height: 90vh;
+        min-width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: #f7fafc;
+        padding: 1rem;
+    }
+    .header {
+        font-family: gloock;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+    }
+    .scoreboard {
+        display: flex;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
     .team-card {
         transition: transform 0.5s ease-in-out;
+        width: 16rem;
+        background-color: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        padding: 1.5rem;
+        text-align: center;
     }
-
-    .switch-left {
-        transform: translateX(180px);
+    .team-card-left {
+        margin-right: 2rem;
     }
-
-    .switch-right {
-        transform: translateX(-180px);
+    .team-card-right {
+        margin-left: 2rem;
     }
-
-    .hidden {
-        opacity: 0;
+    .team-name {
+        font-family: heal_the_web;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
     }
-
-    .fade-in {
-        animation: fadeIn 0.5s ease-in-out forwards;
+    .team-score {
+        font-family: heal_the_web;
+        font-size: 4rem;
+        margin-bottom: 1rem;
     }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-        }
-
-        to {
-            opacity: 1;
-        }
+    .button-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .button {
+        width: 100%;
+        padding: 0.5rem 1rem;
+        color: white;
+        border-radius: 0.25rem;
+        transition: background-color 0.2s;
+    }
+    button {
+        font-family: gendy;
+        font-size: 2rem;
+        font-weight: 700;
+    }
+    .button-green {
+        background-color: #16a34a;
+    }
+    .button-green:hover {
+        background-color: #15803d;
+    }
+    .button-red {
+        background-color: #dc2626;
+    }
+    .button-red:hover {
+        background-color: #b91c1c;
+    }
+    .controls {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+    .control-button {
+        padding: 0.5rem 1.5rem;
+        color: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        transition: background-color 0.2s;
+    }
+    .button-blue {
+        background-color: #2563eb;
+    }
+    .button-blue:hover {
+        background-color: #1d4ed8;
+    }
+    .button-yellow {
+        background-color: #eab308;
+    }
+    .button-yellow:hover {
+        background-color: #ca8a04;
+    }
+    .info {
+        margin-top: 1rem;
+        font-family: heal_the_web;
+        font-weight: 700;
+        font-size: 3.75rem;
+    }
+    .info-text {
+    }
+    .winner-message {
+        margin-top: 2rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #22c55e;
     }
 </style>
 
-<h1 class="text-4xl font-bold text-center mt-8">Match Scoreboard{{ match_data.team2_id }}</h1>
-
-<div class="flex justify-center items-center mt-8">
-    <div class="team-card p-6 border-2 rounded-lg shadow-lg bg-white text-center mr-8" id="teamA">
-        <div class="team-name text-2xl font-semibold">{{match_data.team1.name}}</div>
-        <div class="team-score text-6xl mt-4" id="scoreA">{{ match_data.current_set.team1_score }}</div>
+<div class="container">
+    <h1 class="header">Match Scoreboard</h1>
+    
+    <div class="scoreboard">
+        <div id="teamA" class="team-card team-card-left">
+            <h2 class="team-name">{{match_data.team1.name}}</h2>
+            <p id="scoreA" class="team-score">{{ match_data.current_set.team1_score }}</p>
+            <div class="button-group">
+                <button onclick="increaseScore('A')" class="button button-green">+1</button>
+                <button onclick="decreaseScore('A')" class="button button-red">-1</button>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="startMatch" class="control-button button-blue">Start Match</button>
+            <button id="switchTeams" class="control-button button-yellow">Switch Teams</button>
+        </div>
+        
+        <div id="teamB" class="team-card team-card-right">
+            <h2 class="team-name">{{match_data.team2.name}}</h2>
+            <p id="scoreB" class="team-score">{{ match_data.current_set.team2_score }}</p>
+            <div class="button-group">
+                <button onclick="increaseScore('B')" class="button button-green">+1</button>
+                <button onclick="decreaseScore('B')" class="button button-red">-1</button>
+            </div>
+        </div>
     </div>
-
-    <div class="controls flex flex-col items-center">
-        <button id="startMatch"
-            class="mb-4 py-2 px-6 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition">Start
-            Match</button>
-        <button id="switchTeams"
-            class="py-2 px-6 bg-yellow-500 text-white rounded-lg shadow-md hover:bg-yellow-600 transition">Switch
-            Teams</button>
+    
+    <div class="info">
+        <p >Set Number: <span id="setNumber" class="info-text">{{ match_data.current_set.set_no }}</span></p>
+        <p>Points to Win: <span id="pointsToWin" class="info-text">{{ match_data.win_points }}</span></p>
     </div>
-
-    <div class="team-card p-6 border-2 rounded-lg shadow-lg bg-white text-center ml-8" id="teamB">
-        <div class="team-name text-2xl font-semibold">{{match_data.team2.name}}</div>
-        <div class="team-score text-6xl mt-4" id="scoreB">{{ match_data.current_set.team2_score }}</div>
-    </div>
+    
+    <div id="winnerMessage" class="winner-message"></div>
 </div>
-
-<div class="flex justify-center mt-8">
-    <button onclick="increaseScore('A')"
-        class="py-2 px-6 bg-green-600 text-white rounded-lg shadow-md mr-4 hover:bg-green-700 transition">+1 Team
-        A</button>
-    <button onclick="decreaseScore('A')"
-        class="py-2 px-6 bg-red-600 text-white rounded-lg shadow-md mr-4 hover:bg-red-700 transition">-1 Team
-        A</button>
-    <button onclick="increaseScore('B')"
-        class="py-2 px-6 bg-green-600 text-white rounded-lg mr-4 shadow-md hover:bg-green-700 transition">+1 Team
-        B</button>
-    <button onclick="decreaseScore('B')"
-        class="py-2 px-6 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 transition">-1 Team B</button>
-</div>
-
-<div class="text-center mt-8">
-    <p>Set Number: <span id="setNumber" class="font-bold">1</span></p>
-    <p>Points to Win: <span id="pointsToWin" class="font-bold">5</span></p>
-</div>
-
-<div id="winnerMessage" class="mt-8 text-2xl font-bold text-green-500"></div>
 
 <script>
     let scoreA = {{ match_data.current_set.team1_score }};
     let scoreB = {{ match_data.current_set.team2_score }};
-    let  teamA_id = {{ match_data.team1_id }};
+    let teamA_id = {{ match_data.team1_id }};
     let teamB_id = {{ match_data.team2_id }};
     let setNumber = {{ match_data.current_set.set_no }};
     let pointsToWin = {{ match_data.win_points }};
@@ -88,6 +166,7 @@
     let setsWonA = {{ team_wins.team1 }};
     let setsWonB = {{ team_wins.team2 }};
     const maxSets = {{ match_data.no_sets }};
+    let isTeamsSwitched = false;
 
     const scoreADisplay = document.getElementById('scoreA');
     const scoreBDisplay = document.getElementById('scoreB');
@@ -95,13 +174,11 @@
     const pointsToWinDisplay = document.getElementById('pointsToWin');
     const winnerMessage = document.getElementById('winnerMessage');
 
-    // Start the match and enable score buttons
     document.getElementById('startMatch').addEventListener('click', () => {
         matchStarted = true;
         alert('Match Started! Now you can update the scores.');
     });
 
-    // Switch team cards with animation
     document.getElementById('switchTeams').addEventListener('click', () => {
         const teamA = document.querySelector('#teamA');
         const teamB = document.querySelector('#teamB');
@@ -109,18 +186,18 @@
         teamB.classList.add('switch-right');
 
         setTimeout(() => {
-            // Swap team names
-            const teamAName = document.querySelector('#teamA .team-name').innerText;
-            const teamBName = document.querySelector('#teamB .team-name').innerText;
+            const teamAName = teamA.querySelector('.team-name').innerText;
+            const teamBName = teamB.querySelector('.team-name').innerText;
 
-            document.querySelector('#teamA .team-name').innerText = teamBName;
-            document.querySelector('#teamB .team-name').innerText = teamAName;
+            teamA.querySelector('.team-name').innerText = teamBName;
+            teamB.querySelector('.team-name').innerText = teamAName;
 
-            // Reset animations
             teamA.classList.remove('switch-left');
             teamB.classList.remove('switch-right');
             teamA.classList.add('fade-in');
             teamB.classList.add('fade-in');
+
+            isTeamsSwitched = !isTeamsSwitched;
 
             setTimeout(() => {
                 teamA.classList.remove('fade-in');
@@ -129,44 +206,39 @@
         }, 500);
     });
 
-    // Increase score
     function increaseScore(team) {
         if (!matchStarted) {
             alert('Please start the match first!');
             return;
         }
-        if (team === 'A') {
+        const actualTeam = isTeamsSwitched ? (team === 'A' ? 'B' : 'A') : team;
+        if (actualTeam === 'A') {
             scoreA++;
             scoreADisplay.innerText = scoreA;
-            console.log(teamA_id);
             increment_api(teamA_id);
-            checkWinCondition();
-        } else if (team === 'B') {
+        } else if (actualTeam === 'B') {
             scoreB++;
             scoreBDisplay.innerText = scoreB;
-            console.log(teamB_id);
             increment_api(teamB_id);
-            checkWinCondition();
         }
+        checkWinCondition();
     }
 
-    // Decrease score
     function decreaseScore(team) {
         if (!matchStarted) {
             alert('Please start the match first!');
             return;
         }
-        if (team === 'A' && scoreA > 0) {
+        const actualTeam = isTeamsSwitched ? (team === 'A' ? 'B' : 'A') : team;
+        if (actualTeam === 'A' && scoreA > 0) {
             scoreA--;
             scoreADisplay.innerText = scoreA;
-        } else if (team === 'B' && scoreB > 0) {
+        } else if (actualTeam === 'B' && scoreB > 0) {
             scoreB--;
             scoreBDisplay.innerText = scoreB;
         }
     }
 
-
-    // Check if a team has won the set
     function checkWinCondition() {
         if (scoreA >= pointsToWin) {
             alert('Team A wins the set!');
@@ -179,7 +251,6 @@
         }
     }
 
-    // Reset the set after a win
     function resetSet() {
         scoreA = 0;
         scoreB = 0;
@@ -188,17 +259,15 @@
         setNumber++;
         setNumberDisplay.innerText = setNumber;
 
-        // Check if either team has won the majority of sets
         if (setsWonA === Math.ceil(maxSets / 2)) {
             declareWinner('A');
         } else if (setsWonB === Math.ceil(maxSets / 2)) {
             declareWinner('B');
         } else if (setNumber > maxSets) {
-            declareWinner();  // This will handle the case where all sets are played and it's a draw.
+            declareWinner();
         }
     }
 
-    // Declare the winner after a team wins the majority of sets
     function declareWinner(winningTeam = '') {
         matchStarted = false;
         if (winningTeam === 'A') {
@@ -206,17 +275,16 @@
         } else if (winningTeam === 'B') {
             winnerMessage.innerText = 'Team B is the overall winner!';
         } else {
-            // If no team has won the majority and all sets are played
             if (setsWonA > setsWonB) {
-                winnerMessage.innerText = 'Team A is the overall winner!';
+                alert('Team A is the overall winner!');
             } else if (setsWonB > setsWonA) {
-                winnerMessage.innerText = 'Team B is the overall winner!';
+                alert('Team B is the overall winner!');
             } else {
-                winnerMessage.innerText = 'It\'s a draw!';
+                alert('It\'s a draw!');
             }
         }
+        window.location.href = '{% url "org:category_view" match_data.category.tournament.id match_data.category.id  %}';
     }
-
 
     function increment_api(team_id){
         fetch('{% url "api:score_match" match_data.id %}', {
@@ -232,6 +300,4 @@
         })
     }
 </script>
-
-
 {% endblock body %}

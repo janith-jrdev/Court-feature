@@ -1,0 +1,11 @@
+{% load static %}
+
+<nav style="background-color: #333; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between;">
+    <img src="{% static 'logos\sh-full-logo.png' %}" alt="Sportshunt" style="width: 250px; height: auto;" />
+    <div class="user-info" style="display: flex; align-items: center;">
+        <svg style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A9.953 9.953 0 0112 15c2.21 0 4.21.722 5.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zM12 2a10 10 0 100 20 10 10 0 000-20z" />
+        </svg>
+        <span style="color: white; font-size: 1.2rem;">{{ user.username }}</span>
+    </div>
+</nav>

@@ -1,11 +1,17 @@
 {% extends "organization/base.html" %}
 
+<style>
+    .container-heading {
+        font-family: "gloock";
+    }
+</style>
+
 {% block body %}
 <main class="container mx-auto p-4 space-y-6">
-    <h2 class="text-3xl font-bold text-gray-800">Welcome, {{user}}</h2>
+    <h2 class="text-3xl font-bold text-gray-800" style="font-family: heal_the_web;">Welcome, {{user}}</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="bg-white rounded-lg shadow-md p-6">
-            <h3 class="text-xl font-semibold mb-4">Recent Entries</h3>
+            <h3 class="text-xl font-semibold mb-4" style="font-family: gloock;">Recent Entries</h3>
             <div class="space-y-2 overflow-y-auto" style="max-height: 80vh;">
 
                 <!-- <div class="bg-muted p-2 rounded flex justify-between items-center">
@@ -40,7 +46,7 @@
         <div class="md:col-span-2 space-y-6">
             <div class="bg-white rounded-lg shadow-md p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-semibold">Upcoming Tournaments</h3>
+                    <h3 class="text-xl font-semibold" style="font-family: gloock;">Upcoming Tournaments</h3>
                     <a href="{% url 'org:tournament_form'%}" class="bg-accent text-white px-3 py-1 rounded-md text-sm">New</a>
                 </div>
                 {% if upcoming_tournaments %}
@@ -74,7 +80,7 @@
             </div>
             <div class="bg-white rounded-lg shadow-md p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-semibold">Past Tournaments</h3>
+                    <h3 class="text-xl font-semibold" style="font-family: gloock;">Past Tournaments</h3>
                     <a href="#" class="text-primary">View More</a>
                 </div>
                 {% if past_tournaments %}
