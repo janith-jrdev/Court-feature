@@ -45,6 +45,13 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
+    env:
+      PGHOST: ${{ secrets.PGHOST }}
+      PGDATABASE: ${{ secrets.PGDATABASE }}
+      PGUSER: ${{ secrets.PGUSER }}
+      PGPASSWORD: ${{ secrets.PGPASSWORD }}
+      PGPORT: ${{ secrets.PGPORT }}
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
@@ -54,13 +61,12 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
-     
       - name: Create virtual environment and install dependencies
         run: |
           python -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
-  
+
       - name: Run Django migrations (Production)
         run: |
           source venv/bin/activate
