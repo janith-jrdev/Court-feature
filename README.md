@@ -1,5 +1,6 @@
 # SportsHunt
 
+
 **Version:** 0.1.0-beta
 
 ## Overview
@@ -68,4 +69,3 @@ SportsHunt is licensed under the GNU General Public License. See the [LICENSE](L
 For any inquiries or support, please contact us at cto@sportshunt.in
 
 ---
-
