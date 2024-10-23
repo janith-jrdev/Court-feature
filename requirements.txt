@@ -34,3 +34,4 @@ typing_extensions==4.12.2
 tzdata==2023.4
 urllib3==2.1.0
 whitenoise==6.7.0
+setuptools==75.2.0
