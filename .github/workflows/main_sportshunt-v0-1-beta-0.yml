@@ -13,6 +13,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      PGHOST: ${{ secrets.PGHOST }}
+      PGDATABASE: ${{ secrets.PGDATABASE }}
+      PGUSER: ${{ secrets.PGUSER }}
+      PGPASSWORD: ${{ secrets.PGPASSWORD }}
+      PGPORT: ${{ secrets.PGPORT }}
 
     steps:
       - uses: actions/checkout@v4
@@ -28,7 +34,16 @@ jobs:
           source venv/bin/activate
       
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          source venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: migrate and collectstatic
+        run: |
+          source venv/bin/activate
+          python manage.prod.py makemigrations
+          python manage.prod.py migrate
+          python manage.prod.py collectstatic --noinput
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
@@ -75,4 +90,3 @@ jobs:
         with:
           app-name: 'sportshunt-v0-1-beta-0'
           slot-name: 'Production'
-          
