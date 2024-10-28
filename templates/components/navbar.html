@@ -6,7 +6,7 @@
         justify-content: space-between;
         align-items: center;
         padding: 1rem;
-        background-color: var(--color-black);
+        background-color: var(--dark-green);
     }
 
 
@@ -21,18 +21,77 @@
         transition: background-color 0.3s;
     }
 
-    .nav-buttons a:first-child {
-        background-color: var(--color-white);
-        color: var(--color-black);
-    }
-
-    .nav-buttons a:last-child {
-        background-color: var(--color-white);
-        color: var(--color-black);
+    .nav-buttons a {
+        background-color: var(--white-shade);
+        color: var(--errie-black);
     }
 
     .nav-buttons a:hover {
-        background-color: var(--color-yellow);
+        background-color: var(--errie-black);
+        color: var(--white-shade);
+        transition: background-color 0.5s, color 0.5s;
+    }
+
+    #dropdownInformationButton {
+        color: var(--errie-black);
+        background-color: var(--white-shade);
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        font-size: 1.25rem;
+        display: inline-flex;
+        align-items: center;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-family: 'gloock', sans-serif;
+    }
+
+    #dropdownInformationButton svg {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-left: 0.75rem;
+    }  
+
+    #dropdownInformation {
+        display: none;
+        z-index: 99;
+        padding: 20px;
+        margin: 1rem;
+        background-color: var(--dark-green);
+        position: absolute;
+        top: 3rem;
+        margin-top: 1.25rem;
+        right: 0;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    #dropdownInformation ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    #dropdownInformation li {
+        margin-bottom: 0.5rem;
+    }
+
+    #dropdownInformation li {
+        margin-bottom: 0.5rem;
+    }
+    #dropdownInformation a {
+        text-decoration: none;
+        color: var(--errie-black);
+        background-color: var(--white-shade);
+    }
+    #dropdownInformation a:hover {
+        text-decoration: none;
+        color: var(--white-shade);
+        background-color: var(--errie-black);
+    }
+
+    #dropdownInformation div {
+        padding-top: 0.5rem;
     }
 </style>
 
@@ -43,33 +102,33 @@
     <div class="nav-buttons">
         {% if user.is_authenticated %}
 
-        <button id="dropdownInformationButton" type="button" style="color: white; background-color: #1D4ED8; padding: 0.625rem 1.25rem; border-radius: 0.5rem; font-size: 1.5rem; display: inline-flex; align-items: center; border: none; cursor: pointer; transition: background-color 0.3s; font-family: bonivar, gendy;">
+        <button id="dropdownInformationButton" type="button">
             {{user.username}}
-            <svg style="width: 1.25rem; height: 1.25rem; margin-left: 0.75rem;" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
             </svg>
         </button>
 
         <!-- Dropdown menu -->
-        <div id="dropdownInformation" style="display: none; z-index: 99; padding: 20px; background-color: aqua; position: absolute; top: 3rem; right: 0; border-radius: 0.5rem; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-            <ul style="list-style: none; padding: 0; margin: 0;">
-                <li style="margin-bottom: 0.5rem;">
-                    <a href="{% url 'core:getting_started' %}" style="text-decoration: none; color: black;">Get Started</a>
-                </li>
-                {% if user.is_organizer %}
-                <li style="margin-bottom: 0.5rem;">
-                    <a href="{% url 'org:index' %}" style="text-decoration: none; color: black;">Organization Dashboard</a> 
-                </li>
-                {% endif %}
-                <li style="margin-bottom: 0.5rem;">
-                    <a href="{% url 'core:profile' %}" style="text-decoration: none; color: black;">Profile</a>
-                </li>
-                <li style="margin-bottom: 0.5rem;">
-                    <a href="#" style="text-decoration: none; color: black;">Orders</a>
-                </li>
+        <div id="dropdownInformation">
+            <ul>
+            <li>
+                <a href="{% url 'core:getting_started' %}">Get Started</a>
+            </li>
+            {% if user.is_organizer %}
+            <li>
+                <a href="{% url 'org:index' %}">Organization Dashboard</a> 
+            </li>
+            {% endif %}
+            <li>
+                <a href="{% url 'core:profile' %}">Profile</a>
+            </li>
+            <li>
+                <a href="#">Orders</a>
+            </li>
             </ul>
-            <div style="padding-top: 0.5rem;">
-                <a href="{% url 'core:logout' %}" style="text-decoration: none; color: black;">Sign out</a>
+            <div>
+            <a href="{% url 'core:logout' %}">Sign out</a>
             </div>
         </div>
 

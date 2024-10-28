@@ -36,15 +36,17 @@
         align-items: center;
         padding: 8px;
         font-size: 14px;
-        color: var(--color-black);
+        color: var(--errie-black);
         border-radius: 8px;
 
-        font-size: 1.75rem;
+        font-size: 2rem;
     }
 
     .breadcrumb .separator {
-        margin: 0 8px;
-        color: var(--color-mint);
+        padding: 0 8px;
+        color: var(--color-black);
+        font-size: 1.5rem;
+        font-family: heal_the_web;
 
     }
 
@@ -57,8 +59,8 @@
     }
 
     .org-name {
-        background-color: var(--color-mint);
-        color: var(--color-black);
+        background-color: var(--dark-green);
+        color: var(--white-shade);
         font-family: heal_the_web;
         font-size: 1.5rem;
         font-weight: 600;
@@ -77,7 +79,7 @@
         padding: 20px 0;
         font-weight: 500;
         color: var(--color-black);
-        border-bottom: 1px solid var(--color-mint);
+        border-bottom: 1px solid var(--errie-black);
         background: none;
         border: none;
         text-align: left;
@@ -90,7 +92,7 @@
     .accordion-content {
         display: none;
         padding: 0px 20px;
-        border-bottom: 1px solid var(--color-mint);
+        border-bottom: 1px solid var(--errie-black);
     }
 
     .accordion-content.active {
@@ -255,6 +257,10 @@
     <div class="left-side">
         <div class="breadcrumb">
             <ol>
+                <li>
+                    <span><a href="{% url 'core:index' %}">Home</a></span>
+                </li>
+                <span class="separator">></span>
                 <li>
                     <span>{{ tournament.name }}</span>
                 </li>
