@@ -45,21 +45,21 @@ def tournament_form(req):
 def select_orgs(req):
     org_instances = Organization.objects.filter(admin=req.user)
     orgs = [org.id for org in org_instances]
+    
     if req.method == "POST":
         org_id = req.POST.get("org")
-        print(org_id)
         if org_id and int(org_id) in orgs:
             req.session['organization'] = org_id
             return redirect("org:index")
         messages.error(req, "Invalid Organization")
-    
-    if len(orgs) == 0:
+
+    if not orgs:
         return redirect("org:org_form")
-    
+
     if len(orgs) == 1:
         req.session['organization'] = orgs[0]
         return redirect("org:index")
-    
+
     return render(req, "organization/select_organization.html", {"orgs": org_instances})
 
 @host_required
