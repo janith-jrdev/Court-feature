@@ -1,25 +1,81 @@
-<form method="POST">
-    {% csrf_token %}
-    
-    <label for="is_organizer">Organizer Status:</label>
-    <input type="checkbox" id="is_organizer" name="is_organizer">
-    <br>
+<style>
+    .form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
 
-    <label for="gender">Gender:</label>
-    <select id="gender" name="gender" required>
-        <option value="M">Male</option>
-        <option value="F">Female</option>
-        <option value="O">Other</option>
-        <option value="U" selected>Prefer not to say</option>
-    </select>
-    <br>
+    .form-box {
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 50%;
+        max-width: 500px;
+    }
 
-    <label for="dob">Date of Birth:</label>
-    <input type="date" id="dob" name="dob" required>
-    <br>
+    .form-box label {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 1.5em; /* Increased font size */
+    }
 
-    <button type="submit">Submit</button>
-</form>
+    .form-box input,
+    .form-box select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        font-size: 2em; /* Increased font size */
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .form-box button {
+        width: 100%;
+        padding: 10px;
+        font-size: 1.5em; /* Increased font size */
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .form-box button:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-box">
+        <form method="POST">
+            {% csrf_token %}
+            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                <div style="flex: 3; margin-right: 10px;">
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender" required>
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                        <option value="O">Other</option>
+                        <option value="U" selected>Prefer not to say</option>
+                    </select>
+                </div>
+                <div style="flex: 1;">
+                    <label for="is_organizer">Organizer Status</label>
+                    <input type="checkbox" id="is_organizer" name="is_organizer" style="padding:1.5rem; margin-top: 0px;">
+                </div>
+            </div>
+
+
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" name="dob" required>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+
 <script>
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
@@ -27,5 +83,5 @@
     var yyyy = today.getFullYear();
 
     today = yyyy + '-' + mm + '-' + dd;
-    document.getElementById("date_of_birth").setAttribute("max", today);
+    document.getElementById("dob").setAttribute("max", today);
 </script>

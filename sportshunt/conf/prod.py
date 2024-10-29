@@ -1,6 +1,9 @@
 from .common import *
 from django.core.exceptions import ImproperlyConfigured
 
+if not os.getenv("SECRET_KEY"):
+    raise ImproperlyConfigured("Environment variables not set")
+
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = False
 SOCIAL_AUTH_AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN")
@@ -10,11 +13,8 @@ SOCIAL_AUTH_AUTH0_SECRET = os.getenv("AUTH0_CLIENT_SECRET")
 RAZOR_KEY_ID = None # os.getenv("RAZOR_KEY_ID")
 RAZOR_SECRET_KEY = None # os.getenv("RAZOR_SECRET_KEY")
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "sportshunt.in,127.0.0.1").split(",")
-CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "https://sportshunt.in").split(",")
-
-if not os.getenv("PGHOST"):
-    raise ImproperlyConfigured("Environment variable PGHOST is not set")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1").split(",") + ["sportshunt.in"]
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS").split(",") if os.getenv("CSRF_TRUSTED_ORIGINS") else ["https://sportshunt.in"]
 
 DATABASES = {
     'default': {
@@ -27,14 +27,10 @@ DATABASES = {
     }
 }
 
-# WSGI_APPLICATION = "sportshunt.wsgi.prod"
+WSGI_APPLICATION = "sportshunt.wsgi_prod.application"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 STATIC_URL = "/static/"
-
-STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')

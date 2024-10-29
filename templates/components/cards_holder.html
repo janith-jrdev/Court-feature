@@ -1,16 +1,24 @@
+<style>
+.no-tournaments {
+	font-family: 'gloock', sans-serif;
+	font-size: 1.5rem;
+	color: var(--white-shade);
+	text-align: center;
+	margin-top: 1rem;
+	width: 100%;
+}
+</style>
 <div class="tournaments-container">
     <div class="tournaments-scroll" id="tournaments-scroll">
         <!-- Tournament cards will be dynamically added here -->
-         {% for tournament in tournaments %}
+        	{% for tournament in tournaments %}
             <div class="tournament-card">
                 <h4>{{ tournament.name }}</h4>
                 <p>{{ tournament.start_date }}</p>
                 <a href="{% url 'core:tournament' tournament.id %}">View Tournament</a>
             </div>
-         {% endfor %}
+			{% empty %}
+				<p class="no-tournaments">No tournaments available.</p>
+        	{% endfor %}
     </div>
 </div>
-
-<script>
-
-</script>
