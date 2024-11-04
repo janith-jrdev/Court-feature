@@ -8,51 +8,39 @@
         padding: 20px;
     }
 
-    .left-side {
-        flex: 2;
-        padding: 10px;
-    }
-
+    /* Responsive adjustments */
+    .left-side,
     .right-side {
-        flex: 1;
-        padding: 10px;
+        width: 100%;
     }
 
     .breadcrumb {
-        display: flex;
-        justify-content: space-between;
+        display: inline;
         margin-bottom: 15px;
-        flex-wrap: wrap;
+        font-size: 1.4rem;
     }
 
-    .breadcrumb ol {
-        display: inline-flex;
-        align-items: center;
-        flex-wrap: wrap;
+    .breadcrumb a {
+        text-decoration: none;
+        color: var(--errie-black);
     }
 
     .breadcrumb span {
-        display: inline-flex;
-        align-items: center;
         padding: 8px;
-        font-size: 14px;
+        font-size: 1.4rem;
         color: var(--errie-black);
-        border-radius: 8px;
-
-        font-size: 2rem;
     }
 
     .breadcrumb .separator {
         padding: 0 8px;
         color: var(--color-black);
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         font-family: heal_the_web;
-
     }
 
     .title {
         font-family: heal_the_web;
-        font-size: 2.5rem;
+        font-size: 2rem;
         font-weight: 800;
         color: var(--color-black);
         margin-top: 10px;
@@ -62,41 +50,42 @@
         background-color: var(--dark-green);
         color: var(--white-shade);
         font-family: heal_the_web;
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         font-weight: 600;
         padding: 4px 10px;
         border-radius: 4px;
+        display: inline-block;
+        margin-top: 5px;
     }
 
     .accordion {
         margin-top: 16px;
     }
 
+    .accordion-item {
+        border-bottom: 1px solid var(--errie-black);
+    }
+
     .accordion-button {
-        display: flex;
-        justify-content: space-between;
         width: 100%;
-        padding: 20px 0;
+        padding: 15px 0;
         font-weight: 500;
         color: var(--color-black);
-        border-bottom: 1px solid var(--errie-black);
         background: none;
         border: none;
         text-align: left;
         cursor: pointer;
-
         font-family: humion;
-        font-size: 2.5rem;
+        font-size: 1.8rem;
     }
 
     .accordion-content {
         display: none;
-        padding: 0px 20px;
-        border-bottom: 1px solid var(--errie-black);
+        padding: 0 10px;
     }
 
     .accordion-content.active {
-        display: flex;
+        display: block;
     }
 
     .form-group {
@@ -106,7 +95,7 @@
     .form-label {
         display: block;
         margin-bottom: 8px;
-        font-size: 14px;
+        font-size: 1.2rem;
         font-weight: 500;
         color: var(--color-black);
     }
@@ -115,7 +104,7 @@
     .form-select {
         width: 100%;
         padding: 8px;
-        font-size: 14px;
+        font-size: 1.2rem;
         color: var(--color-black);
         border: 1px solid var(--color-mint);
         border-radius: 8px;
@@ -125,13 +114,16 @@
     .form-button {
         margin-top: 16px;
         padding: 10px 20px;
-        font-size: 14px;
+        font-size: 1.4rem;
         font-weight: 500;
         color: var(--color-black);
         background-color: var(--color-white);
         border: 1px solid var(--color-mint);
         border-radius: 8px;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .form-button:hover {
@@ -141,6 +133,7 @@
 
     .image-container {
         max-width: 100%;
+        margin-top: 20px;
     }
 
     .image-container img {
@@ -151,11 +144,12 @@
 
     .image-caption {
         margin-top: 8px;
-        font-size: 14px;
+        font-size: 1rem;
         text-align: center;
         color: var(--color-vermilion);
     }
 
+    /* Adjustments for larger screens */
     @media (min-width: 768px) {
         .container {
             flex-direction: row;
@@ -163,55 +157,35 @@
 
         .left-side {
             flex: 2;
+            margin-right: 20px;
         }
 
         .right-side {
             flex: 1;
         }
-    }
 
-    @media (max-width: 767px) {
         .breadcrumb span {
-            font-size: 12px;
+            font-size: 1.6rem;
         }
 
         .title {
-            font-size: 1.5rem;
+            font-size: 2.5rem;
         }
 
         .org-name {
-            font-size: 1rem;
+            font-size: 1.5rem;
         }
 
         .accordion-button {
-            font-size: 1rem;
+            font-size: 2rem;
         }
 
+        .form-label,
         .form-input,
-        .form-select {
-            font-size: 12px;
-        }
-
+        .form-select,
         .form-button {
-            font-size: 12px;
+            font-size: 1.4rem;
         }
-    }
-
-    .category-item {
-        list-style-type: none;
-        padding: 5px 25px;
-        border: 1px solid var(--color-mint);
-        border-radius: 8px;
-        margin-bottom: 8px;
-        transition: background-color 0.3s, color 0.3s;
-        font-family: humion;
-        font-size: 2rem;
-        max-width: fit-content;
-    }
-
-    .category-item:hover {
-        background-color: var(--color-mint);
-        color: var(--color-black);
     }
 
     .no-category {
@@ -221,15 +195,12 @@
         margin-top: 10px;
     }
 
-
-
     .detail-item {
         display: flex;
         align-items: center;
         margin-bottom: 8px;
-        font-size: 14px;
+        font-size: 1.2rem;
         color: var(--color-black);
-
     }
 
     .detail-item i {
@@ -246,26 +217,46 @@
         text-decoration: underline;
     }
 
-    .detail-item span,p {
-        font-family: humion;
-        font-size: 2rem;
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
     }
+
+    .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 500px;
+        width: 90%;
+    }
+
+    .modal.active {
+        display: block;
+    }
+
+
 </style>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
 
 <div class="container">
     <div class="left-side">
         <div class="breadcrumb">
-            <ol>
-                <li>
-                    <span><a href="{% url 'core:index' %}">Home</a></span>
-                </li>
-                <span class="separator">></span>
-                <li>
-                    <span>{{ tournament.name }}</span>
-                </li>
-                <span class="separator">/</span>
-            </ol>
+            <span><a href="{% url 'core:index' %}">Home</a></span>
+            <span class="separator">></span>
+            <span>{{ tournament.name }}</span>
         </div>
 
         <div>
@@ -274,100 +265,155 @@
         </div>
 
         <div class="accordion">
+            <!-- About the Tournament -->
             <div class="accordion-item">
-                <button class="accordion-button">About the tournament</button>
+                <button class="accordion-button">About the Tournament</button>
                 <div class="accordion-content">
                     <div class="tournament-details">
                         <div class="detail-item">
-                            <i class="lucide lucide-calendar"></i>
-                            <span>From: {{ tournament.start_date }} To: {{ tournament.end_date }}</span>
+                            <i data-lucide="calendar"></i>
+                            <span style="font-size: 1.6rem;">From: {{ tournament.start_date }} To: {{ tournament.end_date }}</span>
                         </div>
                         <div class="detail-item">
-                            <i class="lucide lucide-map-pin"></i>
-                            <span>Venue: <a href="{{ tournament.venue_link }}" target="_blank">{{ tournament.venue_address }}</a></span>
+                            <i data-lucide="map-pin"></i>
+                            <span style="font-size: 1.6rem;">Venue:</span>
+                                <a href="{{ tournament.venue_link }}" target="_blank" style="font-size: 1.6rem;">     {{ tournament.venue_address }}</a>
+                            </span>
                         </div>
-
                     </div>
                 </div>
             </div>
+
+            <!-- Categories -->
             <div class="accordion-item">
                 <button class="accordion-button">Categories</button>
                 <div class="accordion-content">
-                    <ul>
-                        {% for category in tournament.categories.all %}
-                        <li class="category-item">{{ category.name }}</li>
-                        {% empty %}
-                        <p class="no-category">No category is added.</p>
-                        {% endfor %}
-                    </ul>
+                    {% if tournament.categories.all %}
+                        <p>
+                            {% for category in tournament.categories.all %}
+                                {{ category.name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                    {% else %}
+                        <p class="no-category">No categories have been added.</p>
+                    {% endif %}
                 </div>
             </div>
+
+            <!-- Details -->
             <div class="accordion-item">
                 <button class="accordion-button">Details</button>
                 <div class="accordion-content">
                     <p>{{ tournament.details }}</p>
                 </div>
             </div>
-            <!-- <div class="accordion-item">
-                <button class="accordion-button">Register</button>
-                <div class="accordion-content">
-                    <div class="form-group">
-                        <label for="team-name" class="form-label">Team Name</label>
-                        <input type="text" id="team-name" class="form-input" placeholder="Enter team name">
-                    </div>
-                    <div class="form-group">
-                        <label for="country-select" class="form-label">Choose a country</label>
-                        <select id="country-select" class="form-select">
-                            <option selected disabled>Select country</option>
-                            <option value="US">United States</option>
-                            <option value="CA">Canada</option>
-                            <option value="FR">France</option>
-                            <option value="DE">Germany</option>
-                        </select>
-                    </div>
-                    <button type="button" class="form-button">Proceed to pay</button>
-                </div>
-            </div> -->
         </div>
+
+        <!-- Register Button -->
+        <button
+            class="form-button"
+            onclick="openModal()"
+            style="font-size: 1.6rem; font-family: heal_the_web;"
+        >
+            Register <i data-lucide="arrow-up-right" style="width: 1.5em; height: 1em; color: var(--errie-black);"></i>
+        </button>
+
+        <!-- Registration Modal -->
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <h2 style="font-size: 2rem;">Register</h2>
+                <div class="form-group">
+                    <label for="team-name" class="form-label" style="font-size: 1.75rem;">Team Name</label>
+                    <input
+                        type="text"
+                        id="team-name"
+                        class="form-input"
+                        placeholder="Enter team name"
+                        style="font-size: 1.75rem;"
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="team-category" class="form-label" style="font-size: 1.75rem;">Category:</label>
+                    <select
+                        id="team-category"
+                        name="team_category"
+                        class="form-select"
+                        required
+                        style="font-size: 1.75rem;"
+                    >
+                        {% for category in tournament.categories.all %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button
+                    id="rzp-button"
+                    type="button"
+                    class="form-button"
+                    style="font-size: 2rem;"
+                >
+                    Proceed to Pay <i class="lucide lucide-arrow-up-right"></i>
+                </button>
+            </div>
+        </div>
+
+        {% include "core/payment.html" %}
     </div>
+
     <div class="right-side">
         <figure class="image-container">
-            <img src="https://picsum.photos/400/600" alt="image description">
+            <img src="https://picsum.photos/400/600" alt="Tournament Image" />
             <figcaption class="image-caption">Image caption</figcaption>
         </figure>
     </div>
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener("DOMContentLoaded", function () {
         // Accordion functionality
-        const accordionButtons = document.querySelectorAll('.accordion-button');
-        const accordionContents = document.querySelectorAll('.accordion-content');
+        const accordionButtons = document.querySelectorAll(".accordion-button");
+        const accordionContents = document.querySelectorAll(".accordion-content");
 
-        accordionButtons.forEach((button, index) => {
-            button.addEventListener('click', function () {
+        accordionButtons.forEach((button) => {
+            button.addEventListener("click", function () {
                 const content = this.nextElementSibling;
 
-                // If the clicked item is already active, close it
-                if (content.classList.contains('active')) {
-                    content.classList.remove('active');
+                // Toggle active state
+                if (content.classList.contains("active")) {
+                    content.classList.remove("active");
                 } else {
-                    // Close all accordion items
-                    accordionContents.forEach(content => {
-                        content.classList.remove('active');
-                    });
-
-                    // Open the clicked accordion item
-                    content.classList.add('active');
+                    // Close all accordion contents
+                    accordionContents.forEach((c) => c.classList.remove("active"));
+                    // Open the clicked accordion content
+                    content.classList.add("active");
                 }
             });
         });
     });
+
+    const modal = document.getElementById("myModal");
+
+    function openModal() {
+        modal.classList.add("active");
+    }
+
+    window.onclick = function (event) {
+        if (event.target === modal) {
+            modal.classList.remove("active");
+        }
+    };
 </script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        lucide.createIcons();
+    document.addEventListener("DOMContentLoaded", function () {
+        // Check if the lucide library is loaded and then create icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        } else {
+            console.error("Lucide library failed to load.");
+        }
     });
 </script>
 

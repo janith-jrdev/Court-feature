@@ -12,6 +12,7 @@ import razorpay
 from .decorators import *
 import math
 from .utils import Fixture_Json_Manager
+from django.views.decorators.csrf import csrf_exempt
 
 @valid_json_data
 @host_required
@@ -137,17 +138,23 @@ def schedule_match(req, category_id):
 # create order -> get category, tournament ids, thn 
 # get price from category, thn create order
 
+# @csrf_exempt # remove it later
 def create_order(req):
+    print("create order")
+    #  use decorator fr this
     if req.method != "POST":
         return JsonResponse({"message": "Invalid request method"}, status=400)
     
-    data = json.loads(req.body)
-    if not data:
-        return JsonResponse({"message": "Invalid JSON data"}, status=400)
+    if not req.body:
+        return JsonResponse({"message": "Invalid request body"}, status=400)
     
-    category_id = data.get('category_id')
-    # tournament_id = data.get('tournament_id')
-    team_name = data.get('team_name')
+    data = json.loads(req.body)
+    
+    category_id = data.get('category_id', None)
+    team_name = data.get('team_name', None)
+    print(category_id, team_name, 'data')
+    if not (category_id and team_name):
+        return JsonResponse({"message": "Invalid JSON data, team name or category not found"}, status=400)
     
     category_instance = Category.objects.get(id=category_id)
     Tournament_instance = category_instance.tournament
@@ -156,12 +163,13 @@ def create_order(req):
     
     
     currency = 'INR'
-    amount = category_price * 100
+    amount = int(category_price * 100)
     
     try:
         razorpay_client = razorpay.Client(auth=(settings.RAZOR_KEY_ID,
                                         settings.RAZOR_SECRET_KEY))
-        
+
+        print("razorpay client created", razorpay_client)
         razorpay_order = razorpay_client.order.create(dict(amount=amount,
                                                         currency=currency,
                                                         payment_capture='0'))
@@ -170,10 +178,10 @@ def create_order(req):
         print(f'error from razorpay side {e}')
         return JsonResponse({"error": f'error from razorpay side {e}'}, status=400)
         
-    callback_url = reverse('core:checkout') # add next url too 
+    callback_url = req.build_absolute_uri(reverse('core:checkout')) # add next url too 
     
-    order_details = Order_addtional_details.objects.create(team_name=team_name, category=category_instance, tournament=Tournament_instance, user=req.user)
-    order_instance = Order.objects.create(order_id=razorpay_order['id'], user=req.user, amount=amount, tournament=Tournament_instance, category=category_instance, order_details=order_details)
+    order_instance = Order.objects.create(order_id=razorpay_order['id'], user=req.user, amount=amount)
+    order_details = Order_addtional_details.objects.create(team_name=team_name, category=category_instance, tournament=Tournament_instance, user=req.user, order=order_instance)
 
     response = {}
     response['razorpay_order_id'] = razorpay_order['id']
@@ -183,8 +191,7 @@ def create_order(req):
     response['callback_url'] = callback_url
     
     
-    print(order_instance)
-    return JsonResponse(response)    
+    return JsonResponse(response)
     
 
 

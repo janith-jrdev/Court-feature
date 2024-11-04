@@ -40,6 +40,12 @@ def logout_view(req):
     return HttpResponseRedirect(f"https://{domain}/v2/logout?client_id={client_id}&returnTo={return_to}")
 
 def additionalUserdata_view(req):
+    if not req.user.is_authenticated:
+        return redirect(reverse('core:login'))
+
+    if req.user.has_additional_data:
+        return redirect(reverse('core:profile'))
+    
     if req.method == 'POST':
         if addtionalUserData_validator(req.POST, req):
             messages.success(req, "Additional User Data added successfully")
@@ -93,7 +99,7 @@ def checkout(req):
     if Order.objects.filter(order_id=razorpay_order_id).exists():
         order_instance = Order.objects.get(order_id=razorpay_order_id)
         razorpay_client = razorpay.Client(auth=(settings.RAZOR_KEY_ID,
-                                settings.RAZOR_KEY_SECRET)) 
+                                settings.RAZOR_SECRET_KEY)) 
         
         result = razorpay_client.utility.verify_payment_signature(params_dict)
         if result is not None:
@@ -104,14 +110,14 @@ def checkout(req):
                 order_instance.signature = signature
                 order_instance.payment_id = payment_id
                 order_instance.save()
-                order_details = order_instance.order_details
+                order_details = Order_addtional_details.objects.get(order=order_instance)
                 team_name = order_details.team_name
                 category_instance = order_details.category
                 
                 Team.objects.create(name=team_name, category=category_instance)
                 
-                messages.add_message(req, messages.SUCCESS, f'Payment successful, and {team_name} is reqisted')
-                return redirect('core:category', category_instance.tournament.id, category_instance.id)
+                messages.add_message(req, messages.SUCCESS, f'Payment successful, and {team_name} is registed')
+                return redirect('core:tournament', category_instance.tournament.id,)
                 
                 
             except Exception as e:
@@ -131,5 +137,4 @@ def orders_view(req):
     })
     
 def getting_started_view(req):
-    # return render(req, 'core/getting_started.html')
-    return HttpResponse("<h1>Getting Started</h1>")
+    return render(req, 'core/getting_started.html')
