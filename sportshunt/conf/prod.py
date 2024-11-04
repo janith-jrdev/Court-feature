@@ -10,8 +10,8 @@ SOCIAL_AUTH_AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN")
 SOCIAL_AUTH_AUTH0_KEY = os.getenv("AUTH0_CLIENT_ID")
 SOCIAL_AUTH_AUTH0_SECRET = os.getenv("AUTH0_CLIENT_SECRET")
 
-RAZOR_KEY_ID = None # os.getenv("RAZOR_KEY_ID")
-RAZOR_SECRET_KEY = None # os.getenv("RAZOR_SECRET_KEY")
+RAZOR_KEY_ID = os.getenv("RAZOR_KEY_ID")
+RAZOR_SECRET_KEY = os.getenv("RAZOR_SECRET_KEY")
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1").split(",") + ["sportshunt.in"]
 CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS").split(",") if os.getenv("CSRF_TRUSTED_ORIGINS") else ["https://sportshunt.in"]
