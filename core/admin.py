@@ -4,3 +4,5 @@ from .models import *
 
 admin.site.register(User)
 admin.site.register(AdditionalUserData)
+admin.site.register(Order)
+admin.site.register(Order_addtional_details)
