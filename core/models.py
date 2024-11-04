@@ -56,20 +56,19 @@ class User(AbstractUser):
         return False
 
 
-class Order_addtional_details(models.Model):
-    team_name = models.CharField(max_length=100)
-    category = models.ForeignKey('organization.Category', on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    
-
 class Order(models.Model):
     order_id = models.CharField(max_length=100, primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.IntegerField()
     status = models.BooleanField(default=False)
     order_timestamp = models.DateTimeField(auto_now_add=True)
-    order_details = models.OneToOneField(Order_addtional_details, on_delete=models.CASCADE, related_name='order_details', blank=True, null=True)
     
     signature = models.CharField(max_length=255, blank=True, null=True)
     payment_id = models.CharField(max_length=100, blank=True, null=True)
-    
+
+class Order_addtional_details(models.Model):
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='order_details')
+    team_name = models.CharField(max_length=100)
+    category = models.ForeignKey('organization.Category', on_delete=models.CASCADE)
+    tournament = models.ForeignKey('organization.Tournament', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)

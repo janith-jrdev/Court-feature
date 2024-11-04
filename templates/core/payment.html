@@ -1,0 +1,54 @@
+{% load static %}
+
+
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+
+document.getElementById('rzp-button').onclick = function(e){
+
+    e.preventDefault();
+    if (document.getElementById('team-name').value == '' || document.getElementById('team-category').value == '') {
+    alert('Please fill all the fields' + document.getElementById('team-name').value + document.getElementById('team-category').value);
+        return;
+    }
+    fetch("{% url 'api:create_order' %}",  {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({
+            'team_name': document.getElementById('team-name').value,
+            'category_id': document.getElementById('team-category').value,
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        var options = {
+            "key": data.razorpay_merchant_key,
+            "amount": data.razorpay_amount,
+            "currency": "INR",
+            "name": "SportsHunt",
+            "description": "Registation to tournament",
+            "image": "{% static 'logos/sh-full-logo.png' %}",
+            "order_id": data.razorpay_order_id,
+            "callback_url": data.callback_url,
+            "prefill": {
+                "name": "{{user.username}}",
+                "email":" {{user.email}}",
+            },
+            "notes": {
+            },
+            "theme": {
+                "color": "#3399cc"
+            }   
+        };
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+</script>

@@ -11,7 +11,7 @@ urlpatterns = [
     
     path("getting_started/", getting_started_view, name="getting_started"),
     # path("tournaments/<int:tournament_id>/<int:category_id>/", category_view, name="category"),
-    # path("checkout/", checkout, name="checkout"),
+    path("checkout/", checkout, name="checkout"),
     # path("orders/", orders_view, name="orders"),
 ]
 
