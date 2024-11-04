@@ -9,6 +9,8 @@ urlpatterns = [
     path('scoring/<int:match_id>', score_match, name="score_match"),
     path('create_order', create_order, name="create_order"),
     path('create_match_ko/<int:category_id>', create_matches_ko_manual, name="create_match_ko"),
+    
+    path('create_order/', create_order, name="create_order"),
 ]
 
 app_name = "api"

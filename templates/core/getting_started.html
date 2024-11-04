@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SportsHunt</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        .from-background {
+            background-image: linear-gradient(to bottom, #ffffff, rgba(243, 244, 246, 0.2));
+        }
+        
+        .card {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+            padding: 1.5rem;
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: scale(1.05);
+        }
+        
+        .card.active {
+            border: 2px solid #2563eb;
+        }
+        
+        .button {
+            background: #2563eb;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-top: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        .button:hover {
+            background: #1d4ed8;
+        }
+        
+        .step-number {
+            background: #2563eb;
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.5rem;
+        }
+        
+        .text-muted {
+            color: #6b7280;
+        }
+
+        #content {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        #content.active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    {% include "components/navbar.html" %}
+    <div class="min-h-screen from-background">
+        <div class="container mx-auto px-4 py-20">
+            <div class="text-center">
+                <h1 class="mb-6 text-4xl font-bold tracking-tight sm:text-6xl">
+                    Ready to Level Up Your Game?
+                </h1>
+                <p class="mx-auto mb-12 max-w-2xl text-lg text-muted">
+                    Choose your path and get started today!
+                </p>
+            </div>
+
+            <div id="cards-container" class="mx-auto grid max-w-4xl gap-6 md:grid-cols-2">
+                <!-- Previous cards HTML remains the same -->
+                <div class="card cursor-pointer" data-section="player">
+                    <div class="text-center">
+                        <h3 class="flex items-center justify-center gap-2 text-2xl font-bold">
+                            <svg class="h-6 w-6 text-primary" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                            Join Tournaments
+                        </h3>
+                    </div>
+                    <div class="mt-4">
+                        <p class="min-h-[3rem] text-center text-muted">
+                            Compete in exciting tournaments and showcase your skills
+                        </p>
+                        <button class="button">
+                            Get Started as Player
+                            <svg class="ml-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card cursor-pointer" data-section="organizer">
+                    <div class="text-center">
+                        <h3 class="flex items-center justify-center gap-2 text-2xl font-bold">
+                            <svg class="h-6 w-6 text-primary" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            Host Tournaments
+                        </h3>
+                    </div>
+                    <div class="mt-4">
+                        <p class="min-h-[3rem] text-center text-muted">
+                            Create and manage your own tournaments with ease
+                        </p>
+                        <button class="button">
+                            Get Started as Organizer
+                            <svg class="ml-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="content" class="mt-20">
+                <div id="player-content" class="space-y-12 hidden">
+                    <h2 class="text-center text-3xl font-bold">How to Join Tournaments</h2>
+                    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+                        <!-- Previous player steps HTML remains the same -->
+                        <div class="card step-card">
+                            <h3 class="flex items-center gap-2 font-bold">
+                                <span class="step-number">1</span>
+                                Sign Up
+                            </h3>
+                            <p class="mt-4 text-muted">Create your account or log in to get started</p>
+                        </div>
+                        <div class="card step-card">
+                            <h3 class="flex items-center gap-2 font-bold">
+                                <span class="step-number">2</span>
+                                Browse Tournaments
+                            </h3>
+                            <p class="mt-4 text-muted">Explore available tournaments that match your interests</p>
+                        </div>
+                        <div class="card step-card">
+                            <h3 class="flex items-center gap-2 font-bold">
+                                <span class="step-number">3</span>
+                                Select & Register
+                            </h3>
+                            <p class="mt-4 text-muted">Choose the right category and register for the tournament</p>
+                        </div>
+                        <div class="card step-card">
+                            <h3 class="flex items-center gap-2 font-bold">
+                                <span class="step-number">4</span>
+                                Pay & Confirm
+                            </h3>
+                            <p class="mt-4 text-muted">Complete the payment process to confirm your spot</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="organizer-content" class="space-y-12 hidden">
+                    <h2 class="text-center text-3xl font-bold">How to Create Tournaments</h2>
+                    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-5">
+                        <!-- Previous organizer steps HTML remains the same -->
+                        <div class="card step-card">
+                            <h3 class="flex items-center gap-2 font-bold">
+                                <span class="step-number">1</span>
+                                Sign Up
+                            </h3>
+                            <p class="mt-4 text-muted">Create your organizer account or log in</p>
+                        </div>
+                        <div class="card step-card">
+                            <h3 class="flex items-center gap-2 font-bold">
+                                <span class="step-number">2</span>
+                                Complete Profile
+                            </h3>
+                            <p class="mt-4 text-muted">Fill in additional organizer information</p>
+                        </div>
+                        <div class="card step-card">
+                            <h3 class="flex items-center gap-2 font-bold">
+                                <span class="step-number">3</span>
+                                Access Dashboard
+                            </h3>
+                            <p class="mt-4 text-muted">Navigate to your Organizer Dashboard</p>
+                        </div>
+                        <div class="card step-card">
+                            <h3 class="flex items-center gap-2 font-bold">
+                                <span class="step-number">4</span>
+                                Create Organization
+                            </h3>
+                            <p class="mt-4 text-muted">Set up your organization details</p>
+                        </div>
+                        <div class="card step-card">
+                            <h3 class="flex items-center gap-2 font-bold">
+                                <span class="step-number">5</span>
+                                Launch Tournament
+                            </h3>
+                            <p class="mt-4 text-muted">Create a new tournament and set categories</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initial animation for cards
+        gsap.from("#cards-container", {
+            y: 50,
+            opacity: 0,
+            duration: 1,
+            ease: "power3.out"
+        });
+
+        let activeSection = null;
+        const content = document.getElementById('content');
+        const playerContent = document.getElementById('player-content');
+        const organizerContent = document.getElementById('organizer-content');
+
+        document.querySelectorAll('.card[data-section]').forEach(card => {
+            card.addEventListener('click', () => {
+                const section = card.dataset.section;
+                
+                // Remove active state from all cards
+                document.querySelectorAll('.card[data-section]').forEach(c => {
+                    c.classList.remove('active');
+                });
+                
+                if (activeSection === section) {
+                    // Clicking the same section - hide content
+                    activeSection = null;
+                    gsap.to(content, {
+                        opacity: 0,
+                        y: 20,
+                        duration: 0.3,
+                        onComplete: () => {
+                            content.style.display = 'none';
+                            playerContent.style.display = 'none';
+                            organizerContent.style.display = 'none';
+                        }
+                    });
+                } else {
+                    // Show new section
+                    activeSection = section;
+                    card.classList.add('active');
+                    
+                    // Prepare the content
+                    const relevantContent = section === 'player' ? playerContent : organizerContent;
+                    const otherContent = section === 'player' ? organizerContent : playerContent;
+                    
+                    // Hide the non-active content
+                    otherContent.style.display = 'none';
+                    
+                    // Show and prepare the active content
+                    content.style.display = 'block';
+                    relevantContent.style.display = 'block';
+                    
+                    // If content was previously hidden
+                    if (content.style.opacity === '0' || content.style.opacity === '') {
+                        gsap.fromTo(content,
+                            { opacity: 0, y: 20 },
+                            { 
+                                opacity: 1,
+                                y: 0,
+                                duration: 0.5,
+                                ease: "power2.out",
+                                onComplete: () => {
+                                    gsap.from('.step-card', {
+                                        y: 20,
+                                        opacity: 0,
+                                        stagger: 0.1,
+                                        duration: 0.3,
+                                        ease: "power2.out"
+                                    });
+                                }
+                            }
+                        );
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

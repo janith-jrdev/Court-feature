@@ -97,7 +97,9 @@
 
 <nav>
     <div class="logo">
-        <img src="{% static 'logos\sh-full-logo.png' %}" alt="Sportshunt logo" style="width: 250px; height: auto;" />
+        <a href="{% url 'core:index' %}">
+            <img src="{% static 'logos/sh-full-logo.png' %}" alt="Sportshunt logo" style="width: 250px; height: auto;" />
+        </a>
     </div>
     <div class="nav-buttons">
         {% if user.is_authenticated %}

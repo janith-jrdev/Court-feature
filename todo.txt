@@ -1,0 +1,12 @@
+Todo 
+
+1] define the flow. ✔️
+2] setup server side code ✔️
+    2.1] create order api fn ✔️
+        creates an razorpay order and creates a sh order too.✔️
+    2.2] checkout fn ✔️
+        - validates the order and does stuff accordingly ✔️
+3] setup razorpay btn ✔️
+    3.1] add a popup field for team name ✔️
+    3.2] on submit create an order ✔️
+    3.3] razorpay website setup files ✔️
