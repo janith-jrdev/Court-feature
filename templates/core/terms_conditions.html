@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Terms and Conditions{% endblock %}
+
+{% block body %}
+<style>
+    h1 {
+        font-family: bonivar, sans-serif;
+        font-size: 3rem;
+        color: var(--errie-black);
+        margin: 1rem 0;
+        text-align: center;
+        color: var(--dark-green);
+    }
+
+    h2 {
+        font-family: bonivar, sans-serif;
+        font-size: 2.5rem;
+        color: var(--errie-black);
+        margin: 2.5rem 2rem;
+        color: var(--dark-green);
+        position: relative;
+    }
+
+    p {
+        font-family: gloock, sans-serif;
+        font-size: 1.5rem;
+        color: var(--errie-black);
+        margin: 0rem 2.5rem;
+    }
+
+    a {
+        font-family: gloock, sans-serif;
+        font-size: 1.5rem;
+        font-style: italic;
+        text-decoration: none;
+        position: relative;
+    }
+
+    a::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        transform: scaleX(0);
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background-color: var(--dark-green);
+        transform-origin: bottom right;
+        transition: transform 0.25s ease-out;
+    }
+
+    a:hover::after {
+        transform: scaleX(1);
+        transform-origin: bottom left;
+    }
+
+    h2::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        transform: scaleX(0);
+        height: 2px;
+        bottom: -5px;
+        left: 0;
+        background-color: var(--errie-black);
+        transform-origin: bottom right;
+        transition: transform 1.25s ease-out;
+    }
+
+    h2:hover::after {
+        transform: scaleX(1);
+        transform-origin: bottom left;
+    }
+</style>
+{{  mdfile|safe }}
+
+<br> 
+<br> 
+<br> 
+<br> 
+<br> 
+
+{% endblock %}

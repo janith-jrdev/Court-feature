@@ -13,6 +13,7 @@ urlpatterns = [
     # path("tournaments/<int:tournament_id>/<int:category_id>/", category_view, name="category"),
     path("checkout/", checkout, name="checkout"),
     # path("orders/", orders_view, name="orders"),
+    path("T&C/", terms_conditions_view, name="terms_and_conditions"),
 ]
 
 app_name = "core"

@@ -66,8 +66,8 @@ class Order(models.Model):
     signature = models.CharField(max_length=255, blank=True, null=True)
     payment_id = models.CharField(max_length=100, blank=True, null=True)
 
-class Order_addtional_details(models.Model):
-    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='order_details')
+class Order_additional_details(models.Model):
+    order_id = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_details')
     team_name = models.CharField(max_length=100)
     category = models.ForeignKey('organization.Category', on_delete=models.CASCADE)
     tournament = models.ForeignKey('organization.Tournament', on_delete=models.CASCADE)

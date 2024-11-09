@@ -110,7 +110,7 @@ def checkout(req):
                 order_instance.signature = signature
                 order_instance.payment_id = payment_id
                 order_instance.save()
-                order_details = Order_addtional_details.objects.get(order=order_instance)
+                order_details = Order_additional_details.objects.get(order_id=order_instance)
                 team_name = order_details.team_name
                 category_instance = order_details.category
                 
@@ -138,3 +138,21 @@ def orders_view(req):
     
 def getting_started_view(req):
     return render(req, 'core/getting_started.html')
+
+def about_view(req):
+    return render(req, 'core/about.html')
+
+def terms_conditions_view(req):
+    from markdown2 import markdown as render_md
+
+    with open('static/terms_conditions.md', 'r') as file:
+        terms_conditions = file.read()
+    
+    return render(req, 'core/terms_conditions.html', {
+        "mdfile": render_md(terms_conditions),
+    })
+
+def privacy_policy_view(req):
+    return render(req, 'core/privacy_policy.html')
+
+

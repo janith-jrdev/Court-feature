@@ -309,57 +309,60 @@
             </div>
         </div>
 
-        <!-- Register Button -->
-        <button
-            class="form-button"
-            onclick="openModal()"
-            style="font-size: 1.6rem; font-family: heal_the_web;"
-        >
-            Register <i data-lucide="arrow-up-right" style="width: 1.5em; height: 1em; color: var(--errie-black);"></i>
-        </button>
+        {% if user.is_authenticated %}
+            <!-- Register Button -->
+            <button
+                class="form-button"
+                onclick="openModal()"
+                style="font-size: 1.6rem; font-family: heal_the_web;"
+            >
+                Register <i data-lucide="arrow-up-right" style="width: 1.5em; height: 1em; color: var(--errie-black);"></i>
+            </button>
 
-        <!-- Registration Modal -->
-        <div id="myModal" class="modal">
-            <div class="modal-content">
-                <h2 style="font-size: 2rem;">Register</h2>
-                <div class="form-group">
-                    <label for="team-name" class="form-label" style="font-size: 1.75rem;">Team Name</label>
-                    <input
-                        type="text"
-                        id="team-name"
-                        class="form-input"
-                        placeholder="Enter team name"
-                        style="font-size: 1.75rem;"
-                    />
-                </div>
+            <!-- Registration Modal -->
+            <div id="myModal" class="modal">
+                <div class="modal-content">
+                    <h2 style="font-size: 2rem;">Register</h2>
+                    <div class="form-group">
+                        <label for="team-name" class="form-label" style="font-size: 1.75rem;">Team Name</label>
+                        <input
+                            type="text"
+                            id="team-name"
+                            class="form-input"
+                            placeholder="Enter team name"
+                            style="font-size: 1.75rem;"
+                        />
+                    </div>
 
-                <div class="form-group">
-                    <label for="team-category" class="form-label" style="font-size: 1.75rem;">Category:</label>
-                    <select
-                        id="team-category"
-                        name="team_category"
-                        class="form-select"
-                        required
-                        style="font-size: 1.75rem;"
+                    <div class="form-group">
+                        <label for="team-category" class="form-label" style="font-size: 1.75rem;">Category:</label>
+                        <select
+                            id="team-category"
+                            name="team_category"
+                            class="form-select"
+                            required
+                            style="font-size: 1.75rem;"
+                        >
+                            {% for category in tournament.categories.all %}
+                                <option value="{{ category.id }}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <button
+                        id="rzp-button"
+                        type="button"
+                        class="form-button"
+                        style="font-size: 2rem;"
                     >
-                        {% for category in tournament.categories.all %}
-                            <option value="{{ category.id }}">{{ category.name }}</option>
-                        {% endfor %}
-                    </select>
+                        Proceed to Pay <i class="lucide lucide-arrow-up-right"></i>
+                    </button>
                 </div>
-
-                <button
-                    id="rzp-button"
-                    type="button"
-                    class="form-button"
-                    style="font-size: 2rem;"
-                >
-                    Proceed to Pay <i class="lucide lucide-arrow-up-right"></i>
-                </button>
             </div>
-        </div>
-
-        {% include "core/payment.html" %}
+            {% include "core/payment.html" %}
+        {% else %}
+            <p style="font-size: 1.6rem;">Please <a href="{% url 'core:login' %}">login</a> to register for the tournament.</p>
+        {% endif %}
     </div>
 
     <div class="right-side">

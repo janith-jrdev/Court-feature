@@ -180,9 +180,17 @@ def create_order(req):
         
     callback_url = req.build_absolute_uri(reverse('core:checkout')) # add next url too 
     
-    order_instance = Order.objects.create(order_id=razorpay_order['id'], user=req.user, amount=amount)
-    order_details = Order_addtional_details.objects.create(team_name=team_name, category=category_instance, tournament=Tournament_instance, user=req.user, order=order_instance)
-
+    try:
+        order_instance = Order.objects.create(order_id=razorpay_order['id'], user=req.user, amount=amount)
+        order_details = Order_additional_details.objects.create(
+            team_name=team_name,
+            category=category_instance,
+            tournament=Tournament_instance,
+            user=req.user,
+            order_id_id=order_instance.order_id
+        )
+    except Exception as e:
+        return JsonResponse({"error": f"Error creating order or order details: {e}"}, status=500)
     response = {}
     response['razorpay_order_id'] = razorpay_order['id']
     response['razorpay_merchant_key'] = settings.RAZOR_KEY_ID
