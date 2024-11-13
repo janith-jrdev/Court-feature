@@ -218,4 +218,46 @@ We reserve the right, at our sole discretion, to update, change or replace any p
 
 Questions about the Terms of Service should be sent to us at [cto@sportshunt.in](mailto:cto@sportshunt.in)
 
+## SECTION 21 - PRIVACY POLICY
+
+Your privacy is important to us. It is ATHLOSSPORTSHUNT LLP's policy to respect your privacy regarding any information we may collect from you across our website, [https://sportshunt.in](https://sportshunt.in), and other sites we own and operate.
+
+### Information We Collect
+
+We only collect information about you if we have a reason to do so. For example, to provide our services, to communicate with you, or to make our services better.
+
+### How We Use Information
+
+We use the information we collect in various ways, including to:
+- Provide, operate, and maintain our website
+- Improve, personalize, and expand our website
+- Understand and analyze how you use our website
+- Develop new products, services, features, and functionality
+- Communicate with you, either directly or through one of our partners, including for customer service, to provide you with updates and other information relating to the website, and for marketing and promotional purposes
+- Process your transactions and manage your orders
+- Send you emails
+- Find and prevent fraud
+
+### Sharing Information
+
+We do not share your personal information with anyone except to comply with the law, develop our products, or protect our rights.
+
+### Security
+
+We value your trust in providing us your personal information, thus we are striving to use commercially acceptable means of protecting it. But remember that no method of transmission over the internet, or method of electronic storage is 100% secure and reliable, and we cannot guarantee its absolute security.
+
+### Changes to This Privacy Policy
+
+We may update our Privacy Policy from time to time. Thus, we advise you to review this page periodically for any changes. We will notify you of any changes by posting the new Privacy Policy on this page. These changes are effective immediately after they are posted on this page.
+
+### Contact Us
+
+If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us at [cto@sportshunt.in](mailto:cto@sportshunt.in) or by mail at B2-013,39th Cross, 4T Block, Jayanagar, Jayanagar police station, Bangalore South, Bangalore- 560041, Karnataka, India
+
+
+## SECTION 22 - CANCELLATION POLICY
+
+We do not support order cancellations once the purchase has been made. All orders are final. Please ensure that you review your order carefully before completing your purchase.
+
+If you have any queries regarding your order, please contact us at [cto@sportshunt.in](mailto:cto@sportshunt.in). We do not encourage order cancellations once the purchase has been made.
 ---
