@@ -5,8 +5,8 @@
 ---
 ## OVERVIEW
 
-**This website is operated by ATHLOSSPORTSHUNT LLP (Sabari K)**. Throughout the site, the terms "we", "us" and "our" 
-refer to ATHLOSSPORTSHUNT LLP (Sabari K). ATHLOSSPORTSHUNT LLP (Sabari K) offers this website, including all information, 
+**This website is operated by ATHLOSSPORTSHUNT   (Sabari K)**. Throughout the site, the terms "we", "us" and "our" 
+refer to ATHLOSSPORTSHUNT   (Sabari K). ATHLOSSPORTSHUNT   (Sabari K) offers this website, including all information, 
 tools and services available from this site to you, the user, conditioned upon your acceptance of all 
 terms, conditions, policies and notices stated here.
 
@@ -151,7 +151,7 @@ You agree that we may periodically:
 
 You expressly agree that your use of, or inability to use, the service is at your sole risk. The service and all products/services delivered through it are provided 'as is' and 'as available' for your use, without any representation, warranties or conditions of any kind, either express or implied.
 
-In no case shall ATHLOSSPORTSHUNT LLP, our directors, officers, employees, affiliates, agents, contractors, interns, suppliers, service providers or licensors be liable for any:
+In no case shall ATHLOSSPORTSHUNT  , our directors, officers, employees, affiliates, agents, contractors, interns, suppliers, service providers or licensors be liable for any:
 - Injury
 - Loss
 - Claim
@@ -165,7 +165,7 @@ Our liability shall be limited to the maximum extent permitted by law.
 
 ## SECTION 14 - INDEMNIFICATION
 
-You agree to indemnify, defend and hold harmless ATHLOSSPORTSHUNT LLP and our:
+You agree to indemnify, defend and hold harmless ATHLOSSPORTSHUNT   and our:
 - Parent companies
 - Subsidiaries
 - Affiliates
@@ -220,7 +220,7 @@ Questions about the Terms of Service should be sent to us at [cto@sportshunt.in]
 
 ## SECTION 21 - PRIVACY POLICY
 
-Your privacy is important to us. It is ATHLOSSPORTSHUNT LLP's policy to respect your privacy regarding any information we may collect from you across our website, [https://sportshunt.in](https://sportshunt.in), and other sites we own and operate.
+Your privacy is important to us. It is ATHLOSSPORTSHUNT  's policy to respect your privacy regarding any information we may collect from you across our website, [https://sportshunt.in](https://sportshunt.in), and other sites we own and operate.
 
 ### Information We Collect
 
