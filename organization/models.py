@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import User
+from core.models import User,Match
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from datetime import datetime
@@ -35,6 +35,18 @@ class Tournament(models.Model):
         
     def __str__(self):
         return f"{self.name} - {self.organization.name}"
+
+from uuid import uuid4
+
+class Court(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    name = models.CharField(max_length=100)
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='courts')
+    is_available = models.BooleanField(default=True)
+    current_match = models.ForeignKey(Match, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.tournament.name}"
 
 class Category(models.Model):
     name = models.CharField(max_length=255)

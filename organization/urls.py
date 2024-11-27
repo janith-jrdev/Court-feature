@@ -15,4 +15,8 @@ urlpatterns = [
     path("scoring/<int:match_id>/", match_scoring, name="scoring"),
 ]
 
+# path('tournament/create/', views.tournament_form, name='tournament_form'),
+#     path('schedule_match/<int:category_id>/', views.schedule_match, name='schedule_match'),
+#     path('score_match/<int:match_id>/', views.score_match, name='score_match'),
+
 app_name = "org"

@@ -29,14 +29,25 @@ def organization_form(req):
             return redirect("org:index")    
     return render(req, "organization/create_organization.html")
 
-@host_required
+@organizer_required
 def tournament_form(req):
     if req.method == "POST":
         tournament_validator = TournamentValidator(req.POST, req)
         
         if tournament_validator.validatation:
-            messages.success(req, "Tournament created successfully")
             tournament_id = tournament_validator.tournament_id
+            tournament = Tournament.objects.get(id=tournament_id)
+            
+            # Handle court creation
+            court_count = req.POST.get('court_count', 0)
+            if court_count:
+                for i in range(1, int(court_count) + 1):
+                    Court.objects.create(
+                        name=f"Court {i}",
+                        tournament=tournament
+                    )
+            
+            messages.success(req, "Tournament created successfully")
             return redirect("org:category_form", tournament_id=tournament_id)
         
     return render(req, "organization/create_tournament.html")

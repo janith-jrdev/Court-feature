@@ -94,46 +94,54 @@ def fixturetype_form(req, category_id):
     
     return JsonResponse({"message": "some server side error, ps it should be KO."}, status=500)
 
-@valid_json_data
 @host_required
-# look in to it alone
 def schedule_match(req, category_id):
     category_instance = Category.objects.get(id=category_id)
-    data = json.loads(req.body)
-    fixture_instance = category_instance.fixture
-    
+    fixture_instance = category_instance.fixture    
     if not fixture_instance:
         return JsonResponse({"message": "Fixture not created yet"}, status=400)
     
+    data = json.loads(req.body)
+
     if fixture_instance.fixtureType == 'KO':
         ko_instance = fixture_instance.content_object
-        bracket_matches =[match.id for match in  ko_instance.bracket_matches.all()]
+        bracket_matches = [match.id for match in ko_instance.bracket_matches.all()]
         
-        match_id = int(data.get('match'))
+        match_id = int(data.get('match_id'))
         if not match_id in bracket_matches:
             return JsonResponse({"message": "Match not in bracket matches"}, status=400)
         
-        noSets = int(data.get('no_sets'))
         match_instance = Match.objects.get(id=match_id)
-        match_instance.no_sets = noSets
-        match_instance.win_points = int(data.get("set_winning_points"))
-        match_instance.save()
-        
-        # create sets and assign em
-        for i in range(noSets):
-            set_instance = SetScoreboard.objects.create(set_no=i+1, match=match_instance)
-            match_instance.sets.add(set_instance)
-        
         match_instance.current_set = SetScoreboard.objects.get(set_no=1, match=match_instance)
         match_instance.save()
         
-        fixture_instance.scheduled_matches.add(match_instance)
-        fixture_instance.save()
-        ko_instance.bracket_matches.remove(match_instance)
-        ko_instance.save()
-        return JsonResponse({"message": "Match scheduled successfully"})
-    
-    return JsonResponse({"message": "Other fixture types are not created yet"}, status=500)
+        # Find available court
+        available_court = Court.objects.filter(
+            tournament=category_instance.tournament, 
+            is_available=True
+        ).first()
+        
+        if available_court:
+            # Assign match to court
+            available_court.current_match = match_instance
+            available_court.is_available = False
+            available_court.save()
+            
+            fixture_instance.scheduled_matches.add(match_instance)
+            fixture_instance.save()
+            ko_instance.bracket_matches.remove(match_instance)
+            ko_instance.save()
+            
+            return JsonResponse({
+                "message": "Match scheduled successfully", 
+                "court": str(available_court.id)
+            })
+        else:
+            # Add to waiting queue if no courts available
+            # You might want to implement a more sophisticated queuing system
+            return JsonResponse({"message": "No courts available. Match queued."}, status=400)
+    else:
+        return JsonResponse({"message": "Other fixture types are not created yet"}, status=500)
         
 # create order -> get category, tournament ids, thn 
 # get price from category, thn create order
@@ -491,3 +499,21 @@ def score_match(req, match_id):
     else:
         return JsonResponse({"message": "Invalid team id"}, status=400)
 
+# @host_required
+# def score_match(req, match_id):
+#     # Existing scoring logic...
+    
+#     # After match completion
+#     if match_instance.match_state:
+#         # Find and release the court
+#         court = Court.objects.filter(current_match=match_instance).first()
+#         if court:
+#             court.is_available = True
+#             court.current_match = None
+#             court.save()
+        
+#         # Check and schedule next match from queue if exists
+#         next_queued_match = fixture_instance.scheduled_matches.filter(match_state=False).first()
+#         if next_queued_match and Court.objects.filter(is_available=True).exists():
+#             # Implement logic to schedule this match
+#             schedule_match_for_court(next_queued_match)

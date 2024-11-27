@@ -1,11 +1,26 @@
 {% extends "base.html" %}
-
 {% block body %}
 <div class="main-container">
     <div class="left-side"></div>
     <div class="right-side">
         <h1 class="text-3xl font-bold mb-6">Create Tournament</h1>
-        {% include "components/forms/organization/create_tournament.html" %}
+        <form method="POST">
+            {% csrf_token %}
+            <!-- Existing Tournament Fields -->
+            <div class="mb-4">
+                <label for="court_count" class="block mb-2">Number of Courts (Optional)</label>
+                <input 
+                    type="number" 
+                    name="court_count" 
+                    id="court_count" 
+                    min="0" 
+                    class="w-full px-3 py-2 border rounded"
+                    placeholder="Enter number of courts"
+                >
+            </div>
+            <!-- Rest of the form -->
+            <button type="submit" class="btn btn-primary">Create Tournament</button>
+        </form>
     </div>
 </div>
 {% endblock body %}
